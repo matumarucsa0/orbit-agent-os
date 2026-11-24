@@ -1,0 +1,19 @@
+# Files an agent should not read in full: large, generated or binary. Claude Code enforces access
+# through "permissions" in .claude/settings.json; this list is for tools that read .claudeignore and
+# documents the same intent (see docs/AGENT_SETUP.md, "Context cost"). Search them, do not open them.
+uv.lock
+*.min.js
+orbit/web/static/vendor/
+docs/images/
+docs/shortcuts/
+evals/cases/*.jsonl
+evals/cassettes/*.jsonl
+evals/results/
+tests/fixtures/
+tests/prompt_hashes.json
+data/namedays_*.json
+data/school/
+docs/ROUTES.md
+docs/TESTMAP.md
+.venv/
+agent-scratch.db

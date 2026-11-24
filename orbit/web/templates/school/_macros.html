@@ -1,0 +1,53 @@
+{# Shared bits of the School pages. #}
+{% macro nav(tab) %}
+<nav class="chips section-nav" aria-label="School">
+  {% for key, href, label in (("week", "/school", "📅 Week"), ("upcoming", "/school/upcoming", "⏰ Upcoming"), ("courses", "/school/courses", "📚 Courses"), ("map", "/school/map", "🗺 Map"), ("status", "/school/status", "🔄 Sync")) %}
+  <a class="chip {% if tab == key %}chip-active{% endif %}" href="{{ href }}" {% if tab == key %}aria-current="page"{% endif %}>{{ label }}</a>
+  {% endfor %}
+</nav>
+{% endmacro %}
+
+{% macro not_set_up() %}
+<p class="card small">SIS feed not set up. Put the timetable key (<code>SIS_TIMETABLE_KEY</code>) or the calendar token (<code>SIS_ICAL_TOKEN</code>) in <code>.env</code>; see DEPLOY.md, "School feeds". Deadlines you add by hand work without it.</p>
+{% endmacro %}
+
+{% macro kind_label(kind) -%}
+{{ {"lecture": "lecture", "seminar": "seminar"}.get(kind.value, "") }}
+{%- endmacro %}
+
+{% macro lesson_row(l, show_day=false) %}
+<div class="list-row{% if l.cancelled %} settled{% endif %}">
+  <span class="list-title">
+    {%- if l.cancelled %}<s>{% endif -%}
+    {% if show_day %}{{ l.start_utc | local_date }} {% endif %}{{ l.start_utc | local_time }}–{{ l.end_utc | local_time }}
+    {% if l.course %}<a href="/school/courses/{{ l.course.code }}">{{ l.title }}</a>{% else %}{{ l.title }}{% endif %}
+    {%- if l.cancelled %}</s> <span class="overdue small">cancelled</span>{% endif %}
+  </span>
+  <span class="list-sub muted">
+    {%- set k = kind_label(l.kind) %}{% if k %}{{ k }}{% endif %}{% if l.room %}{% if k %} · {% endif %}{{ l.room }}{% endif %}
+    {%- if l.teachers_text %} · {{ l.teachers_text }}{% endif %}
+    {%- if l.change_note and not l.cancelled %} · <span class="warn">{{ l.change_note }}</span>{% endif %}
+  </span>
+</div>
+{% endmacro %}
+
+{% macro event_row(e, days=None, deletable=false) %}
+<div class="row-between">
+  <span class="list-row">
+    <span class="list-title">{{ "📝" if e.kind.value == "exam" else "⏰" if e.kind.value == "deadline" else "•" }}
+      {% if e.url %}<a href="{{ e.url }}" rel="noreferrer">{{ e.title }}</a>{% else %}{{ e.title }}{% endif %}
+    </span>
+    <span class="list-sub muted">
+      {%- if e.all_day %}{{ e.start_utc | local_date }}{% else %}{{ e.start_utc | local_dt }}{% endif %}
+      {%- if days is not none %} · {% if days == 0 %}<strong>today</strong>{% elif days == 1 %}<strong>tomorrow</strong>{% else %}in {{ days }} days{% endif %}{% endif %}
+      {%- if e.course %} · <a href="/school/courses/{{ e.course.code }}">{{ e.course.name }}</a>{% endif %}
+      {%- if e.max_points is not none %} · {{ "%g" | format(e.points or 0) }}/{{ "%g" | format(e.max_points) }} points{% endif %}
+      {%- if e.second_deadline_utc %} · second deadline {{ e.second_deadline_utc | local_dt }}{% endif %}
+      · {{ source_labels[e.source] }}
+    </span>
+  </span>
+  {% if deletable and e.source.value in ("manual", "proposal") %}
+  <form method="post" action="/school/events/{{ e.id }}/delete"><button type="submit" class="link small">Delete</button></form>
+  {% endif %}
+</div>
+{% endmacro %}

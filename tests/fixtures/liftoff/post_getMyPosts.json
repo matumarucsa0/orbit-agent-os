@@ -1,0 +1,1063 @@
+[
+  {
+    "id": "post-001",
+    "title": null,
+    "content": "",
+    "image": "",
+    "medias": [],
+    "authorId": "user-001",
+    "startedAt": "2026-02-08T17:12:41.318Z",
+    "postedAt": "2026-02-08T18:25:07.944Z",
+    "sessionDuration": "01 hours 12 minutes 08 seconds",
+    "sessionNotes": "Good session, shoulders a bit tired.",
+    "sessionExercisesData": "",
+    "public": false,
+    "bodyweight": "154.3",
+    "streaksCount": 17,
+    "prCount": 1,
+    "sessionPresetId": "",
+    "plannedWorkoutId": null,
+    "experienceGained": 270,
+    "eggsGained": 3,
+    "consumablesUsed": [],
+    "isGhost": false,
+    "gracePeriod": 22851738,
+    "type": "WORKOUT",
+    "caloriesBurned": 122,
+    "PostMedia": [],
+    "exerciseData": [
+      {
+        "id": "ex-1-1",
+        "postId": "post-001",
+        "exerciseIndex": 0,
+        "exerciseName": "Cable Lateral Raise",
+        "exerciseId": "cable_lateral_raise_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-1-1",
+            "exerciseDataId": "ex-1-1",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 13,
+            "exerciseRating": 259,
+            "rir": null
+          },
+          {
+            "id": "set-1-1-2",
+            "exerciseDataId": "ex-1-1",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 5.51155,
+            "inputTwo": 5,
+            "exerciseRating": 270,
+            "rir": null
+          },
+          {
+            "id": "set-1-1-3",
+            "exerciseDataId": "ex-1-1",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 3,
+            "exerciseRating": 322,
+            "rir": null
+          },
+          {
+            "id": "set-1-1-4",
+            "exerciseDataId": "ex-1-1",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 16.53465,
+            "inputTwo": 7,
+            "exerciseRating": 370,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-2",
+        "postId": "post-001",
+        "exerciseIndex": 1,
+        "exerciseName": "Cable Overhead Tricep Extension",
+        "exerciseId": "cable_overhead_tricep_extension_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-2-1",
+            "exerciseDataId": "ex-1-2",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 16.53465,
+            "inputTwo": 10,
+            "exerciseRating": 217,
+            "rir": null
+          },
+          {
+            "id": "set-1-2-2",
+            "exerciseDataId": "ex-1-2",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 27.55775,
+            "inputTwo": 3,
+            "exerciseRating": 250,
+            "rir": null
+          },
+          {
+            "id": "set-1-2-3",
+            "exerciseDataId": "ex-1-2",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 38.58085,
+            "inputTwo": 5,
+            "exerciseRating": 321,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-3",
+        "postId": "post-001",
+        "exerciseIndex": 2,
+        "exerciseName": "Single Arm Tricep Pushdown",
+        "exerciseId": "single_arm_tricep_pushdown_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-3-1",
+            "exerciseDataId": "ex-1-3",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 3,
+            "exerciseRating": 158,
+            "rir": null
+          },
+          {
+            "id": "set-1-3-2",
+            "exerciseDataId": "ex-1-3",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 16.53465,
+            "inputTwo": 3,
+            "exerciseRating": 195,
+            "rir": null
+          },
+          {
+            "id": "set-1-3-3",
+            "exerciseDataId": "ex-1-3",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 22.0462,
+            "inputTwo": 14,
+            "exerciseRating": 258,
+            "rir": null
+          },
+          {
+            "id": "set-1-3-4",
+            "exerciseDataId": "ex-1-3",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 22.0462,
+            "inputTwo": 6,
+            "exerciseRating": 210,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-4",
+        "postId": "post-001",
+        "exerciseIndex": 3,
+        "exerciseName": "Dumbbell Reverse Wrist Curl",
+        "exerciseId": "dumbbell_reverse_wrist_curl_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-4-1",
+            "exerciseDataId": "ex-1-4",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 21,
+            "exerciseRating": 283,
+            "rir": null
+          },
+          {
+            "id": "set-1-4-2",
+            "exerciseDataId": "ex-1-4",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 4,
+            "exerciseRating": 300,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-5",
+        "postId": "post-001",
+        "exerciseIndex": 4,
+        "exerciseName": "Dumbbell Wrist Curl",
+        "exerciseId": "dumbbell_wrist_curl_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-5-1",
+            "exerciseDataId": "ex-1-5",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 16.53465,
+            "inputTwo": 19,
+            "exerciseRating": 344,
+            "rir": null
+          },
+          {
+            "id": "set-1-5-2",
+            "exerciseDataId": "ex-1-5",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 27.55775,
+            "inputTwo": 7,
+            "exerciseRating": 371,
+            "rir": null
+          },
+          {
+            "id": "set-1-5-3",
+            "exerciseDataId": "ex-1-5",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 33.0693,
+            "inputTwo": 9,
+            "exerciseRating": 448,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-6",
+        "postId": "post-001",
+        "exerciseIndex": 5,
+        "exerciseName": "Neck Curl",
+        "exerciseId": "neck_curl_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-6-1",
+            "exerciseDataId": "ex-1-6",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 7,
+            "exerciseRating": 294,
+            "rir": null
+          },
+          {
+            "id": "set-1-6-2",
+            "exerciseDataId": "ex-1-6",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 11,
+            "exerciseRating": 316,
+            "rir": null
+          },
+          {
+            "id": "set-1-6-3",
+            "exerciseDataId": "ex-1-6",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 4,
+            "exerciseRating": 304,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-7",
+        "postId": "post-001",
+        "exerciseIndex": 6,
+        "exerciseName": "Neck Extension",
+        "exerciseId": "neck_extension_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-7-1",
+            "exerciseDataId": "ex-1-7",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 23,
+            "exerciseRating": 286,
+            "rir": null
+          },
+          {
+            "id": "set-1-7-2",
+            "exerciseDataId": "ex-1-7",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 16,
+            "exerciseRating": 278,
+            "rir": null
+          },
+          {
+            "id": "set-1-7-3",
+            "exerciseDataId": "ex-1-7",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 11.0231,
+            "inputTwo": 16,
+            "exerciseRating": 271,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-1-8",
+        "postId": "post-001",
+        "exerciseIndex": 7,
+        "exerciseName": "Treadmill",
+        "exerciseId": "treadmill_gymbros",
+        "exerciseTypes": "DD",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-1-8-1",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          },
+          {
+            "id": "set-1-8-2",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          },
+          {
+            "id": "set-1-8-3",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          },
+          {
+            "id": "set-1-8-4",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          },
+          {
+            "id": "set-1-8-5",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 4,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          },
+          {
+            "id": "set-1-8-6",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 5,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          },
+          {
+            "id": "set-1-8-7",
+            "exerciseDataId": "ex-1-8",
+            "setIndex": 6,
+            "setType": "normal",
+            "inputOne": 3.99921984,
+            "inputTwo": 120,
+            "exerciseRating": 0,
+            "rir": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "post-002",
+    "title": null,
+    "content": "",
+    "image": "",
+    "medias": [],
+    "authorId": "user-001",
+    "startedAt": "2026-02-06T16:31:05.207Z",
+    "postedAt": "2026-02-06T16:31:44.610Z",
+    "sessionDuration": "00 hours 00 minutes 27 seconds",
+    "sessionNotes": "",
+    "sessionExercisesData": "",
+    "public": false,
+    "bodyweight": "154.3",
+    "streaksCount": 21,
+    "prCount": 0,
+    "sessionPresetId": "preset-002",
+    "plannedWorkoutId": null,
+    "experienceGained": 210,
+    "eggsGained": 3,
+    "consumablesUsed": [],
+    "isGhost": false,
+    "gracePeriod": 21479028,
+    "type": "WORKOUT",
+    "caloriesBurned": 162,
+    "PostMedia": [],
+    "exerciseData": [
+      {
+        "id": "ex-2-1",
+        "postId": "post-002",
+        "exerciseIndex": 0,
+        "exerciseName": "Smith Machine Incline Bench Press",
+        "exerciseId": "smith_machine_incline_bench_press_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-2-1-1",
+            "exerciseDataId": "ex-2-1",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 55.1155,
+            "inputTwo": 10,
+            "exerciseRating": 168,
+            "rir": null
+          },
+          {
+            "id": "set-2-1-2",
+            "exerciseDataId": "ex-2-1",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 71.65015,
+            "inputTwo": 6,
+            "exerciseRating": 193,
+            "rir": null
+          },
+          {
+            "id": "set-2-1-3",
+            "exerciseDataId": "ex-2-1",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 88.1848,
+            "inputTwo": 3,
+            "exerciseRating": 235,
+            "rir": null
+          },
+          {
+            "id": "set-2-1-4",
+            "exerciseDataId": "ex-2-1",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 99.2079,
+            "inputTwo": 1,
+            "exerciseRating": 243,
+            "rir": null
+          },
+          {
+            "id": "set-2-1-5",
+            "exerciseDataId": "ex-2-1",
+            "setIndex": 4,
+            "setType": "normal",
+            "inputOne": 77.1617,
+            "inputTwo": 5,
+            "exerciseRating": 227,
+            "rir": null
+          },
+          {
+            "id": "set-2-1-6",
+            "exerciseDataId": "ex-2-1",
+            "setIndex": 5,
+            "setType": "normal",
+            "inputOne": 33.0693,
+            "inputTwo": 6,
+            "exerciseRating": 103,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-2-2",
+        "postId": "post-002",
+        "exerciseIndex": 1,
+        "exerciseName": "Assisted Dips",
+        "exerciseId": "assisted_dips_gymbros",
+        "exerciseTypes": "AB",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-2-2-1",
+            "exerciseDataId": "ex-2-2",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 60.62705,
+            "inputTwo": 7,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-2-2-2",
+            "exerciseDataId": "ex-2-2",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 22.0462,
+            "inputTwo": 5,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-2-2-3",
+            "exerciseDataId": "ex-2-2",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 0,
+            "inputTwo": 3,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-2-2-4",
+            "exerciseDataId": "ex-2-2",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 0,
+            "inputTwo": 3,
+            "exerciseRating": 100,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-2-3",
+        "postId": "post-002",
+        "exerciseIndex": 2,
+        "exerciseName": "Machine Chest Fly",
+        "exerciseId": "machine_chest_fly_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-2-3-1",
+            "exerciseDataId": "ex-2-3",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 88.1848,
+            "inputTwo": 6,
+            "exerciseRating": 293,
+            "rir": null
+          },
+          {
+            "id": "set-2-3-2",
+            "exerciseDataId": "ex-2-3",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 121.2541,
+            "inputTwo": 3,
+            "exerciseRating": 421,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-2-4",
+        "postId": "post-002",
+        "exerciseIndex": 3,
+        "exerciseName": "Machine Seated Crunch",
+        "exerciseId": "machine_seated_crunch_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-2-4-1",
+            "exerciseDataId": "ex-2-4",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 60.62705,
+            "inputTwo": 9,
+            "exerciseRating": 275,
+            "rir": null
+          },
+          {
+            "id": "set-2-4-2",
+            "exerciseDataId": "ex-2-4",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 71.65015,
+            "inputTwo": 5,
+            "exerciseRating": 274,
+            "rir": null
+          },
+          {
+            "id": "set-2-4-3",
+            "exerciseDataId": "ex-2-4",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 88.1848,
+            "inputTwo": 9,
+            "exerciseRating": 397,
+            "rir": null
+          },
+          {
+            "id": "set-2-4-4",
+            "exerciseDataId": "ex-2-4",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 93.69635,
+            "inputTwo": 7,
+            "exerciseRating": 372,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-2-5",
+        "postId": "post-002",
+        "exerciseIndex": 4,
+        "exerciseName": "Sled Leg Press",
+        "exerciseId": "sled_leg_press_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-2-5-1",
+            "exerciseDataId": "ex-2-5",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 44.0924,
+            "inputTwo": 3,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-2-5-2",
+            "exerciseDataId": "ex-2-5",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 44.0924,
+            "inputTwo": 3,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-2-5-3",
+            "exerciseDataId": "ex-2-5",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 60.62705,
+            "inputTwo": 8,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-2-5-4",
+            "exerciseDataId": "ex-2-5",
+            "setIndex": 3,
+            "setType": "normal",
+            "inputOne": 148.81185,
+            "inputTwo": 3,
+            "exerciseRating": 174,
+            "rir": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "post-003",
+    "title": null,
+    "content": "",
+    "image": "",
+    "medias": [],
+    "authorId": "user-001",
+    "startedAt": "2025-04-14T17:40:29.552Z",
+    "postedAt": "2025-04-14T18:58:02.133Z",
+    "sessionDuration": "01 hours 16 minutes 52 seconds",
+    "sessionNotes": "",
+    "sessionExercisesData": "",
+    "public": false,
+    "bodyweight": "154.3",
+    "streaksCount": 5,
+    "prCount": 3,
+    "sessionPresetId": "preset-003",
+    "plannedWorkoutId": null,
+    "experienceGained": 237,
+    "eggsGained": 3,
+    "consumablesUsed": [],
+    "isGhost": false,
+    "gracePeriod": 14101882,
+    "type": "WORKOUT",
+    "caloriesBurned": 0,
+    "PostMedia": [],
+    "exerciseData": [
+      {
+        "id": "ex-3-1",
+        "postId": "post-003",
+        "exerciseIndex": 0,
+        "exerciseName": "Iso-Lateral Row",
+        "exerciseId": "iso_lateral_row_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-3-1-1",
+            "exerciseDataId": "ex-3-1",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 27.55775,
+            "inputTwo": 11,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-3-1-2",
+            "exerciseDataId": "ex-3-1",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 44.0924,
+            "inputTwo": 11,
+            "exerciseRating": 127,
+            "rir": null
+          },
+          {
+            "id": "set-3-1-3",
+            "exerciseDataId": "ex-3-1",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 44.0924,
+            "inputTwo": 8,
+            "exerciseRating": 144,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-3-2",
+        "postId": "post-003",
+        "exerciseIndex": 1,
+        "exerciseName": "Iso-Lateral High Row",
+        "exerciseId": "iso_lateral_high_row_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-3-2-1",
+            "exerciseDataId": "ex-3-2",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 33.0693,
+            "inputTwo": 10,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-3-2-2",
+            "exerciseDataId": "ex-3-2",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 55.1155,
+            "inputTwo": 11,
+            "exerciseRating": 160,
+            "rir": null
+          },
+          {
+            "id": "set-3-2-3",
+            "exerciseDataId": "ex-3-2",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 55.1155,
+            "inputTwo": 9,
+            "exerciseRating": 162,
+            "rir": null
+          },
+          {
+            "id": "set-3-2-4",
+            "exerciseDataId": "ex-3-2",
+            "setIndex": 3,
+            "setType": "drop",
+            "inputOne": 33.0693,
+            "inputTwo": 7,
+            "exerciseRating": 100,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-3-3",
+        "postId": "post-003",
+        "exerciseIndex": 2,
+        "exerciseName": "Iso-Lateral Low Row",
+        "exerciseId": "iso_lateral_low_row_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-3-3-1",
+            "exerciseDataId": "ex-3-3",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 27.55775,
+            "inputTwo": 13,
+            "exerciseRating": 100,
+            "rir": null
+          },
+          {
+            "id": "set-3-3-2",
+            "exerciseDataId": "ex-3-3",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 44.0924,
+            "inputTwo": 12,
+            "exerciseRating": 146,
+            "rir": null
+          },
+          {
+            "id": "set-3-3-3",
+            "exerciseDataId": "ex-3-3",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 44.0924,
+            "inputTwo": 10,
+            "exerciseRating": 148,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-3-4",
+        "postId": "post-003",
+        "exerciseIndex": 3,
+        "exerciseName": "Bayesian Curl",
+        "exerciseId": "bayesian_curl_gymbros",
+        "exerciseTypes": "WR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-3-4-1",
+            "exerciseDataId": "ex-3-4",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 33.0693,
+            "inputTwo": 13,
+            "exerciseRating": 352,
+            "rir": null
+          },
+          {
+            "id": "set-3-4-2",
+            "exerciseDataId": "ex-3-4",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 55.1155,
+            "inputTwo": 8,
+            "exerciseRating": 465,
+            "rir": null
+          },
+          {
+            "id": "set-3-4-3",
+            "exerciseDataId": "ex-3-4",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 55.1155,
+            "inputTwo": 9,
+            "exerciseRating": 455,
+            "rir": null
+          }
+        ]
+      },
+      {
+        "id": "ex-3-5",
+        "postId": "post-003",
+        "exerciseIndex": 4,
+        "exerciseName": "Back Extension",
+        "exerciseId": "back_extension_gymbros",
+        "exerciseTypes": "BR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-3-5-1",
+            "exerciseDataId": "ex-3-5",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 0,
+            "inputTwo": 14,
+            "exerciseRating": 311,
+            "rir": null
+          },
+          {
+            "id": "set-3-5-2",
+            "exerciseDataId": "ex-3-5",
+            "setIndex": 1,
+            "setType": "normal",
+            "inputOne": 0,
+            "inputTwo": 14,
+            "exerciseRating": 318,
+            "rir": null
+          },
+          {
+            "id": "set-3-5-3",
+            "exerciseDataId": "ex-3-5",
+            "setIndex": 2,
+            "setType": "normal",
+            "inputOne": 0,
+            "inputTwo": 14,
+            "exerciseRating": 389,
+            "rir": null
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "post-004",
+    "title": "",
+    "content": "",
+    "image": "",
+    "medias": [],
+    "authorId": "user-001",
+    "startedAt": "2025-03-17T08:05:48.906Z",
+    "postedAt": "2025-03-17T08:05:48.906Z",
+    "sessionDuration": "00 hours 00 minutes 00 seconds",
+    "sessionNotes": "",
+    "sessionExercisesData": "",
+    "public": false,
+    "bodyweight": "154.3",
+    "streaksCount": 1,
+    "prCount": 0,
+    "sessionPresetId": "",
+    "plannedWorkoutId": null,
+    "experienceGained": 166,
+    "eggsGained": 3,
+    "consumablesUsed": [],
+    "isGhost": false,
+    "gracePeriod": 54584265,
+    "type": "WORKOUT",
+    "caloriesBurned": 0,
+    "PostMedia": [],
+    "exerciseData": [
+      {
+        "id": "ex-4-1",
+        "postId": "post-004",
+        "exerciseIndex": 0,
+        "exerciseName": "Push Ups",
+        "exerciseId": "push_ups_gymbros",
+        "exerciseTypes": "BR",
+        "exerciseNotes": "",
+        "superset": null,
+        "rankUpSetId": null,
+        "cableRatio": null,
+        "overrideWeightUnit": null,
+        "setsData": [
+          {
+            "id": "set-4-1-1",
+            "exerciseDataId": "ex-4-1",
+            "setIndex": 0,
+            "setType": "normal",
+            "inputOne": 0,
+            "inputTwo": 18,
+            "exerciseRating": 299,
+            "rir": null
+          }
+        ]
+      }
+    ]
+  }
+]

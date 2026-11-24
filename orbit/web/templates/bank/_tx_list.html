@@ -1,0 +1,36 @@
+{# Bank rows with Split / Match buttons. Needs: transactions, proposals, matches, class_labels,
+   back (where the buttons return to on an error); show_bank adds which bank each row is from.
+   Own-money rows (top-ups, exchanges) get no buttons: there's nobody to split or match with. #}
+<ul class="list tx-list">
+  {% for tx in transactions %}{% set proposal = proposals.get(tx.id) %}{% set match = matches.get(tx.id) %}
+  {% set own = tx.classification and tx.classification.value == "ignore" %}
+  <li class="list-row tx-row">
+    <span class="tx-text">
+      <span class="list-title">{{ tx.label }}</span>
+      <span class="{{ 'amount-in' if tx.direction.value == 'in' else 'amount-out' }}">{{ "+" if tx.direction.value == "in" else "−" }}{{ money(tx.amount_minor, tx.currency) }}</span>
+      <span class="list-sub muted small">
+        {{ tx.occurred_at | local_dt if tx.occurred_at else tx.booking_date | date }}
+        {%- if show_bank %} · {{ tx.bank.value }}{% endif %}
+        {%- if tx.message %} · {{ tx.message }}{% endif %}
+      </span>
+      <span class="small">
+        <span class="tag-pill {{ 'pill-shared' if tx.classification and tx.classification.value == 'likely_shared' }}">{{ class_labels.get(tx.classification, "unclassified") }}</span>
+        {% if proposal %}<span class="muted"> · split {{ proposal.status.value }}</span>{% endif %}
+        {% if match %}<span class="muted"> · payment {{ match.status.value }}</span>{% endif %}
+      </span>
+    </span>
+    <span class="tx-action">
+      {% if proposal and proposal.status.value == "pending" %}
+      <a class="button small" href="/inbox/{{ proposal.id }}">Split…</a>
+      {% elif own %}
+      {% elif tx.direction.value == "out" and not (proposal and proposal.status.value == "confirmed") %}
+      <a class="button small" href="/transactions/{{ tx.id }}/split?back={{ back | urlencode }}">Split</a>
+      {% elif match and match.status.value == "pending" %}
+      <a class="button small" href="/inbox/{{ match.id }}">Match…</a>
+      {% elif tx.direction.value == "in" and not (match and match.status.value == "confirmed") %}
+      <a class="button small" href="/transactions/{{ tx.id }}/match?back={{ back | urlencode }}">Match</a>
+      {% endif %}
+    </span>
+  </li>
+  {% endfor %}
+</ul>

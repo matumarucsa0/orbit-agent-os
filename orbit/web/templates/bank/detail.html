@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Import · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <p class="small"><a href="/import">← Import</a></p>
+  <div>
+    <h1>{{ record.filename or record.bank.value }}</h1>
+    <p class="muted small">{{ record.imported_at | local_dt }} · {{ record.bank.value }} · {{ record.rows_new }} new,
+      {{ record.rows_duplicate }} already imported{% if record.rows_skipped %}, {{ record.rows_skipped }} skipped (pending){% endif %}</p>
+  </div>
+
+  <div class="chips" aria-label="Show">
+    {% for key, text in (("shared", "Shared?"), ("received", "Received"), ("unclassified", "Unclassified"), ("all", "All")) %}
+    <a class="chip {% if show == key %}chip-active{% endif %}" href="/import/{{ record.id }}?show={{ key }}" {% if show == key %}aria-current="true"{% endif %}>{{ text }} <span class="count">{{ counts[key] }}</span></a>
+    {% endfor %}
+  </div>
+
+  {% if transactions %}
+  {% include "bank/_tx_list.html" %}
+  {% else %}
+  <p class="muted">Nothing here{% if show != "all" %}; see <a href="/import/{{ record.id }}?show=all">all rows</a>{% endif %}.</p>
+  {% endif %}
+</section>
+{% endblock %}

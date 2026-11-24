@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Weekly review · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <div>
+      <h1>Weekly review</h1>
+      <p class="muted small">Claude reads your goals, people, money, meetings and promises for the week you are in and the week ahead, and tells you what you may not have noticed. It makes one on Sunday evening{% if not enabled %} (switched off by <code>WEEKLY_REVIEW_ENABLED</code>){% endif %}. Whatever it wants changed waits in your Inbox.</p>
+    </div>
+    {% if configured %}
+    <form method="post" action="/reviews/run"><button type="submit" class="small nowrap">Generate now</button></form>
+    {% endif %}
+  </div>
+  {% if not configured and external %}
+  <p class="card small">Reviews here are made by the Claude Code worker on the server, which takes the review when it is idle from Sunday 19:00 (<a href="/ops/claude">worker status</a>). To make this week's now, run <code>scripts/weekly-review.sh --force</code> on the server.</p>
+  {% elif not configured %}
+  <p class="card small">Claude isn't connected. Set <code>ANTHROPIC_API_KEY</code> and <code>ANTHROPIC_MODEL</code>, or <code>ORBIT_REVIEW_TOKEN</code> to have Claude Code on the server make the review.</p>
+  {% endif %}
+
+  {% if reviews %}
+  <ul class="list">
+    {% for r in reviews %}
+    <li>
+      <a class="list-row" href="/reviews/{{ r.id }}">
+        <span class="list-title">Week of {{ r.plan_start | date }}</span>
+        <span class="list-sub muted">{{ r.status.value }}{% if r.status.value == "ready" and r.output_json %} · {{ (r.output_json.priorities | length) }} priorities, {{ (r.output_json.conflicts | length) }} conflicts{% endif %}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No reviews yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

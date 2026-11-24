@@ -1,0 +1,127 @@
+{# Inbox cards and form pieces, shared by the Inbox list and the proposal page. #}
+
+{% macro missing_amounts(card, default_currency) %}
+{% for i, d, line in card.missing %}
+<div class="stack-sm missing">
+  <label for="amount-{{ card.proposal.id }}-{{ i }}">💶 Amount? <span class="muted small">{{ line }}</span></label>
+  <div class="row">
+    <input id="amount-{{ card.proposal.id }}-{{ i }}" name="debt-{{ i }}-amount" inputmode="decimal" required placeholder="e.g. 12.50">
+    <input name="debt-{{ i }}-currency" value="{{ d.currency or default_currency }}" maxlength="3" autocapitalize="characters" class="currency" aria-label="Currency">
+  </div>
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro tx_line(tx) %}
+<p><strong>{{ tx.label }}</strong> · {{ money(tx.amount_minor, tx.currency) }}
+  <span class="muted small">· {{ tx.occurred_at | local_dt if tx.occurred_at else tx.booking_date | date }}{% if tx.message %} · {{ tx.message }}{% endif %}</span></p>
+{% endmacro %}
+
+{% macro card_view(card, default_currency, full=false) %}
+{% set p = card.proposal %}
+<article class="card stack proposal" id="proposal-{{ p.id }}"
+  {%- if card.processing %} hx-get="/inbox/{{ p.id }}/card" hx-trigger="every 3s" hx-swap="outerHTML"{% endif %}>
+  <div class="row-between">
+    <strong>{{ card.label }}</strong>
+    <span class="muted small">{{ p.created_at | local_dt }}</span>
+  </div>
+  {% if card.capture %}
+  <p class="quote small">“{{ card.capture.text }}”</p>
+  {% if card.processing %}<p class="small muted">⏳ Claude is reading this…</p>{% endif %}
+  {% for w in card.capture.warnings %}<p class="small warn">{{ w }}</p>{% endfor %}
+  {% if card.lines %}
+  <ul class="bullets">
+    {% for line in card.lines %}
+    <li>{{ line }}{% for flag in card.flags[loop.index0] if card.flags %}<br><span class="small warn">⚠ {{ flag }}</span>{% endfor %}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted small">Nothing selected.</p>
+  {% endif %}
+  {% elif card.split %}
+  {% if card.transaction %}{{ tx_line(card.transaction) }}{% else %}<p>{{ p.summary }}</p>{% endif %}
+  {% if card.lines %}
+  <ul class="bullets">
+    {% for line in card.lines %}<li>{{ line }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+  {% elif card.payment %}
+  {% if card.transaction %}{{ tx_line(card.transaction) }}{% else %}<p>{{ p.summary }}</p>{% endif %}
+  {% if card.payer %}
+  <p class="small">From <a href="/people/{{ card.payer.id }}">{{ card.payer.display_name }}</a>{% if card.payer_note %} <span class="muted">· {{ card.payer_note }}</span>{% endif %}</p>
+  <ul class="bullets">
+    {% for line in card.lines %}<li>{{ line }}</li>{% endfor %}
+  </ul>
+  {% else %}
+  <p class="small warn">Who sent it?</p>
+  {% endif %}
+  {% elif card.new_person %}
+  <p><strong>{{ card.new_person.name }}</strong>{% if card.new_person.context %} <span class="muted">· {{ card.new_person.context }}</span>{% endif %}</p>
+  {% if card.new_person.source_text %}
+  <p class="quote small">“{{ card.new_person.source_text if full or card.new_person.source_text | length <= 200 else (card.new_person.source_text[:200] ~ "…") }}”</p>
+  {% endif %}
+  {% else %}
+  <p>{{ p.summary }}</p>
+  {% endif %}
+  {% if p.confidence is not none and p.confidence < 0.6 %}
+  <p class="small muted">Claude's own confidence: {{ (p.confidence * 100) | round | int }} %</p>
+  {% endif %}
+
+  {% if p.status.value == "pending" %}
+  <form method="post" action="/inbox/{{ p.id }}/confirm" class="stack">
+    {{ missing_amounts(card, default_currency) }}
+    <div class="row wrap actions">
+      {% if card.can_confirm %}
+      <button type="submit" class="primary">{{ "Add person" if card.new_person else "Settle" if card.payment else "Confirm" }}</button>
+      {% endif %}
+      {% if card.capture %}<a class="button" href="/inbox/{{ p.id }}">Edit</a>{% endif %}
+      {% if card.split %}<a class="button {{ '' if card.can_confirm else 'primary' }}" href="/inbox/{{ p.id }}">Split…</a>{% endif %}
+      {% if card.payment %}<a class="button {{ '' if card.can_confirm else 'primary' }}" href="/inbox/{{ p.id }}">Choose…</a>{% endif %}
+      <button type="submit" formaction="/inbox/{{ p.id }}/reject" formnovalidate class="link">{{ "Not shared" if card.split else "Not a debt" if card.payment else "Reject" }}</button>
+      {% if card.group_pending >= 2 and card.new_person %}
+      <button type="submit" formaction="/inbox/{{ p.id }}/reject-group" formnovalidate class="link">Reject all {{ card.group_pending }} from this capture</button>
+      {% endif %}
+    </div>
+  </form>
+  {% else %}
+  <p class="muted small">{{ p.status.value | capitalize }} {{ p.resolved_at | local_dt }}</p>
+  {% if p.status.value == "rejected" %}
+  <form method="post" action="/inbox/{{ p.id }}/reopen">
+    <button type="submit">Reopen</button>
+  </form>
+  {% endif %}
+  {% endif %}
+</article>
+{% endmacro %}
+
+{% macro person_select(name, selected, payload, mentioned, others, label="Person", multiple=false, with_new=true) %}
+<select name="{{ name }}" aria-label="{{ label }}" {% if multiple %}multiple size="4"{% endif %}>
+  {% if not multiple %}<option value="">— pick a person —</option>{% endif %}
+  {% if with_new and payload.new_people %}
+  <optgroup label="New">
+    {% for np in payload.new_people %}{% set ref = "new:" ~ loop.index0 %}
+    <option value="{{ ref }}" {% if ref == selected or (multiple and ref in selected) %}selected{% endif %}>{{ np.name }} (new)</option>
+    {% endfor %}
+  </optgroup>
+  {% endif %}
+  {% if mentioned %}
+  <optgroup label="Mentioned">
+    {% for person in mentioned %}{% set ref = person.id | string %}
+    <option value="{{ ref }}" {% if ref == selected or (multiple and ref in selected) %}selected{% endif %}>{{ person.display_name }}</option>
+    {% endfor %}
+  </optgroup>
+  {% endif %}
+  <optgroup label="Everyone">
+    {% for person in others %}{% set ref = person.id | string %}
+    <option value="{{ ref }}" {% if ref == selected or (multiple and ref in selected) %}selected{% endif %}>{{ person.display_name }}</option>
+    {% endfor %}
+  </optgroup>
+</select>
+{% endmacro %}
+
+{% macro include_box(key, item, text) %}
+<label class="choice include">
+  <input type="checkbox" name="{{ key }}-include" value="1" {% if item.include %}checked{% endif %}>
+  <span>{{ text }}</span>
+</label>
+{% endmacro %}

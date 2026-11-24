@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import "school/_macros.html" as sm with context %}
+{% block title %}Courses · School · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>School</h1>
+    <p class="muted small">This semester's courses{% if courses %}: {{ credits }} credits{% if credits_missing %} known, {{ credits_missing }} course{{ "s" if credits_missing != 1 }} without credits yet{% endif %}{% endif %}.</p>
+  </div>
+  {{ sm.nav(tab) }}
+  {% if courses %}
+  <ul class="list">
+    {% for c in courses %}
+    <li>
+      <a class="list-row" href="/school/courses/{{ c.code }}">
+        <span class="list-title">{{ c.name }} <span class="muted small">{{ c.code }}</span></span>
+        <span class="list-sub muted">
+          {%- if c.credits is not none %}{{ c.credits }} credit{{ "s" if c.credits != 1 }}{% else %}credits unknown{% endif %}
+          {%- if c.completion %} · {{ c.completion }}{% endif %}
+          {%- if c.hours_lecture is not none %} · {{ c.hours_lecture }}/{{ c.hours_seminar }} h{% endif %}
+          {%- for s in scores.get(c.id, []) %} · {{ "%g" | format(s.gained) }}{% if s.pass_threshold %}/{{ "%g" | format(s.pass_threshold) }}{% endif %} points ({{ score_labels[s.source] }}){% endfor %}
+          {%- if next.get(c.id) %} · next {{ next[c.id].start_utc | local_dt }}{% endif %}
+        </span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No courses yet: they come with the first lessons from the feed.</p>
+  {% endif %}
+</section>
+{% endblock %}

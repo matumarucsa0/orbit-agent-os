@@ -1,0 +1,22 @@
+{% if people %}
+<ul class="list">
+  {% for p in people %}
+  <li>
+    <a href="/people/{{ p.id }}" class="list-row">
+      <span class="list-title">{{ p.display_name }}{% if p.archived %} <span class="muted">(archived)</span>{% endif %}</span>
+      <span class="list-sub muted">
+        {{ [full_name(p.first_name, p.last_name, p.display_name), p.city] | select | join(" · ") }}
+        {% for t in p.tags %}<span class="tag">#{{ t.name }}</span> {% endfor %}
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% if has_more %}
+<p><a href="/people?q={{ q | urlencode }}&tag={{ tag | urlencode }}&offset={{ next_offset }}">Show more</a></p>
+{% endif %}
+{% elif q or tag %}
+<p class="muted">Nobody matches{% if q %} “{{ q }}”{% endif %}{% if tag %} in #{{ tag }}{% endif %}.</p>
+{% else %}
+<p class="muted">No people yet. Add someone below, or import your contacts.</p>
+{% endif %}

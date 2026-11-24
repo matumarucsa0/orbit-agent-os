@@ -1,0 +1,16 @@
+{% if results %}
+<ul class="list compact">
+  {% for r in results %}
+  <li class="row-between">
+    <span><strong>{{ r.name }}</strong> <span class="muted small">{{ r.dates }} · {{ r.country }}</span></span>
+    <form method="post" action="/people/{{ person.id }}/nameday">
+      <input type="hidden" name="name" value="{{ r.name }}">
+      <input type="hidden" name="country" value="{{ r.country }}">
+      <button type="submit">Use</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% elif q %}
+<p class="muted small">No calendar name matches “{{ q }}”.</p>
+{% endif %}

@@ -1,0 +1,166 @@
+{
+  "mode": "recorded",
+  "k": 1,
+  "pass_hat_k_note": "deterministic replay: pass^k equals the pass rate (trivial, not reliability)",
+  "suites": {
+    "capture": {
+      "cases": 56,
+      "cases_planned": 56,
+      "trials": 56,
+      "passed_trials": 56,
+      "pass_rate": 1.0,
+      "pass_hat_k": 1.0,
+      "k": 1,
+      "truncated_by_budget": false,
+      "graders": {
+        "schema_valid": {
+          "passed": 56,
+          "total": 56
+        },
+        "refs_grounded": {
+          "passed": 56,
+          "total": 56
+        },
+        "debts_match": {
+          "passed": 56,
+          "total": 56
+        },
+        "settles_match": {
+          "passed": 56,
+          "total": 56
+        },
+        "promises_match": {
+          "passed": 56,
+          "total": 56
+        },
+        "promise_updates_match": {
+          "passed": 56,
+          "total": 56
+        },
+        "appointments_match": {
+          "passed": 56,
+          "total": 56
+        },
+        "school_deadlines_match": {
+          "passed": 56,
+          "total": 56
+        },
+        "amounts_integer": {
+          "passed": 56,
+          "total": 56
+        },
+        "amounts_grounded": {
+          "passed": 56,
+          "total": 56
+        },
+        "no_invented_people": {
+          "passed": 56,
+          "total": 56
+        },
+        "no_invented_dates": {
+          "passed": 56,
+          "total": 56
+        },
+        "forbidden_absent": {
+          "passed": 56,
+          "total": 56
+        }
+      },
+      "failed_cases": []
+    },
+    "classify": {
+      "cases": 51,
+      "cases_planned": 51,
+      "trials": 51,
+      "passed_trials": 51,
+      "pass_rate": 1.0,
+      "pass_hat_k": 1.0,
+      "k": 1,
+      "truncated_by_budget": false,
+      "graders": {
+        "schema_valid": {
+          "passed": 51,
+          "total": 51
+        },
+        "refs_exact": {
+          "passed": 51,
+          "total": 51
+        },
+        "labels_match": {
+          "passed": 51,
+          "total": 51
+        },
+        "forbidden_labels_absent": {
+          "passed": 51,
+          "total": 51
+        },
+        "confidence_in_range": {
+          "passed": 51,
+          "total": 51
+        },
+        "forbidden_strings_absent": {
+          "passed": 51,
+          "total": 51
+        }
+      },
+      "failed_cases": []
+    },
+    "review": {
+      "cases": 45,
+      "cases_planned": 45,
+      "trials": 45,
+      "passed_trials": 45,
+      "pass_rate": 1.0,
+      "pass_hat_k": 1.0,
+      "k": 1,
+      "truncated_by_budget": false,
+      "graders": {
+        "schema_valid": {
+          "passed": 45,
+          "total": 45
+        },
+        "ids_grounded": {
+          "passed": 45,
+          "total": 45
+        },
+        "numbers_grounded": {
+          "passed": 45,
+          "total": 45
+        },
+        "dates_grounded": {
+          "passed": 45,
+          "total": 45
+        },
+        "quotes_grounded": {
+          "passed": 45,
+          "total": 45
+        },
+        "conflicts_cited": {
+          "passed": 45,
+          "total": 45
+        },
+        "slips_cited": {
+          "passed": 45,
+          "total": 45
+        },
+        "forbidden_proposals_absent": {
+          "passed": 45,
+          "total": 45
+        },
+        "proposal_hygiene": {
+          "passed": 45,
+          "total": 45
+        },
+        "forbidden_strings_absent": {
+          "passed": 45,
+          "total": 45
+        },
+        "summary_shape": {
+          "passed": 45,
+          "total": 45
+        }
+      },
+      "failed_cases": []
+    }
+  }
+}

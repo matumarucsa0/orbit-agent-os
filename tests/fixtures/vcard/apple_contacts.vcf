@@ -1,0 +1,76 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//iPhone OS 18.0//EN
+N:Veselý;Patrik;;;
+FN:Patrik Veselý
+NICKNAME:Paťo,Pato
+item1.TEL;type=CELL;type=VOICE;type=pref:+421 905 123 456
+item1.X-ABLabel:_$!<Mobile>!$_
+EMAIL;type=INTERNET;type=HOME;type=pref:patrik.vesely@example.com
+item2.ADR;type=HOME;type=pref:;;Hlavná 1;Košice;;040 01;Slovensko
+item2.X-ABADR:sk
+BDAY:1994-03-17
+X-SOCIALPROFILE;type=instagram;x-user=pato.vesely:http://www.instagram.com/pato.vesely
+NOTE:Met at Uni\, loves climbing.\nHas a dog.
+UID:11111111-AAAA-4000-8000-000000000001
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Nováková;Terézia;;;
+FN:Terézia Nováková
+NICKNAME:Terka
+TEL;type=CELL;type=VOICE;type=pref:0905 111 222
+BDAY;X-APPLE-OMIT-YEAR=1604:1604-11-02
+IMPP;X-SERVICE-TYPE=Telegram;type=pref:x-apple:terka_n
+NOTE:This note is long enough that Apple folds it across several physical lin
+ es when exporting\, so the parser has to join continuation lines that start
+  with a space.
+UID:11111111-AAAA-4000-8000-000000000002
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Dvořák;Jiří;;;
+FN:Jiří Dvořák
+item1.TEL:601 234 567
+item1.X-ABLabel:_$!<Mobile>!$_
+EMAIL;type=INTERNET;type=WORK:jiri.dvorak@example.cz
+ADR;type=WORK:;;Národní 5;Praha;;110 00;Czech Republic
+UID:11111111-AAAA-4000-8000-000000000003
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:;;;;
+ORG:Autoservis Kováč;
+TEL;type=WORK;type=VOICE:+421 41 555 1234
+X-ABShowAs:COMPANY
+UID:11111111-AAAA-4000-8000-000000000004
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Horváth;Martin;;;
+FN:Martin Horváth
+BDAY:--0708
+TEL;type=HOME:+421 2 1234 5678
+X-SOCIALPROFILE;type=linkedin:https://www.linkedin.com/in/martin-horvath-123/
+UID:11111111-AAAA-4000-8000-000000000005
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Kráľová;Ema;;;
+FN:Ema Kráľová
+item1.EMAIL;type=INTERNET:ema@example.com
+item1.X-ABLabel:school
+PHOTO;ENCODING=b;TYPE=JPEG:/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAA
+ AAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAMKADAAQAAAABAAAAMAAAAAD/7QA4UGhvdG9zaG9wIDMuMA
+ A4QklNBAQAAAAAAAA4QklNBCUAAAAAABDUHYzZjwCyBOmACZjs+EJ+/8AAEQgAMAAwAwEiAAIRAQMRAf
+item2.URL;type=pref:https://example.com/ema
+item2.X-ABLabel:_$!<HomePage>!$_
+UID:11111111-AAAA-4000-8000-000000000006
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:;;;;
+FN:
+EMAIL;type=INTERNET:someone@example.org
+UID:11111111-AAAA-4000-8000-000000000007
+END:VCARD

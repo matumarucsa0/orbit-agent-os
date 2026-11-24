@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Claude worker · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Claude worker</h1>
+    <p class="muted small">Orbit's questions to Claude are answered by Claude Code on the server, through a queue. If it is away, logged out or rate limited, Orbit falls back to plain modes (note drafts, rules-only bank classification) and nothing breaks.</p>
+  </div>
+  {% if backend == "fake" %}
+  <p class="card small">Backend: <strong>fake</strong>. Claude answers offline with canned, rule-based outputs (<code>ORBIT_CLAUDE_MODE=fake</code>): nothing leaves this machine and no tokens are used.</p>
+  {% elif backend != "worker" %}
+  <p class="card small">Backend: <strong>{{ backend }}</strong>. The worker is not used (<code>CLAUDE_BACKEND</code>).</p>
+  {% endif %}
+  {% if backend != "fake" %}
+  <div class="card stack">
+    <div class="row-between"><span>Worker</span><strong>{% if status.alive %}running{% else %}not seen recently{% endif %}</strong></div>
+    <div class="row-between"><span>Last seen</span><span class="muted">{{ status.last_seen_at or "never" }}</span></div>
+    <div class="row-between"><span>Claude Code</span><span class="muted">{{ status.cli_version or "unknown" }}</span></div>
+    <div class="row-between"><span>Login</span><strong>{% if status.auth_ok %}ok{% else %}expired: run <code>claude setup-token</code>{% endif %}</strong></div>
+    <div class="row-between"><span>Rate limit</span><span class="muted">{{ ("until " ~ status.rate_limited_until) if status.rate_limited_until else "none" }}</span></div>
+    <div class="row-between"><span>Queue</span><span class="muted">{{ status.queue.queued }} waiting, {{ status.queue.running }} running</span></div>
+  </div>
+
+  {% endif %}
+
+  <h2>Usage</h2>
+  {% if budget.enabled %}
+  <p class="small {{ 'warn' if budget.fraction >= 0.8 else 'muted' }}">Budget this month: {{ format_eur(budget.spent_micro_eur) }} of {{ format_eur(budget.budget_micro_eur) }} ({{ (budget.fraction * 100) | round | int }} percent){% if budget.exceeded %}. The limit is reached: API calls are stopped until next month and Claude answers fall back as without a key.{% endif %}</p>
+  {% endif %}
+  {% if usage %}
+  <div class="card stack small">
+    {% for u in usage %}
+    <div class="row-between"><span>{{ u.month.strftime("%Y-%m") }} · {{ u.purpose }}</span><span class="muted">{{ u.calls }} {{ "call" if u.calls == 1 else "calls" }}{% if u.failed %}, {{ u.failed }} failed{% endif %} · {{ format_tokens(u.input_tokens) }} in / {{ format_tokens(u.output_tokens) }} out{% if u.cost_micro_eur %} · {{ format_eur(u.cost_micro_eur) }}{% endif %}</span></div>
+    {% endfor %}
+    {% for month, cost in month_costs.items() %}
+    <div class="row-between"><strong>{{ month }} total (estimate)</strong><strong>{{ format_eur(cost) }}</strong></div>
+    {% endfor %}
+  </div>
+  <p class="muted small">Euro figures are estimates from list prices and a fixed dollar-to-euro rate (USD_EUR_RATE); the worker and the offline demo cost nothing.</p>
+  {% else %}
+  <p class="muted">No Claude calls recorded.</p>
+  {% endif %}
+
+  <h2>Recent jobs</h2>
+  {% if jobs %}
+  <ul class="list">
+    {% for j in jobs %}
+    <li>
+      <div class="list-row">
+        <span class="list-title">#{{ j.id }} {{ j.kind }} · {{ j.status.value }}</span>
+        <span class="list-sub muted">{{ j.created_at | date }}{% if j.duration_ms %} · {{ (j.duration_ms / 1000) | round(1) }}s{% endif %}{% if j.input_tokens or j.output_tokens %} · {{ j.input_tokens }} in / {{ j.output_tokens }} out{% endif %}{% if j.model %} · {{ j.model }}{% endif %}{% if j.attempts > 1 %} · {{ j.attempts }} tries{% endif %}</span>
+        {% if j.error %}<span class="list-sub small">{{ j.error }}</span>{% endif %}
+        {% if j.status.value in ("failed", "expired", "cancelled") and j.prompt %}
+        <form method="post" action="/ops/claude/jobs/{{ j.id }}/rerun"><button type="submit" class="small">Rerun</button></form>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No jobs yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

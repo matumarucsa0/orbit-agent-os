@@ -1,0 +1,109 @@
+# Production: Postgres + app + Caddy (automatic HTTPS) + nightly encrypted backups.
+# Setup and operations: docs/DEPLOY.md
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+# Only Caddy publishes ports. The app is reachable from Caddy alone ("web" network); the
+# database from the app and the backup service ("backend" network).
+
+name: orbit
+
+x-env-file: &env-file
+  # ORBIT_ENV_FILE only exists for scripts/backup-drill.sh, which runs a throwaway copy.
+  env_file: ${ORBIT_ENV_FILE:-.env}
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: orbit
+      POSTGRES_USER: orbit
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks: [backend]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orbit -d orbit"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  app:
+    build: .
+    <<: *env-file
+    environment:
+      DATABASE_URL: postgresql+psycopg://orbit:${POSTGRES_PASSWORD}@db:5432/orbit
+      # Nothing but Caddy can reach the app, so its X-Forwarded-* headers can be trusted.
+      FORWARDED_ALLOW_IPS: "*"
+      SCHOOL_FILES_DIR: /data/school/files
+    volumes:
+      # PDFs added to a school course (SCHOOL_FILES_DIR). Not in the nightly database backup:
+      # their text is (in the database); see docs/DEPLOY.md "Course pages and PDFs".
+      - school-files:/data/school/files
+    networks: [web, backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    # Healthcheck: see Dockerfile (GET /healthz, which also checks the database).
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      ORBIT_DOMAIN: ${ORBIT_DOMAIN:?set ORBIT_DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [web]
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  backup:
+    build: docker/backup
+    <<: *env-file
+    environment:
+      PGHOST: db
+      PGUSER: orbit
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: orbit
+      TZ: ${TIMEZONE:-Europe/Prague}
+    volumes:
+      # Local copies (encrypted) and the .last-success stamp.
+      - ${BACKUP_DIR:-./backups}:/backups
+    networks: [backend]
+    depends_on:
+      db:
+        condition: service_healthy
+    init: true
+    healthcheck:
+      # Unhealthy when the last successful backup is more than 25 hours old.
+      test: ["CMD-SHELL", "find /backups/.last-success -mmin -1500 | grep -q ."]
+      interval: 10m
+      timeout: 10s
+      start_period: 10m
+      start_interval: 10s
+    restart: unless-stopped
+
+networks:
+  web:
+  backend:
+
+volumes:
+  pg-data:
+  school-files:
+  caddy-data:
+  caddy-config:

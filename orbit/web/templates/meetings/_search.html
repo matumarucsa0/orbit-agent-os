@@ -1,0 +1,14 @@
+{% if people %}
+<ul class="list compact">
+  {% for person in people %}
+  <li>
+    <form method="post" action="/meetings/{{ meeting.id }}/people">
+      <input type="hidden" name="person_id" value="{{ person.id }}">
+      <button type="submit" class="link">+ {{ person.display_name }}</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% elif q %}
+<p class="muted small">Nobody matches “{{ q }}”.</p>
+{% endif %}

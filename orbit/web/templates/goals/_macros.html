@@ -1,0 +1,14 @@
+{% macro meta(g, today) %}
+<span class="muted small">
+  {% if g.horizon %}{{ g.horizon.value }}{% endif %}
+  {% if g.target_date %}{{ " · " if g.horizon }}<span class="{{ 'overdue' if g.status.value == 'active' and g.target_date < today }}">by {{ g.target_date | date }}{% if g.status.value == 'active' and g.target_date < today %} · overdue{% endif %}</span>{% endif %}
+</span>
+{% endmacro %}
+
+{% macro move_buttons(g) %}
+<form method="post" action="/goals/{{ g.id }}/move" class="row actions">
+  <button type="submit" name="direction" value="up" class="small" aria-label="Move up">↑</button>
+  <button type="submit" name="direction" value="down" class="small" aria-label="Move down">↓</button>
+  <button type="submit" name="direction" value="top" class="small">Top</button>
+</form>
+{% endmacro %}

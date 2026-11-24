@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Review · Orbit{% endblock %}
+{% macro refs(item, names) %}
+{% for gid in item.get("goal_ids", []) %}{% if gid in names.goals %}<a class="chip small" href="/goals/{{ gid }}">🎯 {{ names.goals[gid] }}</a> {% endif %}{% endfor %}
+{% for pid in item.get("person_ids", []) %}{% if pid in names.people %}<a class="chip small" href="/people/{{ pid }}">{{ names.people[pid] }}</a> {% endif %}{% endfor %}
+{% for mid in item.get("meeting_ids", []) %}{% if mid in names.meetings %}<a class="chip small" href="/meetings/{{ mid }}">📅 {{ names.meetings[mid] }}</a> {% endif %}{% endfor %}
+{% endmacro %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/reviews">← Reviews</a></p>
+    <h1>Week of {{ review.plan_start | date }}</h1>
+    <p class="muted small">Looks back at {{ review.review_start | date }} to {{ review.review_end | date }} and ahead to {{ review.plan_start | date }} to {{ review.plan_end | date }}.</p>
+  </div>
+
+  {% if review.status.value != "ready" %}
+  <div class="card stack">
+    <p>{% if review.status.value == "failed" %}This review failed{% if review.error %}: {{ review.error }}{% endif %}{% else %}This review is being made.{% endif %}</p>
+    {% if review.status.value == "failed" and configured %}
+    <form method="post" action="/reviews/run"><button type="submit" class="primary">Try again</button></form>
+    {% elif review.status.value == "failed" %}
+    <p class="small muted">The timer on the server tries again. To retry now, run <code>scripts/weekly-review.sh --force</code> there.</p>
+    {% endif %}
+  </div>
+  {% else %}
+
+  <section class="card stack">
+    <p>{{ output.summary }}</p>
+  </section>
+
+  {% if output.conflicts %}
+  <section class="card stack">
+    <h2>⚠️ Conflicts</h2>
+    {% for c in output.conflicts %}
+    <div class="stack-sm">
+      <strong>{{ c.title }}</strong>
+      <p class="small">{{ c.detail }}</p>
+      <p class="small"><em>{{ c.suggestion }}</em></p>
+      <div>{{ refs(c, names) }}
+        {% for pid in c.promise_ids %}{% if pid in names.promises %}<span class="chip small">✅ {{ names.promises[pid] }}</span> {% endif %}{% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  {% if output.priorities %}
+  <section class="card stack">
+    <h2>Next week</h2>
+    <ol class="stack-sm">
+      {% for p in output.priorities %}
+      <li>{{ p.text }} <span class="muted small">{{ p.why }}</span>
+        {% if p.goal_id and p.goal_id in names.goals %}<a class="chip small" href="/goals/{{ p.goal_id }}">🎯 {{ names.goals[p.goal_id] }}</a>{% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+
+  {% for title, key, icon in (("Wins", "wins", "✅"), ("Slips", "slips", "↩️")) %}
+  {% if output[key] %}
+  <section class="card stack">
+    <h2>{{ icon }} {{ title }}</h2>
+    <ul class="stack-sm">
+      {% for item in output[key] %}<li>{{ item.text }} {{ refs(item, names) }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+  {% endfor %}
+
+  {% if proposals %}
+  <section class="card stack">
+    <h2>In your Inbox</h2>
+    <ul class="list">
+      {% for p in proposals %}
+      <li>
+        <a class="list-row" href="/inbox/{{ p.id }}">
+          <span class="list-title">{{ kind_labels.get(p.kind, p.kind.value) }}</span>
+          <span class="list-sub muted">{{ p.summary }} · <strong>{{ p.status.value }}</strong></span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <details class="card">
+    <summary class="small muted">
+      {{ review.model or "model unknown" }} · {{ "{:,}".format(review.input_tokens) }} tokens in, {{ "{:,}".format(review.output_tokens) }} out{% if review.input_chars %} · {{ "{:,}".format(review.input_chars) }} characters read{% endif %}
+    </summary>
+    <p class="small muted">Exactly what Claude was given for this review:</p>
+    <pre class="small">{{ input_json }}</pre>
+  </details>
+  {% endif %}
+</section>
+{% endblock %}

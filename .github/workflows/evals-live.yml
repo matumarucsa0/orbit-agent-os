@@ -1,0 +1,61 @@
+name: Evals (live)
+
+# Manual only: calls the real model, costs money, needs the ANTHROPIC_API_KEY repository secret.
+# CI never runs this; the regression job in ci.yml replays recorded cassettes instead.
+on:
+  workflow_dispatch:
+    inputs:
+      suite:
+        description: "Suites: all, or a comma list of capture, classify, review"
+        default: all
+      k:
+        description: "Trials per case (pass^k)"
+        default: "3"
+      max_eur:
+        description: "Stop when the estimated cost reaches this many euros"
+        default: "2"
+      judge:
+        description: "Also run the LLM judge on review summaries"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  evals-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: evals (live)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_MODEL: ${{ vars.ANTHROPIC_MODEL }}
+          ANTHROPIC_MODEL_FAST: ${{ vars.ANTHROPIC_MODEL_FAST }}
+          ANTHROPIC_MODEL_DEEP: ${{ vars.ANTHROPIC_MODEL_DEEP }}
+          EVALS_EUR_PER_MTOK_IN: ${{ vars.EVALS_EUR_PER_MTOK_IN }}
+          EVALS_EUR_PER_MTOK_OUT: ${{ vars.EVALS_EUR_PER_MTOK_OUT }}
+          SUITE: ${{ inputs.suite }}
+          K: ${{ inputs.k }}
+          MAX_EUR: ${{ inputs.max_eur }}
+          JUDGE: ${{ inputs.judge }}
+        run: |
+          mkdir -p evals/results
+          extra=""
+          if [ "$JUDGE" = "true" ]; then extra="--judge"; fi
+          uv run python -m evals.run --mode live --suite "$SUITE" --k "$K" --max-eur "$MAX_EUR" \
+            $extra --json evals/results/live-report.json | tee evals/results/live-report.md \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evals-live-report
+          path: |
+            evals/results/live-report.json
+            evals/results/live-report.md
+          if-no-files-found: warn

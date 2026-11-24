@@ -1,0 +1,15 @@
+# HTTPS for Orbit. Caddy gets and renews a Let's Encrypt certificate for ORBIT_DOMAIN by itself
+# (DNS must point at this server, ports 80 and 443 must be open) and redirects http to https.
+{$ORBIT_DOMAIN} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "same-origin"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	reverse_proxy app:8000
+}

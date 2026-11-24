@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% import "school/_macros.html" as sm with context %}
+{% block title %}Sync · School · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <div>
+      <h1>School</h1>
+      <p class="muted small">Every source is read every {{ poll_minutes }} minutes, one request at a time. Tokens live only in <code>.env</code>.</p>
+    </div>
+    {% if configured %}
+    <form method="post" action="/school/sync"><button type="submit" class="small nowrap">Sync now</button></form>
+    {% endif %}
+  </div>
+  {{ sm.nav(tab) }}
+  {% if not sources.sis %}{{ sm.not_set_up() }}{% endif %}
+
+  {% if feeds %}
+  <ul class="list">
+    {% for f in feeds %}
+    <li class="list-row">
+      <span class="list-title">{{ feed_labels.get(f.source.value, f.source.value) }}
+        {% if f.last %}<span class="{{ 'overdue' if f.last.status.value in ('denied', 'error') else 'muted' }} small">{{ status_labels[f.last.status] }}</span>{% else %}<span class="muted small">not read yet</span>{% endif %}
+      </span>
+      <span class="list-sub muted">
+        {%- if f.last %}{{ f.last.started_at | local_dt }}{% if f.last.status.value in ("ok", "empty") %} · {{ f.last.items_seen }} item{{ "s" if f.last.items_seen != 1 }}, {{ f.last.items_changed }} changed{% elif f.last.status.value == "unchanged" %} · same as last time{% endif %}{% endif %}
+        {%- if f.last and f.last.error %} · {{ f.last.error }}{% endif %}
+        {%- if f.last_ok and f.last and f.last_ok.id != f.last.id %} · last good {{ f.last_ok.started_at | local_dt }}{% endif %}
+      </span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <ul class="small muted">
+    <li>SIS: {% if sources.sis %}{{ sources.sis.feeds | join(", ") }}{% else %}not set up{% endif %}</li>
+    <li>ReCodEx: {% if sources.recodex %}{{ "deadlines" if sources.recodex.has_feed else "no iCal token" }}{% if token_expires %}, points (token until {{ token_expires | local_date }}){% else %}, no read-only token{% endif %}{% else %}not set up{% endif %}</li>
+    <li>Owl: {{ "set up" if sources.owl else "not set up" }}</li>
+  </ul>
+
+  {% if owl_courses %}
+  <section class="stack" id="owl">
+    <h2>Owl courses</h2>
+    <p class="muted small">Ticket ids link exactly; other Owl courses are linked by name. Pick the course when it isn't clear.</p>
+    <ul class="list">
+      {% for o in owl_courses %}
+      <li class="stack-sm">
+        <span>{{ o.name }} <span class="muted small">{{ o.path }}{% if o.link_manual %} · picked by you{% endif %}</span></span>
+        <form method="post" action="/school/owl/{{ o.id }}/link" class="row">
+          <select name="course_id" aria-label="Course for {{ o.name }}">
+            <option value="">Not one of my courses</option>
+            {% for c in all_courses %}<option value="{{ c.id }}" {% if o.course_id == c.id %}selected{% endif %}>{{ c.name }} ({{ c.code }})</option>{% endfor %}
+          </select>
+          <button type="submit" class="small">Link</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{# A text to send to someone: editable, with Copy and Share (the iOS share sheet; copies where
+   sharing isn't available). Nothing is sent from Orbit itself. #}
+
+{% macro share_box(id, text, rows=6) %}
+<div class="stack-sm">
+  <textarea id="{{ id }}" rows="{{ rows }}" aria-label="Message">{{ text }}</textarea>
+  <div class="row wrap actions">
+    <button type="button" class="small" onclick="navigator.clipboard.writeText(document.getElementById('{{ id }}').value); this.textContent='Copied'">Copy</button>
+    <button type="button" class="small" onclick="var t = document.getElementById('{{ id }}').value; if (navigator.share) { navigator.share({text: t}).catch(function () {}); } else { navigator.clipboard.writeText(t); this.textContent = 'Copied'; }">Share…</button>
+  </div>
+</div>
+{% endmacro %}

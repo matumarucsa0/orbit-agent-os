@@ -1,0 +1,4 @@
+# Reports from local runs stay local; only the recorded-mode baseline is committed.
+*
+!.gitignore
+!baseline-recorded.json

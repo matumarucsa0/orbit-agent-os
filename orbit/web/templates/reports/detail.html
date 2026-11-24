@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% from "_share.html" import share_box %}
+{% block title %}Report · Orbit{% endblock %}
+{% block head %}{% if pending %}<meta http-equiv="refresh" content="5">{% endif %}{% endblock %}
+{% macro refs(item, names) %}
+{% for gid in item.get("goal_ids", []) %}{% if gid in names.goals %}<a class="chip small" href="/goals/{{ gid }}">🎯 {{ names.goals[gid] }}</a> {% endif %}{% endfor %}
+{% for pid in item.get("person_ids", []) %}{% if pid in names.people %}<a class="chip small" href="/people/{{ pid }}">{{ names.people[pid] }}</a> {% endif %}{% endfor %}
+{% endmacro %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small no-print"><a href="/reports">← Reports</a></p>
+    <h1>Report {{ title }}</h1>
+    {% if report.focus_text or report.focus_goal_id or report.focus_person_id or report.focus_course_id %}
+    <p class="muted small">Focus: {{ report.focus_text or "" }}{% if input_json %}{% set focus = report.input_json.focus %}{% for label in (focus.goal, focus.person, focus.course) %}{% if label %} · {{ label }}{% endif %}{% endfor %}{% endif %}</p>
+    {% endif %}
+    <p class="muted small">Goals, open promises and debts are as they are now, not as they were then.</p>
+  </div>
+
+  {% if report.status.value == "pending" %}
+  <div class="card stack">
+    <p>This report is being made. This page refreshes by itself; it can take a few minutes{% if not report.claude_used %}, longer if Claude Code on the server is busy{% endif %}.</p>
+    <form method="post" action="/reports/{{ report.id }}/retry" class="no-print"><button type="submit" class="small">Try again</button></form>
+    <p class="muted small">Try again only works for a report left over from a stopped server.</p>
+  </div>
+  {% elif report.status.value == "failed" %}
+  <div class="card stack">
+    <p>This report failed{% if report.error %}: {{ report.error }}{% endif %}</p>
+    <form method="post" action="/reports/{{ report.id }}/retry" class="no-print"><button type="submit" class="primary">Try again</button></form>
+  </div>
+  {% else %}
+
+  {% if not report.claude_used %}
+  <p class="card small">{{ report.plain_reason or "Claude was not used." }} Below: the numbers and what the range held.</p>
+  {% else %}
+  <section class="card stack"><p>{{ output.summary }}</p></section>
+
+  {% for heading, key, icon in (("Highlights", "highlights", "✅"), ("Slips", "slips", "↩️"), ("Patterns", "patterns", "🔁")) %}
+  {% if output[key] %}
+  <section class="card stack">
+    <h2>{{ icon }} {{ heading }}</h2>
+    <ul class="stack-sm">
+      {% for item in output[key] %}<li>{{ item.text }} {{ refs(item, names) }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+  {% endfor %}
+
+  {% if output.questions %}
+  <section class="card stack">
+    <h2>❓ Worth deciding</h2>
+    <ul class="stack-sm">{% for q in output.questions %}<li>{{ q }}</li>{% endfor %}</ul>
+  </section>
+  {% endif %}
+  {% endif %}
+
+  {% for section in plain %}
+  <section class="card stack">
+    <h2>{{ section.title }}</h2>
+    <ul class="stack-sm small">{% for line in section.lines %}<li>{{ line }}</li>{% endfor %}</ul>
+  </section>
+  {% endfor %}
+
+  {% if report.numbers_json %}
+  <section class="card stack">
+    <h2>Numbers</h2>
+    <p class="muted small">Counted by Orbit from the data, not written by Claude.</p>
+    <ul class="list small">
+      {% for n in report.numbers_json %}
+      <li class="row-between"><span>{{ n.label }}</span><strong>{{ n.value }}{% if n.note %} <span class="muted">({{ n.note }})</span>{% endif %}</strong></li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="stack no-print">
+    <div class="row wrap actions">
+      <button type="button" class="small" onclick="window.print()">Print / save as PDF</button>
+    </div>
+    <details class="card">
+      <summary class="small">Copy as Markdown</summary>
+      {{ share_box("report-md", markdown, 12) }}
+    </details>
+    {% if input_json %}
+    <details class="card">
+      <summary class="small muted">
+        {% if report.claude_used %}{{ report.model or "model unknown" }} · {{ "{:,}".format(report.input_tokens) }} tokens in, {{ "{:,}".format(report.output_tokens) }} out · {% endif %}{% if report.input_chars %}{{ "{:,}".format(report.input_chars) }} characters read{% else %}What Claude saw{% endif %}
+      </summary>
+      <p class="small muted">Exactly what Claude was given for this report:</p>
+      <pre class="small">{{ input_json }}</pre>
+    </details>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <form method="post" action="/reports/{{ report.id }}/delete" class="no-print" onsubmit="return confirm('Delete this report and the context it kept?')">
+    <button type="submit" class="link small">Delete report</button>
+  </form>
+</section>
+{% endblock %}

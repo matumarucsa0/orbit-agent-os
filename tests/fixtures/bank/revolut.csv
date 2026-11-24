@@ -1,0 +1,6 @@
+Type,Product,Started Date,Completed Date,Description,Amount,Fee,Currency,State,Balance
+Topup,Current,2026-09-14 09:14:08,2026-09-14 09:14:10,Apple Pay top-up by *0000,200.00,0.00,EUR,COMPLETED,200.34
+Topup,Current,2026-09-14 09:26:41,2026-09-14 09:26:43,Apple Pay top-up by *0000,15.00,0.00,EUR,COMPLETED,215.34
+Exchange,Current,2026-09-14 09:31:55,2026-09-14 09:31:55,Exchanged to CZK,-208.62,0.00,EUR,COMPLETED,6.72
+Exchange,Current,2026-09-14 09:35:02,2026-09-14 09:35:02,Exchanged to CZK,-4.00,0.00,EUR,COMPLETED,2.72
+Topup,Current,2026-09-18 21:12:30,2026-09-18 21:12:32,Apple Pay top-up by *0000,20.00,0.00,EUR,COMPLETED,22.72

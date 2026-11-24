@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "_share.html" as share %}
+{% set what = "Birthday" if occasion == "birthday" else "Name-day" %}
+{% block title %}{{ what }} message · {{ person.display_name }} · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/people/{{ person.id }}">← {{ person.display_name }}</a></p>
+    <h1>{{ what }} message</h1>
+    <p class="muted small">
+      {% if draft.by_claude %}Drafted by Claude: edit it, then copy or share.{% else %}A plain wish{% if draft.problem %} ({{ draft.problem }}){% endif %}.{% endif %}
+    </p>
+  </div>
+  <section class="card stack">
+    {{ share.share_box("draft", draft.text, 5) }}
+  </section>
+  {% if claude %}
+  <p><a class="button" href="/people/{{ person.id }}/draft?occasion={{ occasion }}">Write another</a></p>
+  {% endif %}
+</section>
+{% endblock %}

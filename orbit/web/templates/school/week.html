@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "school/_macros.html" as sm with context %}
+{% block title %}School · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>School</h1>
+    <p class="muted small">Lessons from the SIS timetable feed, exams and deadlines from SIS, ReCodEx, Owl and the ones you add.</p>
+  </div>
+  {{ sm.nav(tab) }}
+  {% if not configured and not has_data %}{{ sm.not_set_up() }}{% endif %}
+
+  <div class="row-between">
+    <a class="button small" href="/school?week={{ prev }}" aria-label="Previous week">←</a>
+    <strong>{{ monday | date }} – {{ sunday | date }}</strong>
+    <a class="button small" href="/school?week={{ next }}" aria-label="Next week">→</a>
+  </div>
+  {% if not this_week %}<p class="small"><a href="/school">This week</a></p>{% endif %}
+
+  {% for label, d in days %}
+  {% if d.lessons or d.events %}
+  <section class="stack-sm">
+    <h2>{{ label }}{% if label in ("Today", "Tomorrow") %} <span class="muted small">{{ d.day | date }}</span>{% endif %}</h2>
+    <ul class="list">
+      {% for e in d.events %}<li>{{ sm.event_row(e) }}</li>{% endfor %}
+      {% for l in d.lessons %}<li>{{ sm.lesson_row(l) }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+  {% endfor %}
+  {% if empty %}<p class="muted">Nothing this week.</p>{% endif %}
+</section>
+{% endblock %}

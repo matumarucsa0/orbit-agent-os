@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "_attention.html" as attn with context %}
+{% block title %}Needs attention · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/">← Home</a></p>
+    <h1>Needs attention</h1>
+  </div>
+  {% if promises or items or catch_ups %}
+  {{ attn.rows(promises, items, catch_ups, today, "/attention") }}
+  {% else %}
+  <p class="muted">Nothing needs you right now.</p>
+  {% endif %}
+</section>
+{% endblock %}

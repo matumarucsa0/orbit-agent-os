@@ -1,0 +1,54 @@
+{# Keep in touch: one-tap "talked today" and snooze, shared by Home, Keep in touch and person pages. #}
+
+{% macro log_button(person_id, kind, icon, label, next) %}
+<form method="post" action="/people/{{ person_id }}/interactions">
+  <input type="hidden" name="kind" value="{{ kind }}">
+  <input type="hidden" name="next" value="{{ next }}">
+  <button type="submit" class="small" aria-label="{{ label }} today" title="{{ label }} today">{{ icon }}</button>
+</form>
+{% endmacro %}
+
+{% macro snooze_button(person_id, next, days=7) %}
+<form method="post" action="/people/{{ person_id }}/snooze">
+  <input type="hidden" name="days" value="{{ days }}">
+  <input type="hidden" name="next" value="{{ next }}">
+  <button type="submit" class="small" aria-label="Snooze for a week" title="Snooze for a week">💤</button>
+</form>
+{% endmacro %}
+
+{# Met / called / messaged today, plus snooze. #}
+{% macro quick_log(person_id, next, with_snooze=true) %}
+<div class="quick-log">
+  <span class="small muted">Today:</span>
+  {{ log_button(person_id, "meet", "🤝 Met", "Met", next) }}
+  {{ log_button(person_id, "call", "📞 Called", "Called", next) }}
+  {{ log_button(person_id, "message", "💬 Messaged", "Messaged", next) }}
+  {% if with_snooze %}{{ snooze_button(person_id, next) }}{% endif %}
+</div>
+{% endmacro %}
+
+{# A catch-up entry: the person, and "talked today" / snooze without opening their page. #}
+{% macro catch_up_row(k, today, next) %}
+<div class="row-link">
+  <a class="list-row" href="/people/{{ k.person.id }}">
+    <span class="list-title">👋 {{ k.person.display_name }}</span>
+    <span class="list-sub muted">
+      {% if k.last_contact %}last talked {{ k.last_contact | date }}{% else %}nothing logged yet{% endif %}
+      · every {{ k.cadence_days }} days
+      {%- if k.due_on < today %} · <span class="overdue">{{ k.overdue_days(today) }} days over</span>{% endif %}
+    </span>
+  </a>
+  <span class="side">
+    <form method="post" action="/people/{{ k.person.id }}/interactions">
+      <input type="hidden" name="kind" value="other">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="icon-button" aria-label="Talked to {{ k.person.display_name }} today" title="Talked today">✓</button>
+    </form>
+    <form method="post" action="/people/{{ k.person.id }}/snooze">
+      <input type="hidden" name="days" value="7">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="icon-button" aria-label="Snooze {{ k.person.display_name }} for a week" title="Snooze a week">💤</button>
+    </form>
+  </span>
+</div>
+{% endmacro %}

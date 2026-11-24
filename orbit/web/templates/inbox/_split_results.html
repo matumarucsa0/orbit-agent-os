@@ -1,0 +1,13 @@
+{% if people %}
+<ul class="list compact">
+  {% for person in people %}
+  <li>
+    <button type="button" class="link" hx-get="/split/row?person_id={{ person.id }}"
+            hx-target="#split-people" hx-swap="beforeend"
+            hx-on::after-request="if (event.detail.successful) this.closest('li').remove()">+ {{ person.display_name }}</button>
+  </li>
+  {% endfor %}
+</ul>
+{% elif q %}
+<p class="muted small">Nobody matches “{{ q }}”.</p>
+{% endif %}

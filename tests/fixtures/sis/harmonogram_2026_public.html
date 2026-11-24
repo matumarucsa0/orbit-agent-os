@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="formatter" content="sis.example.edu" />
+		<meta name="robots" content="noarchive" />
+		<title>Harmonogram</title>
+		<link rel="shortcut icon" href="../img/stev.gif" type="image/gif" />
+		<style type="text/css" media="all">
+			<!-- @import url(../img/jquery-ui.css?1791210641); -->
+			<!-- @import url(../img/stev.css?1791210639); -->
+			<!-- @import url(../img/gray.css?1791210639); -->
+			<!-- @import url(../harmonogram/harmonogram.css); -->
+		</style>
+		<script type="text/javascript" src="../lib/js_jquery.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_jquery.placeholder.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_jquery.gray.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_jquery.ui.js?ver=1791210638"></script>
+		<script type="text/javascript" src="../lib/js_stev.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_ajax.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/html2canvas.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../res/stev/matomo.js?ver=1700992617"></script>
+		<script type="text/javascript" src="../harmonogram/qrcode.min.js?ver=1791210554"></script>
+		<script type="text/javascript" src="../harmonogram/widget.calendar.js?ver=1791210554"></script>
+
+<script language="javascript" type="text/javascript">
+var dl_pie = false;
+</script>
+
+	</head>
+<body onclick="if(!isChildOfRegDiv(getEventSourceElement(event))) { HideAllRegisteredDivs(); }" class="pie_available" data-logged="0">
+<a name="stev_top"></a>
+
+<script language="javascript" type="text/javascript">
+var dl_lang_id="cs"; var dl_lang = {};dl_lang["stev.js_input_bold"] = "Text, který má být tučný";dl_lang["stev.js_input_italic"] = "Text, který má být kurzívou";dl_lang["stev.js_input_underline"] = "Text, který má být podtržený";dl_lang["stev.js_input_sup"] = "Text, který má být horním indexem";dl_lang["stev.js_input_sub"] = "Text, který má být dolním indexem";dl_lang["stev.js_selected_multiple"] = "Označené položky (klikněte pro odznačení)";dl_lang["stev.js_session_timeout"] = "Sezení je ukončeno. Pro další práci s IS se znovu přihlašte.\nVeškerá neuložená data budou ztracena. Zkopírujte si rozepsaná data.";dl_lang["stev.order_kod_nazev"] = "Změnit třídění na kód - název";dl_lang["stev.order_nazev_kod"] = "Změnit třídění na název - kód";dl_lang["stev.notify.before"] = "před \x3Cmin\x3E min";dl_lang["stev.autocomplete.placeholder"] = "...hledat";dl_lang["stev.autocomplete.more.placeholder"] = "... další";dl_lang["stev.hlaseni_pripravuji"] = "Shromažďuji potřebné informace pro hlášení problému...";dl_lang["stev.page_unlimited.warning"] = "POZOR: Nastavujete neomezené stránkování. To způsobí zobrazení všech možných výsledků, kterých může být MNOHO. Souhlasíte?";dl_lang["stev.pie.napoveda_zobraz"] = "Zobrazit nápovědu";dl_lang["stev.form.html_check"] = "VAROVÁNÍ: Způsob zápisu HTML značek uvedený v tomto políčku může způsobovat špatné zobrazení na stránce.";dl_lang["stev.form.html_check.navrh"] = "Navrhovaná úprava:";dl_lang["stev.form.html_check.problems"] = "Nalezené problémy a opravy (validátor Tidy):";dl_lang["stev.form.html_check.pouzit"] = "Opravit";dl_lang["stev.form.html_check.navrhnout"] = "Návrh opravy";dl_lang["stev.zbyva"] = "zbývá";dl_lang["stev.prebyva"] = "přebývá";dl_lang["stev.dominima"] = "do minima";dl_lang["stev.domaxima"] = "do maxima";dl_lang["stev.dlg_neodpovida_podminkam"] = "Hodnota již nevyhovuje podmínkám definovaným pro tuto položku.";dl_lang["stev.dlg_neplatne"] = "Položka je v číselníku označena jako neplatná.";dl_lang["stev.dlg_expirovane"] = "Položka je v číselníku již expirovaná.";dl_lang["stev.dlg_nezavedene"] = "Položka není v číselníku zatím zavedena.";dl_lang["stev.leave_form"] = "Vypadá to, že máte rozeditovaný formulář. Opuštěním stránky bez uložení přijdete o data. Opravdu odejít?";dl_lang["stev.filtr.podcarou.odstranit"] = "odstranit";dl_lang["stev.filtr.podcarou.odstranitradek"] = "odstranit řádek";
+</script>
+
+
+<script language="javascript" type="text/javascript">
+var dl_root = ".."; var dl_pie_switch = false; var dl_id="";var dl_tid=""; var dl_lang_id="cs";
+            var dl_config = {
+               stev : {
+                  resource_location: "",
+                  report_problem: false,
+                  pie: {
+                        form_select: false
+                     }
+               }
+            };
+            var dl_module_id = "harmonogram";
+            var dl_page_info = {
+               url:      "/studium/harmon" + "ogram/index.php?do=filtr&fak=10000&skr=2026&hartyp=&platnaod=01.09.2026&platnado=31.12.2026",
+               module:   dl_module_id,
+               postdata: "YTowOnt9",
+               getdata : "YTo2OntzOjI6ImRvIjtzOjU6ImZpbHRyIjtzOjM6ImZhayI7czo1OiIxMTMyMCI7czozOiJza3IiO3M6NDoiMjAyNiI7czo2OiJoYXJ0eXAiO3M6MDoiIjtzOjg6InBsYXRuYW9kIjtzOjEwOiIwMS4wOS4yMDI2IjtzOjg6InBsYXRuYWRvIjtzOjEwOiIzMS4xMi4yMDI2Ijt9"
+            };
+            
+</script>
+
+<div id="hint" style="position:absolute; z-index:100; min-width:350px; margin-top: 20px; margin-left: 10px; visibility: hidden; display: none; border: 1px solid #FCAF3F;"><div id="hintlbl" style="padding: 4px 2px 4px 2px; background: #FEF7C1; color:#000000;"></div></div>
+
+<div id="stev_header_bkg"><div id="stev_header"><span id="stev_module_ico"><a href="../harmonogram/index.php" ><img src="../img/harmonogram.gif" width="32" height="32" alt="Harmonogram" title="Harmonogram"></a></span><span id="stev_nazev" class="stev_empty_subtitle"><span id="stev_nazev_modulu_sverzi"><span style="" id="stev_nazev_modulu">Harmonogram</span><span id="verze_modulu">(verze: 21)</span></span><span id="sis_plus_icons"></span><br /><span id="stev_podtitul_modulu">&nbsp;</span></span></span><span id="stev_logo"></span><span id="stev_role_icons" class="anonym"><span id="stev_icons"><a class="stev_ico stev_home" href="../index.php" title="zpět na úvodní stránku" id="stev_home" >&nbsp;</a><a class="stev_ico stev_login stev_ico_with_text" href="../index.php?sso?ret=harmonogram/index.php" title="přihlásit se" id="stev_login" >přihlásit se</a><a class="stev_ico stev_login_select stev_ico_with_text" href="../login.php?ret=harmonogram/index.php" title="vybrat způsob přihlášení..." id="stev_login_select" >jiné přihlášení</a><a class="stev_ico stev_lang_en" href="/studium/eng/harmonogram/index.php?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026" title="switch to english" id="stev_lang_en" >&nbsp;</a><a class="stev_ico stev_help" href="../help2.php?modul=harmonogram&amp;tema=harm100&amp;help=1253" title="nápověda" id="stev_help" target="sis_help">&nbsp;</a></span></span></div></div>
+<div id="loading" style="z-index: 1000; left: 0; top: 100; width: 95%; position: absolute; visibility: hidden; cursor: wait;" onclick="ShowHide('loading',0); event.cancelBubble = true;">
+               <center>
+                  <div class="head1" style="width: 300px; color: #FFB675; font-weight: bold; padding: 3px 0px 3px 0px;">Studijní Informační Systém</div>
+                  <div style="width: 300px; background-color: #F5F5F5; border: 1px dotted #CACACA; border-top: 0px; padding-top: 10px; padding-bottom: 10px;">Stránka se načítá...<br>Aplikace<b> Harmonogram</b></div>
+               </center>
+               </div>
+
+<script language="javascript" type="text/javascript">
+addRegDiv('loading');
+</script>
+
+
+<script language="javascript" type="text/javascript">
+ShowHide('loading',1);
+</script>
+
+
+<table cellspacing="0" cellpadding="0" width="100%" border="0"><tr><td>
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 1px;" class="menu"><tr class="menu1"><td class="session" align="center" valign="middle" width="40" nowrap><span id="session" title="zbývající čas do konce sezení">--:--</span></td><td class="ico"><a class="home" href="../index.php" title="zpět na úvodní stránku"></a></td><td class="ico"><a href="#" class="modul" id="stev_modul" onclick="ShowHide('stev_modul_list', 3); this.blur(); event.cancelBubble = true; return false;" title="změna modulu"></a><div id="stev_modul_list" style="font-family: tahoma, arial, helvetica;"><table border="0" cellpadding="2" cellspacing="0" class="tab2" style="margin: 5px 8px 5px 5px;"><tr><td>&nbsp;</td><td nowrap><a href="../prijimacky/index.php?KEY=Az1"  class="link2">Přijímací řízení</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../szz_st/index.php?KEY=Az1"  class="link2">Státní závěrečné zkoušky</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../predmety/index.php?KEY=Az1"  class="link2">Předměty</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../dipl_st/index.php?KEY=Az1"  class="link2">Témata prací (Výběr práce)</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../anketa/index.php?KEY=Az1"  class="link2">Anketa</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../rozvrhng/index.php?KEY=Az1"  class="link2">Rozvrh</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../prihlastaz/index.php?KEY=Az1"  class="link2">Přihlašování stáží</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../komise/index.php?KEY=Az1"  class="link2">Komise</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../szz/index.php?KEY=Az1"  class="link2">Pozvánky na státní zkoušky a obhajoby</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../ckis/index.php?KEY=Az1"  class="link2">Centrální katalog</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../pez/index.php?KEY=Az1"  class="link2">Portál elektronických zdrojů</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../ukaz/index.php?KEY=Az1"  class="link2">Centrální vyhledávač informačních zdrojů UK</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../moodle/index.php?KEY=Az1"  class="link2">Moodle (E-learning)</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../iforum/index.php?KEY=Az1"  class="link2">UK Forum</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_uk_point/index.php?KEY=Az1"  class="link2">UK Point</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_centrum_carolina/index.php?KEY=Az1"  class="link2">Centrum Carolina</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_phd_platform/index.php?KEY=Az1"  class="link2">Platforma doktorského studia</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_klub_alumni/index.php?KEY=Az1"  class="link2">Klub Alumni</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_4EU/index.php?KEY=Az1"  class="link2">Evropská univerzitní aliance 4EU+</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../skolitel/index.php?KEY=Az1"  class="link2">Přehled školitelů</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../promoce/index.php?KEY=Az1"  class="link2">Promoce</a></td></tr><tr><td><span style="font-size: 80%; color: #F00; font-weight: bold;">x</span></td><td nowrap><a href="../harmonogram/index.php?KEY=Az1"  class="link2">Harmonogram</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../ekczv/index.php?KEY=Az1"  class="link2">Evidence programů CŽV</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../nastenka/index.php?KEY=Az1"  class="link2">Nástěnka</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../kdojekdo/index.php?KEY=Az1"  class="link2">Hledání osob</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../loginy/index.php?KEY=Az1"  class="link2">Vyhledávání loginů</a></td></tr></table></div>
+
+<script language="javascript" type="text/javascript">
+addRegDiv('stev_modul_list');
+</script>
+
+
+<script language="javascript" type="text/javascript">
+getE("stev_modul_list").style.display = "none";
+</script>
+</td><td class="ico"><a class="print" href="/studium/harmonogram/index.php?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026&amp;stev_print=on" target="_blank" title="verze pro tisk"></a></td><td><div class="menu_empty">&nbsp;</div></td>
+<td nowrap style="border-top: 2px solid #F2A92F; border-left: 1px solid #888888; border-right: 1px solid #888888;"><a href="../harmonogram/index.php?do=filtr"  class="menu_a">Harmonogram</a></td><td width="100%"><div class="menu_empty" style="border-right: 1px solid #9EB69B;">&nbsp;</div></td></tr><tr><td colspan="5"><div class="shadow">&nbsp;</div></td><td style="border: 0px;"><div class="shadow_a">&nbsp;</div></td><td><div class="shadow">&nbsp;</div></td></tr></table>
+
+
+<div id="content">
+<noscript><table cellspacing="0" cellpadding="1" border="0" width="100%" class="warning"><tr><td align="center" valign="middle" class="warning_ico"><img src="../img/div_warning.gif" ></td><td class="warning_text"><ul class="warning_text"><li>Váš prohlížeč nepodporuje JavaScript nebo je jeho podpora vypnutá. Některé funkce nemusejí být dostupné.</li></ul></td></tr></table></noscript><form method="GET" id="nast_fak"><input type="hidden" name="do" value="filtr">
+<div id="filtr_div_12876159576ac52a0f11f43" class="filtr_div">
+                     <div style="background-color: #EEEEEE; color: #666666; padding: 1px 0px 1px 5px; font-weight: bold; border-bottom: 1px solid #BBBBBB;">
+                        <a class="filtr_on" href="#" id="filtr_href_12876159576ac52a0f11f43" onclick="switch_filtr('12876159576ac52a0f11f43'); return false;" title="zobraz/skryj filtr">Filtr:</a>
+                     </div>
+                     <div id="12876159576ac52a0f11f43">
+<input type="hidden" name="moje" value="0"><table cellpadding="2" cellspacing="0" class="tab1">
+         <tr>
+            <th><label for="fak">Fakulta:</label></th><td><span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete" data-object="fak" data-title="Fakulta" data-param_empty_option_text="'---'" data-param_prepinace="[]"><select name="fak" id="fak" class="inp1"   onchange="dl_allow_leave = 1; nast_fak.submit();"  ><option class="opt1" value="">---</option><option value="11610"  >Ústav dějin Example University a archiv Example University</option><option value="11620"  >Centrum pro teoretická studia</option><option value="11690"  >Centrum pro otázky životního prostředí</option><option value="11710"  >Centrum pro přenos poznatků a technologií</option><option value="11000"  >UNIVERZITA KARLOVA</option><option value="11260"  >Katolická teologická fakulta</option><option value="11270"  >Evangelická teologická fakulta</option><option value="11280"  >Husitská teologická fakulta</option><option value="11220"  >Právnická fakulta</option><option value="11110"  >1. lékařská fakulta</option><option value="11130"  >2. lékařská fakulta</option><option value="11120"  >3. lékařská fakulta</option><option value="11140"  >Lékařská fakulta v Plzni</option><option value="11150"  >Lékařská fakulta v Hradci Králové</option><option value="11160"  >Farmaceutická fakulta v Hradci Králové</option><option value="11210"  >Filozofická fakulta</option><option value="11310"  >Přírodovědecká fakulta</option><option value="10000" selected >Fakulta přírodních věd</option><option value="11410"  >Pedagogická fakulta</option><option value="11230"  >Fakulta sociálních věd</option><option value="11510"  >Fakulta tělesné výchovy a sportu</option><option value="11240"  >Fakulta humanitních studií</option><option value="11670"  >Ústav jazykové a odborné přípravy</option><option value="11680"  >Ústřední knihovna</option><option value="11640"  >Centrum pro ekonomický výzkum a doktorské studium</option><option value="11901"  >Rektorát Example University</option></select></span><span style="text-decoration: underline;" onmouseover="ShowHint('hint', this.id, 0, 'Po změně hodnoty políčka se znovu načtou hodnoty závislých objektů.');" onmouseout="HideHint('hint');"><img src="../img/ico_n_arrow_refresh_small_grey.png" style="cursor:help"></span></td>
+         </tr>
+         <tr>
+            <th><label for="skr">Akademický rok:</label></th><td><span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete" data-object="skr" data-title="Akademický rok" data-param_empty_option_text="'---'" data-param_prepinace="[]"><select name="skr" id="skr" class="inp1"   onchange="dl_allow_leave = 1; nast_fak.submit();"  ><option class="opt1" value="">---</option><option value="2011"  >2011/2012</option><option value="2012"  >2012/2013</option><option value="2013"  >2013/2014</option><option value="2014"  >2014/2015</option><option value="2015"  >2015/2016</option><option value="2016"  >2016/2017</option><option value="2017"  >2017/2018</option><option value="2018"  >2018/2019</option><option value="2019"  >2019/2020</option><option value="2020"  >2020/2021</option><option value="2021"  >2021/2022</option><option value="2022"  >2022/2023</option><option value="2023"  >2023/2024</option><option value="2024"  >2024/2025</option><option value="2025"  >2025/2026</option><option value="2026" selected >2026/2027 x</option></select></span><span style="text-decoration: underline;" onmouseover="ShowHint('hint', this.id, 0, 'Po změně hodnoty políčka se znovu načtou hodnoty závislých objektů.');" onmouseout="HideHint('hint');"><img src="../img/ico_n_arrow_refresh_small_grey.png" style="cursor:help"></span></td>
+         </tr>
+         <tr>
+            <th><label for="hartyp">Typ události:</label></th><td><span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete" data-object="hartyp" data-title="Typ události" data-param_empty_option_text="'---'" data-param_prepinace="[]"><select name="hartyp" id="hartyp" class="inp1"   onchange="dl_allow_leave = 1; nast_fak.submit();"  ><option class="opt1" value="">---</option><option value="AKADSEM"  >Akademický rok - semestr</option><option value="VYUKA"  >Akademický rok - výuka</option><option value="ITEXT"  >Informační text</option><option value="WPHDISPOR"  >PHD ISP - editace plánu - oborová rada</option><option value="WPHDISPST"  >PHD ISP - editace plánu - student</option><option value="WPHDISPUC"  >PHD ISP - editace plánu - školitel</option><option value="WPHDISPROR"  >PHD ISP - roční hodnocení - oborová rada</option><option value="WPHDISPRST"  >PHD ISP - roční hodnocení - student</option><option value="WPHDISPRUC"  >PHD ISP - roční hodnocení - školitel</option><option value="WROZVST"  >Přihlašování k rozvrhu - povoleno</option><option value="WROZVRH"  >Rozvrh - prezentace</option><option value="WPREDMST"  >Zápis volitelných předmětů - povolen</option><option value="WPREDMSTPR"  >Zápis volitelných předmětů - přednostní zápis</option><option value="WPREDMUC"  >Zápis volitelných předmětů - učitelé</option></select></span><span style="text-decoration: underline;" onmouseover="ShowHint('hint', this.id, 0, 'Po změně hodnoty políčka se znovu načtou hodnoty závislých objektů.');" onmouseout="HideHint('hint');"><img src="../img/ico_n_arrow_refresh_small_grey.png" style="cursor:help"></span></td>
+         </tr>
+         <tr>
+            <th><label for="platnaod">Platí od:</label></th><td><span class="form_date form_datetime form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete" data-object="platnaod" data-title="Platí od" data-param_empty_option_text="'---'" data-param_prepinace="[]"><input type="text" name="platnaod" id="platnaod" value="01.09.2026" size="10" class="inp1" maxlength="10"  onblur="dopln_datum('platnaod');"      ><a href="#" onclick="wo('../lib/dialog_kalendar.php?id=&tid=&dlg_typ=date&dlg_kod=platnaod','','width=240,height=210,scrollbars=yes,toolbar=no,status=no,resizable=yes','platnaod'); return false;"><img src="../img/ico_date.png"  alt="datum" title="datum"></a>&nbsp;<span style="color: #666; font-size: 10px; font-family: Courier New;">[dd.mm.rrrr]</span></span></td>
+         </tr>
+         <tr>
+            <th><label for="platnado">Platí do:</label></th><td><span class="form_date form_datetime form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete" data-object="platnado" data-title="Platí do" data-param_empty_option_text="'---'" data-param_prepinace="[]"><input type="text" name="platnado" id="platnado" value="31.12.2026" size="10" class="inp1" maxlength="10"  onblur="dopln_datum('platnado');"      ><a href="#" onclick="wo('../lib/dialog_kalendar.php?id=&tid=&dlg_typ=date&dlg_kod=platnado','','width=240,height=210,scrollbars=yes,toolbar=no,status=no,resizable=yes','platnado'); return false;"><img src="../img/ico_date.png"  alt="datum" title="datum"></a>&nbsp;<span style="color: #666; font-size: 10px; font-family: Courier New;">[dd.mm.rrrr]</span></span></td>
+         </tr>
+         <tr>
+            <th><label for="moje">Moje události:</label></th><td><span class="form_checkbox form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete" data-object="moje" data-title="Moje události" data-param_empty_option_text="'---'" data-param_prepinace="[]"><input type="hidden" name="moje" value="0"><input type="checkbox" name="moje" id="moje" value="1"  class="inp1"  checked   ></span><img src="../img/div_tip.gif" style="cursor: help; margin-left: 3px;" onmousemove="ShowHint('hint',this.id,0,'Zobrazí události hamonogramu vztahující se k vašemu typu přihlášení');" onmouseout="HideHint('hint');"></td>
+         </tr>
+         <tr>
+            <th></th><td><input type="submit"  value="Zobraz" class="but_find" ></td>
+         </tr>
+         </table>
+
+                     </div>
+                  </div>
+                  <div id="filtr_hr_18110697496ac52a0f12045" style="border-top: 1px solid #DADADA; margin-bottom: 5px;"></div>
+</form><table width="100%" cellspacing="0" cellpadding="2" border="0" class="tab1">
+                     <col width="120"><col width="120"><col width="50">
+                     <tbody>
+                        <tr class="head1">
+                           <td><a href="?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026&amp;order=od&amp;sort=desc"><img src="../img/order_down.gif"  alt="seřadit sestupně" title="seřadit sestupně"></a><a href="?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026&amp;order=od"><img src="../img/order_up_a.gif" style="margin-right: 3px;" alt="seřadit vzestupně" title="seřadit vzestupně"></a>Od</td>
+                           <td><a href="?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026&amp;order=do&amp;sort=desc"><img src="../img/order_down.gif"  alt="seřadit sestupně" title="seřadit sestupně"></a><a href="?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026&amp;order=do"><img src="../img/order_up.gif" style="margin-right: 3px;" alt="seřadit vzestupně" title="seřadit vzestupně"></a>Do</td>
+                           <td>Fakulta</td>
+                           <td>Název</td>
+                           <td>Poznámka</td>
+                        </tr><tr class="head2">
+                                          <td colspan="5">2026/2027 - Září</td>
+                                       </tr><tr class="row1" title="25282">
+                                    <td><strong>29.09.2026 00:00</strong></td>
+                                    <td><strong>08.01.2027 23:59</strong></td>
+                                    <td>Uni</td>
+                                    <td>Akademický rok - výuka</td>
+                                    <td>Výuka v zimním semestru </td>
+                                 </tr></tbody>
+                     </table></div><table border="0" cellspacing="0" cellpadding="0" width="100%" id="foot" style="margin-top: 5px;">
+                     <tr>
+                        <td>&nbsp;</td><td nowrap><a class="top" href="#stev_top" title="na začátek stránky"></a></td><td nowrap><a class="tisk" href="/studium/harmonogram/index.php?do=filtr&amp;fak=10000&amp;skr=2026&amp;hartyp=&amp;platnaod=01.09.2026&amp;platnado=31.12.2026&amp;stev_print=on" target="_blank" title="verze pro tisk"></a></td><td nowrap><a href="http://sis.example.edu/studium/info/index.php" target="_blank">Kontakty</a></td><td nowrap><a href="https://sis.example.edu/studium/info2/index.php" target="_blank">Podpora studentů se speciálními potřebami na UK</a> </td>   <td width="100%">&nbsp;</td>
+                     </tr>
+                     </table><div class="shadow">&nbsp;</div>
+</td></tr></table>
+
+<div id="paticka2"><a href="http://www.example.edu"  target="_blank">Example University</a> | <a href="https://sis.example.edu"  target="_blank">Informační systém</a></div>
+
+<script language="javascript" type="text/javascript">
+ShowHide('loading',0);
+</script>
+
+</body></html>

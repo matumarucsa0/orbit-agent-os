@@ -1,0 +1,25 @@
+# Invented values the generic scan in scripts/scan-personal.sh must not report.
+# One extended regex per line, matched (case-insensitive) against the matched text only.
+# Add a line here only for a value that is documentation, example or test data.
+#
+# e-mail: example domains and the git no-reply address
+@([a-z0-9-]+\.)*example\.(com|org|net|edu|cz)$
+@users\.noreply\.github\.com$
+^noreply@anthropic\.com$
+# IBANs: documentation examples and zero-pattern test numbers
+^SK31 ?1200 ?0000 ?1987 ?4263 ?7541$
+^SK[0-9]{2} ?1100 ?0000 ?0010 ?0000 ?[0-9]{4}$
+^SK2411110000001000003333$
+^SK00[ 0-9]*$
+^BE71096123456769$
+^CZ6508000000192000145399$
+^OO26091200[0-9]+$
+# phone numbers: invented ranges used by the fixtures and the demo
+^\+?421 ?905 ?(123 ?456|111 ?222)$
+^00421 ?905 ?123 ?456$
+^\+4219000000[0-9]{2}$
+^\+421 ?41 ?555 ?1234$
+^(\+|00)420 ?(601 ?123 ?456|601 ?234 ?567|777 ?123 ?456)$
+^\+44 ?7700 ?900[0-9]{3}$
+# hostnames
+^(orbit|printer)\.lan$

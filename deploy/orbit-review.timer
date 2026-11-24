@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the Orbit weekly review check every hour
+
+[Timer]
+# Orbit decides whether a review is due (from Sunday 19:00 until Wednesday night); outside that
+# window, and once a week is done, `prepare` answers "nothing to do" and the script exits.
+OnCalendar=*-*-* *:05:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

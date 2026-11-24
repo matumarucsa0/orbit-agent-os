@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% import "meetings/_macros.html" as mm with context %}
+{% block title %}Meetings · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <div>
+      <h1>Meetings</h1>
+      <p class="muted small">The next 14 days from your calendar. Meetings linked to people get a brief 30 minutes before and a “note anything?” push afterwards.</p>
+    </div>
+    {% if configured %}
+    <form method="post" action="/meetings/sync">
+      <button type="submit" class="small nowrap">Sync now</button>
+    </form>
+    {% endif %}
+  </div>
+
+  {% if not configured %}
+  <p class="card small">The calendar isn't connected. Set <code>CALDAV_USERNAME</code>, <code>CALDAV_PASSWORD</code> (an app-specific password) and <code>CALDAV_CALENDARS</code>; see SHORTCUTS.md.</p>
+  {% endif %}
+
+  {% for label, entries in groups %}
+  <section class="stack">
+    <h2>{{ label }}</h2>
+    <ul class="list">
+      {% for m in entries %}<li>{{ mm.meeting_row(m) }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% else %}
+  <p class="muted">No meetings in the next 14 days.</p>
+  {% endfor %}
+
+  {% if earlier %}
+  <details>
+    <summary><strong>Earlier</strong> <span class="muted small">(last 7 days)</span></summary>
+    <ul class="list">
+      {% for m in earlier %}<li>{{ mm.meeting_row(m) }}</li>{% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+{% endblock %}

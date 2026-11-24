@@ -1,0 +1,10 @@
+{# A meeting in a list: time, title, who it's with. Shared by the Meetings and Home pages. #}
+{% macro meeting_row(m) %}
+<a class="list-row" href="/meetings/{{ m.id }}">
+  <span class="list-title">{{ m.start_utc | local_time }} {{ m.title }}</span>
+  <span class="list-sub muted">
+    {%- if m.links %}with {{ m.people | map(attribute="display_name") | join(", ") }}{% else %}not linked to anyone{% endif %}
+    {%- if m.location %} · {{ m.location }}{% endif %}
+  </span>
+</a>
+{% endmacro %}

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% from "contacts/_row.html" import row with context %}
+{% block title %}Contact sync · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <h1>Contact sync</h1>
+    <a class="pill" href="/people">← People</a>
+  </div>
+
+  {% set s = run.summary_json %}
+  <p class="muted small">
+    {{ run.source.value | replace("carddav", "iCloud") | replace("vcf", "File") }} · {{ run.started_at | local_dt }} ·
+    {{ s.get("cards", 0) }} contacts read{% if s.get("skipped") %}, {{ s.skipped }} without a name skipped{% endif %}.
+    Nothing is changed until you press Apply.
+  </p>
+  {% for conflict in s.get("conflicts", []) %}<p class="warn small">{{ conflict }}</p>{% endfor %}
+
+  {% if run.status.value == "review" %}
+    {% if not pending_total %}
+    <div class="card"><p>Everything is in sync. 🎉</p></div>
+    {% else %}
+    <form method="get" class="stack" role="search">
+      <input type="search" name="q" value="{{ q }}" placeholder="Filter by name…" aria-label="Filter by name">
+      <div class="chips">
+        {% for key, label in shows.items() %}
+        <a class="chip {% if show == key %}chip-active{% endif %}" href="?show={{ key }}{% if q %}&q={{ q | urlencode }}{% endif %}">{{ label }}</a>
+        {% endfor %}
+        <button type="submit" class="chip">Filter</button>
+      </div>
+    </form>
+
+    <form method="post" action="/contacts/sync/{{ run.id }}/apply" class="stack-lg">
+      {% for sec in sections %}
+      <div class="card stack">
+        <div class="row-between">
+          <h2>{{ sec.title }} <span class="muted">{{ sec.rows | length }}</span></h2>
+          <button type="button" class="pill" data-select-all="{{ sec.key }}">Select all</button>
+        </div>
+        {% if sec.key == "apple" %}<p class="muted small">These are written to the contact in iCloud. Each contact is saved first, so it can be restored here afterwards.</p>{% endif %}
+        <ul class="list sync-list">
+          {% for view in sec.rows %}{{ row(view, true, sec.key) }}{% endfor %}
+        </ul>
+      </div>
+      {% else %}
+      <p class="muted">Nothing matches that filter.</p>
+      {% endfor %}
+      <div class="sticky-actions">
+        <button type="submit" class="primary">Apply ticked changes</button>
+        <p class="muted small">Pre-ticked: fills of empty fields ({{ auto_total }}). Anything you leave unticked is skipped and not proposed again until its value changes.</p>
+      </div>
+    </form>
+    {% endif %}
+  {% endif %}
+
+  {% if backups %}
+  <div class="card stack">
+    <h2>Saved Apple cards</h2>
+    <ul class="list">
+      {% for b in backups %}
+      <li class="list-row">
+        <span class="grow">{{ b.person.display_name if b.person else "Contact" }} · saved {{ b.created_at | local_dt }}
+          {% if b.restored_at %}<span class="pill">restored</span>{% endif %}</span>
+        {% if not b.restored_at %}
+        <form method="post" action="/contacts/sync/backups/{{ b.id }}/restore">
+          <input type="hidden" name="run_id" value="{{ run.id }}">
+          <button type="submit" class="link">Restore original</button>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if done %}
+  <div class="card stack">
+    <h2>Done</h2>
+    <ul class="list">
+      {% for view in done %}{% set c = view.change %}
+      <li class="list-row">
+        <span class="grow">
+          <strong>{{ c.person_name }}</strong> · {{ view.label }}
+          {% if view.old %}<span class="old">{{ view.old }}</span> → {% endif %}<span class="new">{{ view.new }}</span>
+          <span class="pill">{{ c.state.value }}</span>
+          {% if c.error %}<br><span class="warn small">{{ c.error }}</span>{% endif %}
+        </span>
+        {% if c.state == State.APPLIED %}
+        <form method="post" action="/contacts/sync/changes/{{ c.id }}/undo">
+          <input type="hidden" name="run_id" value="{{ run.id }}">
+          <button type="submit" class="link">Undo</button>
+        </form>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

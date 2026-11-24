@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Workout · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <p class="small"><a href="/fitness">← Fitness</a></p>
+  <div>
+    <h1>{{ workout.started_at | local_dt }}</h1>
+    <p class="muted small">
+      {% if workout.duration_suspect %}Duration unreliable (the session was left open in Liftoff){% else %}{{ workout.duration_seconds | duration }}{% endif %}
+      {% if workout.bodyweight_grams %} · {{ workout.bodyweight_grams | kg }} kg bodyweight{% endif %}
+      {% if workout.pr_count %} · {{ workout.pr_count }} PR{% endif %}
+    </p>
+    {% if workout.notes %}<p class="small">{{ workout.notes }}</p>{% endif %}
+  </div>
+  {% for e in workout.exercises %}
+  <div class="card stack">
+    <strong>{{ e.name }}</strong>
+    {% if e.notes %}<span class="muted small">{{ e.notes }}</span>{% endif %}
+    <ul class="list">
+      {% for s in e.sets %}
+      <li class="small">
+        {% if e.kind == "DD" %}
+          {{ "%.2f" | format(s.distance_m / 1000) }} km in {{ s.seconds | duration }}{% if s.implausible %} <span class="muted">(not believable, left out of totals)</span>{% endif %}
+        {% elif s.weight_grams %}
+          {{ s.weight_grams | kg }} kg × {{ s.reps }}
+        {% else %}
+          {{ s.reps }} reps
+        {% endif %}
+        {% if s.set_type != "normal" %}<span class="muted">· {{ s.set_type }}</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

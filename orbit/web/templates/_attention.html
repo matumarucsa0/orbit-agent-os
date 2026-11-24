@@ -1,0 +1,29 @@
+{# "Needs attention" rows, shared by Home (capped) and /attention (all). #}
+{% import "_keep.html" as keep %}
+
+{% macro rows(promises, items, catch_ups, today, next) %}
+<ul class="list">
+  {% for p in promises %}
+  <li>
+    <a class="list-row" href="/people/{{ p.person.id }}#promises">
+      <span class="list-title">✅ {{ p.text }}</span>
+      <span class="list-sub muted">
+        {%- if p.due == today %}due today{% else %}<span class="overdue">overdue since {{ p.due | date }}</span>{% endif %} ·
+        {% if p.direction.value == "i_promised" %}you promised {{ p.person.display_name }}{% else %}{{ p.person.display_name }} promised you{% endif -%}
+      </span>
+    </a>
+  </li>
+  {% endfor %}
+  {% for d in items %}
+  <li>
+    <a class="list-row" href="/people/{{ d.person.id }}#ledger">
+      <span class="list-title">📦 {{ d.person.display_name }} has your {{ d.description }}</span>
+      <span class="list-sub muted">lent {{ d.created_at | local_date }}</span>
+    </a>
+  </li>
+  {% endfor %}
+  {% for k in catch_ups %}
+  <li>{{ keep.catch_up_row(k, today, next) }}</li>
+  {% endfor %}
+</ul>
+{% endmacro %}

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Orbit">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="{{ static_url('manifest.webmanifest') }}">
+  <link rel="icon" href="{{ static_url('icons/icon.svg') }}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ static_url('icons/apple-touch-icon.png') }}">
+  <title>{% block title %}Orbit{% endblock %}</title>
+  <link rel="stylesheet" href="{{ static_url('css/app.css') }}">
+  {# htmx 2.0.11, vendored from https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js #}
+  <script src="{{ static_url('vendor/htmx.min.js') }}" defer></script>
+  <script src="{{ static_url('js/app.js') }}" defer></script>
+  {% block head %}{% endblock %}
+</head>
+{% set authed = request.session.get("auth") %}
+<body class="{{ 'has-tabbar' if authed }}">
+  <header class="topbar">
+    <a class="brand" href="/">Orbit</a>
+    {% if authed %}
+    {% set path = request.url.path %}
+    {% set extra = more_links(request) %}
+    {% set more_current = path == "/more" or extra | selectattr("current") | list | length > 0 %}
+    {# Phone: a tab bar at the bottom; wider screens: the same links in the top bar. #}
+    <nav class="tabbar" aria-label="Main">
+      {% for href, icon, label, current in (
+        ("/", "🏠", "Home", path == "/"),
+        ("/inbox", "📥", "Inbox", path.startswith("/inbox")),
+        ("/people", "👥", "People", path.startswith(("/people", "/keep-in-touch"))),
+        ("/meetings", "📅", "Meetings", path.startswith("/meetings")),
+        ("/ledger", "💶", "Ledger", path.startswith("/ledger")),
+      ) %}
+      <a class="tab" href="{{ href }}" {% if current %}aria-current="page"{% endif %}>
+        <span class="tab-icon" aria-hidden="true">{{ icon }}</span>
+        <span class="tab-label">{{ label }}{% if href == "/inbox" and inbox_count %} <span class="badge" aria-label="{{ inbox_count }} waiting">{{ inbox_count }}</span>{% endif %}</span>
+      </a>
+      {% endfor %}
+      <a class="tab tab-more" href="/more" {% if more_current %}aria-current="page"{% endif %}>
+        <span class="tab-icon" aria-hidden="true">⋯</span>
+        <span class="tab-label">More</span>
+      </a>
+    </nav>
+    <details class="more-menu">
+      <summary {% if more_current %}aria-current="page"{% endif %}>More</summary>
+      <div class="more-panel">
+        {% for link in extra %}
+        <a href="{{ link.href }}" {% if link.current %}aria-current="page"{% endif %}>{{ link.label }}</a>
+        {% endfor %}
+        <form method="post" action="/logout">
+          <button type="submit" class="link">Log out</button>
+        </form>
+      </div>
+    </details>
+    {% endif %}
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  {% set flashes = request.session.pop("flash", []) %}
+  <div class="flashes" aria-live="polite">
+    {% for f in flashes %}
+    <div class="flash flash-{{ f.kind }}{{ ' has-action' if f.link or f.action }}" role="{{ 'alert' if f.kind == 'error' else 'status' }}">
+      <span class="flash-text">{{ f.message }}</span>
+      {% if f.link and f.link != request.url.path %}<a href="{{ f.link }}">{{ f.link_label or "Open" }}</a>{% endif %}
+      {% if f.action %}
+      <form method="post" action="{{ f.action }}">
+        {% for name, value in (f.fields or {}).items() %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+        <button type="submit" class="link">{{ f.action_label or "Undo" }}</button>
+      </form>
+      {% endif %}
+      <button type="button" class="flash-x" aria-label="Dismiss">×</button>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

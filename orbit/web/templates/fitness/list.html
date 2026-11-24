@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Fitness · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <div>
+      <h1>Fitness</h1>
+      <p class="muted small">Gym workouts read from Liftoff, {{ total }} in all. Read only: change a workout in the app.</p>
+    </div>
+    {% if status and not status.unavailable %}
+    <form method="post" action="/fitness/sync"><button type="submit" class="small nowrap">Read now</button></form>
+    {% endif %}
+  </div>
+  {% if status and status.unavailable %}
+  <p class="card small">{{ status.unavailable }}</p>
+  {% elif status and status.last %}
+  <p class="muted small">Last read {{ status.last.last_finished_at | local_dt }}: {{ status.last.message }}{% if not status.last.ok %} (failed){% endif %}</p>
+  {% endif %}
+
+  {% if workouts %}
+  <ul class="list">
+    {% for w in workouts %}
+    <li>
+      <a class="list-row" href="/fitness/{{ w.id }}">
+        <span class="list-title">{{ w.started_at | local_dt }}</span>
+        <span class="list-sub muted">{{ w.exercises | length }} exercises, {{ w.exercises | map(attribute="sets") | map("length") | sum }} sets{% if w.duration_suspect %} · duration unreliable{% else %} · {{ w.duration_seconds | duration }}{% endif %}{% if w.pr_count %} · {{ w.pr_count }} PR{% endif %}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No workouts yet.</p>
+  {% endif %}
+</section>
+{% endblock %}

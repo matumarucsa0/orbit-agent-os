@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Duplicates · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/people">← People</a></p>
+    <h1>Possible duplicates</h1>
+  </div>
+  {% if candidates %}
+  <ul class="list">
+    {% for c in candidates %}
+    <li class="card stack">
+      <div class="muted small">{{ c.reason }}</div>
+      <div><a href="/people/{{ c.a.id }}">{{ c.a.display_name }}</a> · <a href="/people/{{ c.b.id }}">{{ c.b.display_name }}</a></div>
+      <div class="row">
+        <a class="button primary" href="/people/{{ c.a.id }}/merge?with={{ c.b.id }}">Merge…</a>
+        <form method="post" action="/people/duplicates/dismiss">
+          <input type="hidden" name="a_id" value="{{ c.a.id }}">
+          <input type="hidden" name="b_id" value="{{ c.b.id }}">
+          <button type="submit">Not a duplicate</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No likely duplicates. 🎉</p>
+  {% endif %}
+
+  {% if merges %}
+  <section class="stack" id="merges">
+    <h2>Recent merges</h2>
+    <ul class="list">
+      {% for m in merges %}
+      <li class="card row-between">
+        <span>{{ m.merged_name }} → <a href="/people/{{ m.keep.id }}">{{ m.keep.display_name }}</a><br><span class="muted small">{{ m.created_at | local_dt }}</span></span>
+        <form method="post" action="/people/merges/{{ m.id }}/undo" onsubmit='return confirm({{ ("Bring " ~ m.merged_name ~ " back as a separate person?") | tojson }})'>
+          <button type="submit">Undo</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="muted small">Undo brings the person back with whatever of theirs is still here; changes made since stay.</p>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

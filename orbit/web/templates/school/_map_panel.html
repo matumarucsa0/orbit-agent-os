@@ -1,0 +1,125 @@
+{# The side panel of the school map: one partial for every kind of card. #}
+{% macro add_form(course_code="") %}
+<details class="stack-sm">
+  <summary class="small">Add a resource</summary>
+  <form method="post" action="/school/map/resources" enctype="multipart/form-data" class="stack-sm">
+    <input type="hidden" name="course_code" value="{{ course_code }}">
+    <input name="url" type="url" placeholder="https://… a page, a PDF link or a GitHub repository" aria-label="Link" maxlength="1000">
+    <label class="small muted" for="map-file-{{ course_code or 'x' }}">or a PDF (up to 20 MB)</label>
+    <input id="map-file-{{ course_code or 'x' }}" name="file" type="file" accept="application/pdf">
+    <textarea name="note" rows="3" placeholder="or a note: rules said in class" aria-label="Note"></textarea>
+    <input name="label" placeholder="Label (optional)" aria-label="Label" maxlength="300">
+    <button type="submit" class="small primary">Add</button>
+  </form>
+</details>
+{% endmacro %}
+
+{% macro state_pill(key) %}{% set s = state_labels[key] %}<span class="pill state-{{ key }}">{{ s[0] }} {{ s[1] }}</span>{% endmacro %}
+
+{% macro resource_row(r) %}
+<li class="row-between">
+  <a href="/school/map?select=res:{{ r.id }}" class="list-row">
+    <span class="list-title">{{ kind_icons[r.kind] }} {{ r.label }}</span>
+    <span class="list-sub muted">{{ state_pill(state(r)) }} {{ origin_labels[r.origin] }}</span>
+  </a>
+</li>
+{% endmacro %}
+
+{% if panel == "overview" %}
+<div class="stack">
+  <h2>School</h2>
+  <p class="small muted">Click a card to see what is behind it. Drag the background to move the map, Ctrl or ⌘ and the wheel (or two fingers) to zoom.</p>
+  <p class="small">Claude reads today: <strong>{{ reads }} of {{ budget }}</strong>.
+    {% if waiting %}<a href="/inbox">{{ waiting }} proposal{{ "" if waiting == 1 else "s" }} waiting in the Inbox</a>.{% endif %}</p>
+  {% if suggestions %}
+  <h3>Suggested resources</h3>
+  <ul class="list">
+    {% for r in suggestions %}
+    <li class="stack-sm">
+      <span class="list-title">{{ kind_icons[r.kind] }} {{ r.label }}</span>
+      <span class="list-sub muted small">{{ r.suggested_reason or origin_labels[r.origin] }}{% if r.course %} · {{ r.course.code }}{% endif %}</span>
+      <div class="row wrap actions">
+        <form method="post" action="/school/map/resources/{{ r.id }}/keep"><button class="small">Keep</button></form>
+        <form method="post" action="/school/map/resources/{{ r.id }}/dismiss"><button class="small link">Dismiss</button></form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if unsorted %}
+  <h3>Unsorted</h3>
+  <ul class="list">{% for r in unsorted %}{{ resource_row(r) }}{% endfor %}</ul>
+  {% endif %}
+  {{ add_form("") }}
+</div>
+
+{% elif panel == "course" %}
+<div class="stack">
+  <h2>{{ course.code }} {{ course.name }}</h2>
+  <p class="small muted">{% if course.credits is not none %}{{ course.credits }} credits{% endif %}{% if course.completion %} · {{ course.completion }}{% endif %}
+    · <a href="/school/courses/{{ course.code }}">Course page</a></p>
+  {% if waiting %}<p class="small"><a href="/inbox">{{ waiting }} proposal{{ "" if waiting == 1 else "s" }} for this course wait in the Inbox</a>.</p>{% endif %}
+  <h3>Rules</h3>
+  {% if facts %}
+  <ul class="stack-sm">
+    {% for f in facts %}
+    <li>
+      <strong>{{ f.topic.value }}:</strong> {{ f.text }}
+      {% if f.quote %}<blockquote class="small muted">“{{ f.quote }}”</blockquote>{% endif %}
+      <form method="post" action="/school/map/facts/{{ f.id }}/delete"><button class="link small">Remove</button></form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="small muted">No rules saved yet. Add a page or PDF and confirm what Claude finds in it.</p>{% endif %}
+  <h3>Resources</h3>
+  {% if resources %}<ul class="list">{% for r in resources %}{{ resource_row(r) }}{% endfor %}</ul>
+  {% else %}<p class="small muted">None yet.</p>{% endif %}
+  {{ add_form(course.code) }}
+</div>
+
+{% elif panel == "resource" %}
+{% set st = state(resource) %}
+<div class="stack">
+  <h2>{{ kind_icons[resource.kind] }} {{ resource.label }}</h2>
+  <p>{{ state_pill(st) }} <span class="small muted">{{ origin_labels[resource.origin] }}{% if resource.course %} · <a href="/school/map?select=course:{{ resource.course.code }}">{{ resource.course.code }}</a>{% endif %}</span></p>
+  {% if resource.url %}<p class="small"><a href="{{ resource.url }}" rel="noreferrer">{{ resource.url }}</a></p>{% endif %}
+  {% if resource.suggested_reason %}<p class="small muted">{{ resource.suggested_reason }}</p>{% endif %}
+  <p class="small muted">
+    {% if resource.checked_at %}Checked {{ resource.checked_at | local_dt }}.{% else %}Not checked yet.{% endif %}
+    {% if resource.changed_at %} Changed {{ resource.changed_at | local_dt }}.{% endif %}
+    {% if resource.read_at %} Read by Claude {{ resource.read_at | local_dt }}.{% endif %}
+  </p>
+  {% if resource.error %}<p class="small overdue">{{ resource.error }}{% if resource.fail_count > 1 %} ({{ resource.fail_count }} days in a row){% endif %}</p>{% endif %}
+  {% if resource.status.value == "no_text" %}<p class="small muted">This PDF has no text layer, so it cannot be read (no OCR).</p>{% endif %}
+  {% if resource.last_diff %}
+  <details><summary class="small">What changed</summary><pre class="small">{{ resource.last_diff }}</pre></details>
+  {% elif preview %}
+  <details><summary class="small">Text Orbit has</summary><pre class="small">{{ preview }}</pre></details>
+  {% endif %}
+  <div class="row wrap actions">
+    {% if not resource.kept %}
+    <form method="post" action="/school/map/resources/{{ resource.id }}/keep"><button class="small primary">Keep</button></form>
+    <form method="post" action="/school/map/resources/{{ resource.id }}/dismiss"><button class="small">Dismiss</button></form>
+    {% else %}
+    {% if resource.kind.value != "login" %}<form method="post" action="/school/map/resources/{{ resource.id }}/check"><button class="small primary">Check now</button></form>{% endif %}
+    <form method="post" action="/school/map/resources/{{ resource.id }}/remove" onsubmit="return confirm('Remove this resource?')"><button class="small">Remove</button></form>
+    {% endif %}
+  </div>
+  <form method="post" action="/school/map/resources/{{ resource.id }}/course" class="row">
+    <select name="course_code" aria-label="Course">
+      <option value="">Unsorted</option>
+      {% for c in all_courses %}<option value="{{ c.code }}" {% if resource.course_id == c.id %}selected{% endif %}>{{ c.code }} {{ c.name }}</option>{% endfor %}
+    </select>
+    <button class="small">Link to course</button>
+  </form>
+</div>
+
+{% elif panel == "system" or panel == "process" %}
+<div class="stack">
+  <h2>{{ info[0] }}</h2>
+  <p class="small">{{ info[1] }}</p>
+  {% if panel == "process" %}<p><a class="button small" href="{{ info[2] }}">{{ info[3] }}</a></p>{% endif %}
+  {% if node_id == "proc:reader" %}<p class="small muted">Reads today: {{ reads }} of {{ budget }}. The limit protects your subscription; the rest waits for the next day.</p>{% endif %}
+  {% if panel == "system" %}<p><a class="button small" href="/school/status">Sync status</a></p>{% endif %}
+</div>
+{% endif %}

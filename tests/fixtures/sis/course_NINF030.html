@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="cs">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="formatter" content="sis.example.edu" />
+		<meta name="robots" content="noarchive" />
+		<title>Předměty</title>
+		<link rel="shortcut icon" href="../img/stev.gif" type="image/gif" />
+		<style type="text/css" media="all">
+			<!-- @import url(../img/jquery-ui.css?1791210641); -->
+			<!-- @import url(../img/stev.css?1791210639); -->
+			<!-- @import url(../img/gray.css?1791210639); -->
+			<!-- @import url(../predmety/predmety.css); -->
+		</style>
+		<script type="text/javascript" src="../lib/js_jquery.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_jquery.placeholder.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_jquery.gray.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_jquery.ui.js?ver=1791210638"></script>
+		<script type="text/javascript" src="../lib/js_stev.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/js_ajax.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../lib/html2canvas.js?ver=1791210636"></script>
+		<script type="text/javascript" src="../res/stev/matomo.js?ver=1700992617"></script>
+		<script type="text/javascript" src="../predmety/predmety.js?ver=1791210615"></script>
+
+<script language="javascript" type="text/javascript">
+var dl_pie = false;
+</script>
+
+	</head>
+<body onclick="if(!isChildOfRegDiv(getEventSourceElement(event))) { HideAllRegisteredDivs(); }" class="pie_available" data-logged="0">
+<a name="stev_top"></a>
+
+<script language="javascript" type="text/javascript">
+var dl_lang_id="cs"; var dl_lang = {};dl_lang["stev.js_input_bold"] = "Text, který má být tučný";dl_lang["stev.js_input_italic"] = "Text, který má být kurzívou";dl_lang["stev.js_input_underline"] = "Text, který má být podtržený";dl_lang["stev.js_input_sup"] = "Text, který má být horním indexem";dl_lang["stev.js_input_sub"] = "Text, který má být dolním indexem";dl_lang["stev.js_selected_multiple"] = "Označené položky (klikněte pro odznačení)";dl_lang["stev.js_session_timeout"] = "Sezení je ukončeno. Pro další práci s IS se znovu přihlašte.\nVeškerá neuložená data budou ztracena. Zkopírujte si rozepsaná data.";dl_lang["stev.order_kod_nazev"] = "Změnit třídění na kód - název";dl_lang["stev.order_nazev_kod"] = "Změnit třídění na název - kód";dl_lang["stev.notify.before"] = "před \x3Cmin\x3E min";dl_lang["stev.autocomplete.placeholder"] = "...hledat";dl_lang["stev.autocomplete.more.placeholder"] = "... další";dl_lang["stev.hlaseni_pripravuji"] = "Shromažďuji potřebné informace pro hlášení problému...";dl_lang["stev.page_unlimited.warning"] = "POZOR: Nastavujete neomezené stránkování. To způsobí zobrazení všech možných výsledků, kterých může být MNOHO. Souhlasíte?";dl_lang["stev.pie.napoveda_zobraz"] = "Zobrazit nápovědu";dl_lang["stev.form.html_check"] = "VAROVÁNÍ: Způsob zápisu HTML značek uvedený v tomto políčku může způsobovat špatné zobrazení na stránce.";dl_lang["stev.form.html_check.navrh"] = "Navrhovaná úprava:";dl_lang["stev.form.html_check.problems"] = "Nalezené problémy a opravy (validátor Tidy):";dl_lang["stev.form.html_check.pouzit"] = "Opravit";dl_lang["stev.form.html_check.navrhnout"] = "Návrh opravy";dl_lang["stev.zbyva"] = "zbývá";dl_lang["stev.prebyva"] = "přebývá";dl_lang["stev.dominima"] = "do minima";dl_lang["stev.domaxima"] = "do maxima";dl_lang["stev.dlg_neodpovida_podminkam"] = "Hodnota již nevyhovuje podmínkám definovaným pro tuto položku.";dl_lang["stev.dlg_neplatne"] = "Položka je v číselníku označena jako neplatná.";dl_lang["stev.dlg_expirovane"] = "Položka je v číselníku již expirovaná.";dl_lang["stev.dlg_nezavedene"] = "Položka není v číselníku zatím zavedena.";dl_lang["stev.leave_form"] = "Vypadá to, že máte rozeditovaný formulář. Opuštěním stránky bez uložení přijdete o data. Opravdu odejít?";dl_lang["stev.filtr.podcarou.odstranit"] = "odstranit";dl_lang["stev.filtr.podcarou.odstranitradek"] = "odstranit řádek";
+</script>
+
+
+<script language="javascript" type="text/javascript">
+var dl_root = ".."; var dl_pie_switch = false; var dl_id="";var dl_tid=""; var dl_lang_id="cs";
+            var dl_config = {
+               stev : {
+                  resource_location: "",
+                  report_problem: false,
+                  pie: {
+                        form_select: false
+                     }
+               }
+            };
+            var dl_module_id = "predmety";
+            var dl_page_info = {
+               url:      "/studium/predmety/index.php?do=predmet&kod=NINF030&skr=2026",
+               module:   dl_module_id,
+               postdata: "YTowOnt9",
+               getdata : "YTozOntzOjI6ImRvIjtzOjc6InByZWRtZXQiO3M6Mzoia29kIjtzOjc6Ik5QUkcwMzAiO3M6Mzoic2tyIjtzOjQ6IjIwMjYiO30="
+            };
+            
+</script>
+
+<div id="hint" style="position:absolute; z-index:100; min-width:350px; margin-top: 20px; margin-left: 10px; visibility: hidden; display: none; border: 1px solid #FCAF3F;"><div id="hintlbl" style="padding: 4px 2px 4px 2px; background: #FEF7C1; color:#000000;"></div></div>
+
+<div id="stev_header_bkg"><div id="stev_header"><span id="stev_module_ico"><a href="../predmety/index.php" ><img src="../img/predmety.gif" width="32" height="32" alt="Předměty" title="Předměty"></a></span><span id="stev_nazev"><span id="stev_nazev_modulu_sverzi"><span style="" id="stev_nazev_modulu">Předměty</span><span id="verze_modulu">(verze: 996)</span></span><span id="sis_plus_icons"></span><br /><span id="stev_podtitul_modulu">Předmět, akademický rok 2026/2027</span></span></span><span id="stev_logo"></span><span id="stev_role_icons" class="anonym"><span id="stev_icons"><a class="stev_ico stev_home" href="../index.php" title="zpět na úvodní stránku" id="stev_home" >&nbsp;</a><a class="stev_ico stev_login stev_ico_with_text" href="../index.php?sso?ret=predmety/index.php" title="přihlásit se" id="stev_login" >přihlásit se</a><a class="stev_ico stev_login_select stev_ico_with_text" href="../login.php?ret=predmety/index.php" title="vybrat způsob přihlášení..." id="stev_login_select" >jiné přihlášení</a><a class="stev_ico stev_lang_en" href="/studium/eng/predmety/index.php?do=predmet&amp;kod=NINF030&amp;skr=2026" title="switch to english" id="stev_lang_en" >&nbsp;</a><a class="stev_ico stev_help" href="../help2.php?modul=predmety&amp;tema=predm210&amp;help=1359" title="nápověda" id="stev_help" target="sis_help">&nbsp;</a></span></span></div></div>
+<div id="loading" style="z-index: 1000; left: 0; top: 100; width: 95%; position: absolute; visibility: hidden; cursor: wait;" onclick="ShowHide('loading',0); event.cancelBubble = true;">
+               <center>
+                  <div class="head1" style="width: 300px; color: #FFB675; font-weight: bold; padding: 3px 0px 3px 0px;">Studijní Informační Systém</div>
+                  <div style="width: 300px; background-color: #F5F5F5; border: 1px dotted #CACACA; border-top: 0px; padding-top: 10px; padding-bottom: 10px;">Stránka se načítá...<br>Aplikace<b> Předměty</b></div>
+               </center>
+               </div>
+
+<script language="javascript" type="text/javascript">
+addRegDiv('loading');
+</script>
+
+
+<script language="javascript" type="text/javascript">
+ShowHide('loading',1);
+</script>
+
+
+<table cellspacing="0" cellpadding="0" width="100%" border="0"><tr><td>
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin-top: 1px;" class="menu"><tr class="menu1"><td class="session" align="center" valign="middle" width="40" nowrap><span id="session" title="zbývající čas do konce sezení">--:--</span></td><td class="ico"><a class="home" href="../index.php" title="zpět na úvodní stránku"></a></td><td class="ico"><a href="#" class="modul" id="stev_modul" onclick="ShowHide('stev_modul_list', 3); this.blur(); event.cancelBubble = true; return false;" title="změna modulu"></a><div id="stev_modul_list" style="font-family: tahoma, arial, helvetica;"><table border="0" cellpadding="2" cellspacing="0" class="tab2" style="margin: 5px 8px 5px 5px;"><tr><td>&nbsp;</td><td nowrap><a href="../prijimacky/index.php?KEY=Az1"  class="link2">Přijímací řízení</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../szz_st/index.php?KEY=Az1"  class="link2">Státní závěrečné zkoušky</a></td></tr><tr><td><span style="font-size: 80%; color: #F00; font-weight: bold;">x</span></td><td nowrap><a href="../predmety/index.php?KEY=Az1"  class="link2">Předměty</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../dipl_st/index.php?KEY=Az1"  class="link2">Témata prací (Výběr práce)</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../anketa/index.php?KEY=Az1"  class="link2">Anketa</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../rozvrhng/index.php?KEY=Az1"  class="link2">Rozvrh</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../prihlastaz/index.php?KEY=Az1"  class="link2">Přihlašování stáží</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../komise/index.php?KEY=Az1"  class="link2">Komise</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../szz/index.php?KEY=Az1"  class="link2">Pozvánky na státní zkoušky a obhajoby</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../ckis/index.php?KEY=Az1"  class="link2">Centrální katalog</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../pez/index.php?KEY=Az1"  class="link2">Portál elektronických zdrojů</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../ukaz/index.php?KEY=Az1"  class="link2">Centrální vyhledávač informačních zdrojů UK</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../moodle/index.php?KEY=Az1"  class="link2">Moodle (E-learning)</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../iforum/index.php?KEY=Az1"  class="link2">UK Forum</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_uk_point/index.php?KEY=Az1"  class="link2">UK Point</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_centrum_carolina/index.php?KEY=Az1"  class="link2">Centrum Carolina</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_phd_platform/index.php?KEY=Az1"  class="link2">Platforma doktorského studia</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_klub_alumni/index.php?KEY=Az1"  class="link2">Klub Alumni</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../sis_4EU/index.php?KEY=Az1"  class="link2">Evropská univerzitní aliance 4EU+</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../skolitel/index.php?KEY=Az1"  class="link2">Přehled školitelů</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../promoce/index.php?KEY=Az1"  class="link2">Promoce</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../harmonogram/index.php?KEY=Az1"  class="link2">Harmonogram</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../ekczv/index.php?KEY=Az1"  class="link2">Evidence programů CŽV</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../nastenka/index.php?KEY=Az1"  class="link2">Nástěnka</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../kdojekdo/index.php?KEY=Az1"  class="link2">Hledání osob</a></td></tr><tr><td>&nbsp;</td><td nowrap><a href="../loginy/index.php?KEY=Az1"  class="link2">Vyhledávání loginů</a></td></tr></table></div>
+
+<script language="javascript" type="text/javascript">
+addRegDiv('stev_modul_list');
+</script>
+
+
+<script language="javascript" type="text/javascript">
+getE("stev_modul_list").style.display = "none";
+</script>
+</td><td class="ico"><a class="print" href="/studium/predmety/index.php?do=predmet&amp;kod=NINF030&amp;skr=2026&amp;stev_print=on" target="_blank" title="verze pro tisk"></a></td><td><div class="menu_empty">&nbsp;</div></td>
+<td nowrap><a href="../predmety/index.php?do=search"  class="menu">Hledání ...</a></td>
+<td nowrap><a href="../predmety/index.php?do=ucit"  class="menu">Vyučující</a></td>
+<td nowrap><a href="../predmety/index.php?do=ustav"  class="menu">Katedry</a></td>
+<td nowrap><a href="../predmety/index.php?do=trida"  class="menu">Třídy</a></td>
+<td nowrap><a href="../predmety/index.php?do=klas"  class="menu">Klasifikace</a></td>
+<td nowrap><a href="../predmety/index.php?do=prohl"  class="menu">Prohlížení dle oborů/plánů</a></td>
+<td nowrap><a href="../predmety/index.php?do=setup"  class="menu">Nastavení</a></td><td width="100%"><div class="menu_empty" style="border-right: 1px solid #9EB69B;">&nbsp;</div></td></tr></table>
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" style="margin: 0px;" class="menu">
+                     <tr class="menu2">
+                        <td width="42"><div class="menu_empty" style="width: 20px; border-left: 1px solid #9EB69B;">&nbsp;</div></td> <td><div class="menu_empty">&nbsp;</div></td>
+<td nowrap style="border-top: 2px solid #F2A92F; border-left: 1px solid #888888; border-right: 1px solid #888888;"><a href="../predmety/index.php?do=predmet&amp;kod=NINF030"  class="menu_a">Popis předmětu</a></td><td width="100%"><div class="menu_empty" style="border-right: 1px solid #9EB69B;">&nbsp;</div></td></tr><tr><td colspan="2"><div class="shadow">&nbsp;</div></td><td style="border: 0px;"><div class="shadow_a">&nbsp;</div></td><td><div class="shadow">&nbsp;</div></td></tr></table>
+
+
+<div id="content">
+<noscript><table cellspacing="0" cellpadding="1" border="0" width="100%" class="warning"><tr><td align="center" valign="middle" class="warning_ico"><img src="../img/div_warning.gif" ></td><td class="warning_text"><ul class="warning_text"><li>Váš prohlížeč nepodporuje JavaScript nebo je jeho podpora vypnutá. Některé funkce nemusejí být dostupné.</li></ul></td></tr></table></noscript>
+
+<div class="form_div pageBlock">
+<div class="form_div_title">Programování 1 - NINF030</div>
+
+<table cellspacing="0" cellpadding="0" border="0">
+         <tr><td valign="top">
+<table cellpadding="3" cellspacing="0" class="tab2"><tr>
+                  <th>Anglický název:</th>
+                  <td>Programming 1</td>
+               </tr><tr>
+                  <th>Podoba výuky:</th>
+                  <td>přednáška+cvičení</td>
+               </tr><tr>
+                  <th>Zajišťuje:</th>
+                  <td><a href="../predmety/redir.php?redir=sezn_kat&amp;fak=10000&amp;kod=32-KINF"  class="link3">Katedra informatiky (32-KINF)</a></td>
+               </tr><tr>
+                  <th>Fakulta:</th>
+                  <td><a href="../predmety/redir.php?redir=sezn_fak&amp;kod=10000"  class="link3">Fakulta přírodních věd</a></td>
+               </tr><tr>
+                  <th>Platnost:</th>
+                  <td>od 2022</td>
+               </tr><tr>
+                  <th>Počet semestrů výuky:</th>
+                  <td>1</td>
+               </tr><tr>
+                  <th>Semestr:</th>
+                  <td>zimní</td>
+               </tr><tr>
+                  <th>E-Kredity:</th>
+                  <td>5</td>
+               </tr><tr>
+                  <th>Rozsah, examinace:</th>
+                  <td>zimní s.:2/2, Z <span style="font-size: 90%; color: #666;cursor: help;border-bottom:1px dotted #666;" title="hodiny/týden">[HT]</span></td>
+               </tr><tr>
+                  <th>Počet míst:</th>
+                  <td>neomezen</td>
+               </tr><tr>
+                  <th>Maximální kapacita předmětu:</th>
+                  <td>neomezen</td>
+               </tr><tr>
+                  <th>Minimální obsazenost:</th>
+                  <td>neomezen</td>
+               </tr><tr>
+                  <th>4EU+:</th>
+                  <td>ne</td>
+               </tr><tr>
+                  <th>Virtuální mobilita / počet míst pro virtuální mobilitu:</th>
+                  <td>ne</td>
+               </tr><tr>
+                  <th>Stav předmětu:</th>
+                  <td>vyučován</td>
+               </tr><tr>
+                  <th>Jazyk výuky:</th>
+                  <td>čeština, angličtina</td>
+               </tr><tr>
+                  <th>Forma uskutečňování:</th>
+                  <td>prezenční</td>
+               </tr><tr>
+                  <th>Další informace:</th>
+                  <td><a href="https://www.example.edu/~vzorny/"  class="link3">https://www.example.edu/~vzorny/</a></td>
+               </tr><tr>
+                  <th>Možnost opakovaného zápisu:</th>
+                  <td>2 / 2 / 2 / 2<img src="../img/div_tip.gif" style="cursor: help; margin-left: 3px;" onmousemove="ShowHint('hint',this.id,0,'Dle plánu počty zápisů pro: povinné předměty / povinně volitelné / volitelné / počet opakování, pokud student nemá předmět ve studijním plánu (případná čísla uvedená v závorce se vztahují k bakalářskému studiu)');" onmouseout="HideHint('hint');"></td>
+               </tr></table>
+</td><td valign="top">
+<table cellpadding="3" cellspacing="0" class="tab2" style="margin-left: 15px;"><tr>
+                  <th>Garant:</th>
+                  <td><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=11324"  class="link3">RNDr. Ivan Vzorný, Ph.D.</a><br /><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=11282"  class="link3">RNDr. Karel Ukázka, Ph.D.</a><br /><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=64406"  class="link3">Adam Příklad, M.Sc.</a></td>
+               </tr><tr>
+                        <th>Vyučující:</th>
+                        <td><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=11037"  class="link3">Mgr. Tomáš Fiktivní</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=64406"  class="link3">Adam Příklad, M.Sc.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=11324"  class="link3">RNDr. Ivan Vzorný, Ph.D.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=12406"  class="link3">Mgr. Martin Vzorek, Ph.D.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=11369"  class="link3">RNDr. František Zkušební, CSc.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=11282"  class="link3">RNDr. Karel Ukázka, Ph.D.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=13270"  class="link3">Mgr. Klára Ukázková, Ph.D.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=59496"  class="link3">RNDr. Vít Příkladný, Ph.D.</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=24426"  class="link3">Mgr. Jiří Testovací</a><br><a href="../predmety/redir.php?redir=sezn_ucit&amp;kod=65461"  class="link3">RNDr. Michal Modelový</a></td>
+                     </tr><tr>
+                  <th>Třída:</th>
+                  <td><a href="../predmety/redir.php?redir=sezn_trida&amp;fak=10000&amp;kod=IB"  class="link3">Informatika Bc.</a></td>
+               </tr><tr>
+                  <th>Kategorizace předmětu:</th>
+                  <td><a href="../predmety/redir.php?redir=sezn_klas&amp;kod=INF"  class="link3">Informatika</a> <b>&gt;</b> <a href="../predmety/redir.php?redir=sezn_klas&amp;kod=INFPRG"  class="link3">Programování</a></td>
+               </tr><tr>
+                        <th>Korekvizity :</th>
+                        <td><a href="../predmety/index.php?do=predmet&kod=NINF062" class="link3" onmousemove="ShowHint('hint',this.id,0,'Algoritmizace (pro: zápis)');" onmouseout="HideHint('hint');" >NINF062</a></td>
+                     </tr><tr>
+                        <th>Neslučitelnost :</th>
+                        <td><a href="../predmety/index.php?do=predmet&kod=NOTH101" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování 1 (pro: zápis) [nevyučován]');" onmouseout="HideHint('hint');" >NOTH101</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH111" class="link3" onmousemove="ShowHint('hint',this.id,0,'Programování 1 (pro: zápis)');" onmouseout="HideHint('hint');" >NOTH111</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH030" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování I (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH030</a></td>
+                     </tr><tr>
+                        <th>Záměnnost :</th>
+                        <td><a href="../predmety/index.php?do=predmet&kod=NOTH030" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování I (pro: zápis + plnění) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH030</a></td>
+                     </tr><tr>
+                        <th>Je korekvizitou pro:</th>
+                        <td><a href="../predmety/index.php?do=predmet&kod=NINF062" class="link3" onmousemove="ShowHint('hint',this.id,0,'Algoritmizace (pro: zápis)');" onmouseout="HideHint('hint');" >NINF062</a>, <a href="../predmety/index.php?do=predmet&kod=NINF047" class="link1" onmousemove="ShowHint('hint',this.id,0,'Praktikum z programování pro začátečníky (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NINF047</a>, <a href="../predmety/index.php?do=predmet&kod=NINF178" class="link3" onmousemove="ShowHint('hint',this.id,0,'Principy počítačů pro bioinformatiky (pro: zápis)');" onmouseout="HideHint('hint');" >NINF178</a>, <a href="../predmety/index.php?do=predmet&kod=NINF031" class="link3" onmousemove="ShowHint('hint',this.id,0,'Programování 2 (pro: zápis)');" onmouseout="HideHint('hint');" >NINF031</a></td>
+                     </tr><tr>
+                        <th>Je neslučitelnost pro:</th>
+                        <td><a href="../predmety/index.php?do=predmet&kod=NOTH103" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování pro deskriptivní geometrii I (pro: zápis) [nevyučován]');" onmouseout="HideHint('hint');" >NOTH103</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH104" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování pro deskriptivní geometrii II (pro: zápis) [nevyučován]');" onmouseout="HideHint('hint');" >NOTH104</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH111" class="link3" onmousemove="ShowHint('hint',this.id,0,'Programování 1 (pro: zápis)');" onmouseout="HideHint('hint');" >NOTH111</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH163" class="link1" onmousemove="ShowHint('hint',this.id,0,'Základy programování (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH163</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH044" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování I (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH044</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH022" class="link1" onmousemove="ShowHint('hint',this.id,0,'Základy algoritmizace a programování (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH022</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH001" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH001</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH021" class="link1" onmousemove="ShowHint('hint',this.id,0,'Úvod do programování a práce s počítačem (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH021</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH030" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování I (pro: zápis) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH030</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH101" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování 1 (pro: zápis) [nevyučován]');" onmouseout="HideHint('hint');" >NOTH101</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH103" class="link3" onmousemove="ShowHint('hint',this.id,0,'Programování pro deskriptivní geometrii I (pro: zápis)');" onmouseout="HideHint('hint');" >NOTH103</a></td>
+                     </tr><tr>
+                        <th>Je záměnnost pro:</th>
+                        <td><a href="../predmety/index.php?do=predmet&kod=NOTH030" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování I (pro: zápis + plnění) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH030</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH044" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování I (pro: zápis + plnění) [zrušen]');" onmouseout="HideHint('hint');"  style="text-decoration: line-through;">NOTH044</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH103" class="link3" onmousemove="ShowHint('hint',this.id,0,'Programování pro deskriptivní geometrii I (pro: zápis + plnění)');" onmouseout="HideHint('hint');" >NOTH103</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH101" class="link1" onmousemove="ShowHint('hint',this.id,0,'Programování 1 (pro: zápis + plnění) [nevyučován]');" onmouseout="HideHint('hint');" >NOTH101</a>, <a href="../predmety/index.php?do=predmet&kod=NOTH111" class="link3" onmousemove="ShowHint('hint',this.id,0,'Programování 1 (pro: zápis + plnění)');" onmouseout="HideHint('hint');" >NOTH111</a></td>
+                     </tr></table>
+</td></tr></table><div style="padding: 2px; margin-top: 5px; background-color: #EEE; border-top:1px solid #CACACA; text-align: right;"><a href="../anketa/redir.php?redir=anketa_v&amp;povinn=NINF030&amp;fak=10000"  class="link8">Výsledky anket</a>&nbsp;&nbsp;&nbsp;<a href="../rozvrhng/redir.php?fakulta=10000&amp;skr=2026&amp;sem=1&amp;predmet=NINF030"  class="link8">Rozvrh ZS</a>&nbsp;&nbsp;&nbsp;<a href="../nastenka/redir.php?kod=NINF030"  class="link8">Nástěnka</a>&nbsp;&nbsp;&nbsp;</div>
+<span class="clear"></span></div><div style="border-top: 1px solid #DADADA; margin-bottom: 5px;"></div>
+
+
+<script language="javascript" type="text/javascript">
+var file_ids = [];
+</script>
+<table cellpadding="2" cellspacing="0" class="tab1" width="100%" style="margin-bottom: 10px;">
+         <tr class="head3">
+            <td valign="bottom"><table class="tab3" style="width:100%;"><col><col width="16"><tr><td><b>Anotace</b> - <span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete jepovinne" data-object="pamela_A" data-title="" data-param_empty_option_text="'---'" data-param_prepinace="[]">
+
+<script language="javascript" type="text/javascript">
+var pamela_A_showhide_data = Array();pamela_A_showhide_data["CZE"] = "pamela_A_CZE";pamela_A_showhide_data["ENG"] = "pamela_A_ENG";
+</script>
+<select name="pamela_A" id="pamela_A" class="inp1"   onchange="dl_showhide(this, pamela_A_showhide_data);"  ><option class="opt1" value="">---</option><option value="CZE" selected >čeština</option><option value="ENG"  >angličtina</option></select></span></td><td></td></tr></table></td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #006699">
+<div id="pamela_A_CZE" style="padding: 3px 5px 3px 5px;">Typické prostředky a nástroje programovacích jazyků. 
+Práce v integrovaném vývojovém prostředí, tvorba a ladění programů (editor, překlad, výpočet, ladicí prostředky).
+Programová realizace základních algoritmů ze souběžně vyučovaného kurzu NINF062 Algoritmizace.
+<div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Modelový Pavel, doc. RNDr., CSc. (02.02.2018)
+                                
+                                </div>
+                           </div></div>
+<div id="pamela_A_ENG" style="padding: 3px 5px 3px 5px; visibility: hidden; display: none;">A first course about programming and algorithms for first-year students studying computer science and computer 
+science education. The course covers principles of algorithms, basic algorithms, data structures, programming 
+techniques, typical programming environments and practical program design and debugging.
+<div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Modelový Pavel, doc. RNDr., CSc. (09.10.2017)
+                                
+                                </div>
+                           </div></div>   </td>
+         </tr>
+         </table><table cellpadding="2" cellspacing="0" class="tab1" width="100%" style="margin-bottom: 10px;">
+         <tr class="head3">
+            <td valign="bottom"><table class="tab3" style="width:100%;"><col><col width="16"><tr><td><b>Podmínky zakončení předmětu</b> - <span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete jepovinne" data-object="pamela_E" data-title="" data-param_empty_option_text="'---'" data-param_prepinace="[]">
+
+<script language="javascript" type="text/javascript">
+var pamela_E_showhide_data = Array();pamela_E_showhide_data["CZE"] = "pamela_E_CZE";pamela_E_showhide_data["ENG"] = "pamela_E_ENG";
+</script>
+<select name="pamela_E" id="pamela_E" class="inp1"   onchange="dl_showhide(this, pamela_E_showhide_data);"  ><option class="opt1" value="">---</option><option value="CZE" selected >čeština</option><option value="ENG"  >angličtina</option></select></span></td><td></td></tr></table></td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #006699">
+<div id="pamela_E_CZE" style="padding: 3px 5px 3px 5px;"><p>Předmět je zakončen zápočtem. K získání zápočtu se požaduje:
+</p>
+<p>
+</p>
+<p>    aktivní účast na cvičení spočívající obvykle v řešení úkolů (programů) v termínech stanovených cvičícím (ať už na cvičení nebo doma),
+</p>
+<p>
+</p>
+<p>    vypracování zápočtového programu a jeho odevzdání do termínu stanoveného cvičícím,
+</p>
+<p>
+</p>
+<p>    úspěšné absolvování zápočtového testu.
+</p>
+<p>
+</p>
+<p>Vyučující stanoví podmínky, za nichž student může nahradit chybějící domácí úkoly nebo opakovaně odevzdat zápočtový program po odstranění nalezených závad.
+</p>
+<p>
+</p>
+<p>Na složení zápočtového testu má student tři pokusy do konce zkouškového období zimního semestru (jeden řádný a dva opravné termíny). Vyučující může studentům povolit vykonat opravný termín i dodatečně během letního semestru.</p><div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Fiktivní Tomáš, doc. RNDr., CSc. (29.09.2026)
+                                
+                                </div>
+                           </div></div>
+<div id="pamela_E_ENG" style="padding: 3px 5px 3px 5px; visibility: hidden; display: none;"><p>Students will receive a credit for this course by successfully completing the following requirements:
+</p>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Active participation in the practice sessions in the computer lab.  Generally this means that students must complete the assigned programming exercises, either during the lab session or later on at home.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Completion of a semester programming project by the deadline fixed by the instructor.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Passing a written test at the end of the semester.
+</li></ul>
+<p>
+</p>
+<p>The instructor will establish conditions whereby a student can make up for missing homework assignments or resubmit their semester project after improving deficiencies that were found the first time around.
+</p>
+<p>
+</p>
+<p>A student has three chances to pass the written test, normally by the end of the winter exam period.  The instructor may choose to allow a student to make one or more of these attempts during the following summer semester.
+</p>
+<p>
+</p>
+<p>Cheating on a test or a homework assignment may result in automatically failing the course.</p><div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Fiktivní Tomáš, doc. RNDr., CSc. (29.09.2026)
+                                
+                                </div>
+                           </div></div>   </td>
+         </tr>
+         </table><table cellpadding="2" cellspacing="0" class="tab1" width="100%" style="margin-bottom: 10px;">
+         <tr class="head3">
+            <td valign="bottom"><table class="tab3" style="width:100%;"><col><col width="16"><tr><td><b>Literatura</b> - <span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete jepovinne" data-object="pamela_L" data-title="" data-param_empty_option_text="'---'" data-param_prepinace="[]">
+
+<script language="javascript" type="text/javascript">
+var pamela_L_showhide_data = Array();pamela_L_showhide_data["CZE"] = "pamela_L_CZE";pamela_L_showhide_data["ENG"] = "pamela_L_ENG";
+</script>
+<select name="pamela_L" id="pamela_L" class="inp1"   onchange="dl_showhide(this, pamela_L_showhide_data);"  ><option class="opt1" value="">---</option><option value="CZE" selected >čeština</option><option value="ENG"  >angličtina</option></select></span></td><td></td></tr></table></td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #006699">
+<div id="pamela_L_CZE" style="padding: 3px 5px 3px 5px;"><ul style="margin: 0; padding-left: 15px;"><li> John V. Guttag, Introduction to Computation and Programming Using Python: With Application to Understanding Data, 2nd ed.,, MIT Press, Cambridge, MA 2016
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Allen B. Downey, Think Python: How to Think Like a Computer Scientist, 2nd ed., O'Reilly Media, Sebastopol, CA 2015
+</li></ul>
+<p></p><div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Modelový Pavel, doc. RNDr., CSc. (25.05.2022)
+                                
+                                </div>
+                           </div></div>
+<div id="pamela_L_ENG" style="padding: 3px 5px 3px 5px; visibility: hidden; display: none;"><ul style="margin: 0; padding-left: 15px;"><li> John V. Guttag, Introduction to Computation and Programming Using Python: With Application to Understanding Data, 2nd ed.,, MIT Press, Cambridge, MA 2016
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Allen B. Downey, Think Python: How to Think Like a Computer Scientist, 2nd ed., O'Reilly Media, Sebastopol, CA 2015
+</li></ul>
+<p>
+</p>
+<p></p><div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Modelový Pavel, doc. RNDr., CSc. (25.05.2022)
+                                
+                                </div>
+                           </div></div>   </td>
+         </tr>
+         </table><table cellpadding="2" cellspacing="0" class="tab1" width="100%" style="margin-bottom: 10px;">
+         <tr class="head3">
+            <td valign="bottom"><table class="tab3" style="width:100%;"><col><col width="16"><tr><td><b>Sylabus</b> - <span class="form_select form_obj param_empty_option param_empty_option_text param_dialog_kod param_dialog_nazev_kod param_autolink param_autocomplete jepovinne" data-object="pamela_S" data-title="" data-param_empty_option_text="'---'" data-param_prepinace="[]">
+
+<script language="javascript" type="text/javascript">
+var pamela_S_showhide_data = Array();pamela_S_showhide_data["CZE"] = "pamela_S_CZE";pamela_S_showhide_data["ENG"] = "pamela_S_ENG";
+</script>
+<select name="pamela_S" id="pamela_S" class="inp1"   onchange="dl_showhide(this, pamela_S_showhide_data);"  ><option class="opt1" value="">---</option><option value="CZE" selected >čeština</option><option value="ENG"  >angličtina</option></select></span></td><td></td></tr></table></td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #006699">
+<div id="pamela_S_CZE" style="padding: 3px 5px 3px 5px;"><ul style="margin: 0; padding-left: 15px;"><li> Proměnné, typy hodnot, desetinná čísla a problémy s přesností. 
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Operátory a jejich priority.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Přiřazení, základní podmínky a cykly.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Struktura programu: komentáře, odsazování
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Seznamy / pole a operace nad nimi.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Dekompozice kódu. 
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Definice a volání funkcí, způsoby předávání parametrů.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Lokální identifikátory a jejich viditelnost.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Modularita programů. 
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Předávání funkcí jiným funkcím.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Používání knihoven, import, grafický výstup.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Práce s řetězci.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Podrobněji o typovém systému.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Další strukturované datové typy a operace s nimi.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Třídy a objekty. Popis reality pomocí objektů.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Odvozování typů, dědičnost.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Lineární spojové seznamy, operace.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Práce se stromy.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Ladění, defenzivní programování. 
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Jednotkové, regresní  a integrační testy.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Výjimky a jejich odchytávání. Aserce.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Vstup a výstup. Práce se soubory.
+</li></ul>
+<p></p><div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Fiktivní Tomáš, doc. RNDr., CSc. (23.09.2019)
+                                
+                                </div>
+                           </div></div>
+<div id="pamela_S_ENG" style="padding: 3px 5px 3px 5px; visibility: hidden; display: none;"><ul style="margin: 0; padding-left: 15px;"><li> Variables, types, floating-point numbers and inaccuracy problems..
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Operators and their precedence.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Assignment, conditional statements and loops..
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Program structure: comments, indentation.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> List / array  operations.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Code decomposition.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Function definitions and calls, parameter passing.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Local identifiers and their scope.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Modularity of programs..
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Passing function as an argument to another function.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Using libraries, import, graphics output.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> String processing.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Type system in greater detail.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Other structured data types.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Classes and objects. Objects as abstractions of real-world entities.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Derivation of types, inheritance.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Linear linked lists.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Tree data structures.
+</li></ul>
+<p>
+</p>
+<ul style="margin: 0; padding-left: 15px;"><li> Debugging, defensive programming.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Unit, regression and integration tests.
+</li></ul>
+<ul style="margin: 0; padding-left: 15px;"><li> Throwing and catching exceptions. Assertions.
+</li></ul>
+<p>
+</p>
+<p>Input and output. File processing.</p><div style="position:relative">
+                                <div style="color: grey; font-style: italic;">Poslední úprava: Fiktivní Tomáš, doc. RNDr., CSc. (23.09.2019)
+                                
+                                </div>
+                           </div></div>   </td>
+         </tr>
+         </table>
+
+<script language="javascript" type="text/javascript">
+
+      $(document).ready(function(){
+        // pamela advlit - odkazům u publikací přidám title správné jazykové varianty
+        // Najde všechny odkazy s css třídou literatura_link
+        var odkazy = document.querySelectorAll('a.literatura_link');
+        // Projde všechny nalezené odkazy a přidá atribut title
+        odkazy.forEach(function(odkaz) {
+            odkaz.setAttribute('title', 'Vyhledat publikaci v knihovně');
+        });      
+      
+         if (hash_params['file_id'] && file_ids)
+         {
+            if (in_array(hash_params['file_id'], file_ids))
+            {
+               var dv = document.createElement('div');
+               dv.innerHTML = '<p style="padding: 1em;">Během chvíle se zobrazí výzva k uložení souboru, čekejte...</p>';
+               var dlg = new Popup(dv);
+               dlg.setWidth(1000);
+               dlg.backgroundClose = true;
+               dlg.hasCloseButton = false;
+               dlg.open();
+               document.location.href = './?id=&do=download&did='+hash_params['file_id']+'&kod=NINF030';
+
+               window.setTimeout(function()
+               {
+                  dlg.remove();
+               }, 5000);
+            }
+            else
+            {
+               alert('Nemáte oprávnění pro stažení souboru.');
+            }
+         }
+      });
+   
+</script>
+</div><table border="0" cellspacing="0" cellpadding="0" width="100%" id="foot" style="margin-top: 5px;">
+                     <tr>
+                        <td>&nbsp;</td><td nowrap><a class="top" href="#stev_top" title="na začátek stránky"></a></td><td nowrap><a class="tisk" href="/studium/predmety/index.php?do=predmet&amp;kod=NINF030&amp;skr=2026&amp;stev_print=on" target="_blank" title="verze pro tisk"></a></td><td nowrap><a href="http://sis.example.edu/studium/info/index.php" target="_blank">Kontakty</a></td><td nowrap><a href="https://sis.example.edu/studium/info2/index.php" target="_blank">Podpora studentů se speciálními potřebami na UK</a> </td>   <td width="100%">&nbsp;</td>
+                     </tr>
+                     </table><div class="shadow">&nbsp;</div>
+</td></tr></table>
+
+<div id="paticka2"><a href="http://www.example.edu"  target="_blank">Example University</a> | <a href="https://sis.example.edu"  target="_blank">Informační systém</a></div>
+
+<script language="javascript" type="text/javascript">
+ShowHide('loading',0);
+</script>
+
+</body></html>

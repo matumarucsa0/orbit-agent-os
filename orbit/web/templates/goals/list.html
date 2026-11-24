@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% import "goals/_macros.html" as gm with context %}
+{% block title %}Goals · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <div>
+      <h1>Goals</h1>
+      <p class="muted small">What you want, most important first. This order is what the weekly review and every agent weigh things against.</p>
+    </div>
+    {% if active %}<a class="button small nowrap" href="/goals/review">Review</a>{% endif %}
+  </div>
+
+  {% if review_days is not none %}
+  <p class="card small">Last reviewed {{ review_days }} days ago. <a href="/goals/review">Review your goals</a>.</p>
+  {% endif %}
+
+  <form method="post" action="/goals" class="card stack">
+    <label for="goal-title">New goal</label>
+    <input id="goal-title" name="title" required maxlength="200" placeholder="Run a half marathon">
+    <div class="row">
+      <select name="horizon" aria-label="Horizon">
+        <option value="">Horizon (optional)</option>
+        {% for h in horizons %}<option value="{{ h.value }}">{{ h.value | capitalize }}</option>{% endfor %}
+      </select>
+      <button type="submit" class="primary">Add</button>
+    </div>
+  </form>
+
+  {% if active %}
+  <ol class="list goals">
+    {% for g in active %}
+    {% set open = open_promises(g) %}
+    <li class="stack-sm" id="goal-{{ g.id }}">
+      <div class="row-between">
+        <div>
+          <strong>{{ g.rank }}.</strong> <a href="/goals/{{ g.id }}"><strong>{{ g.title }}</strong></a>
+          <div>{{ gm.meta(g, today) }}
+            {% if open %}<span class="muted small"> · {{ open | length }} open {{ "promise" if open | length == 1 else "promises" }}</span>{% endif %}
+            {% if g.people %}<span class="muted small"> · {{ g.people | map(attribute="display_name") | join(", ") }}</span>{% endif %}
+          </div>
+          {% if g.target %}<div class="muted small">Target: {{ g.target }}</div>{% endif %}
+        </div>
+        {{ gm.move_buttons(g) }}
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p class="muted">No goals yet. Add the first one above.</p>
+  {% endif %}
+
+  {% if inactive %}
+  <details>
+    <summary><strong>Paused, done and dropped</strong> <span class="muted small">({{ inactive | length }})</span></summary>
+    <ul class="list">
+      {% for g in inactive %}
+      <li><a href="/goals/{{ g.id }}">{{ g.title }}</a> <span class="muted small">{{ g.status.value }}</span></li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+{% endblock %}

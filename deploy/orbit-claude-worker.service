@@ -1,0 +1,25 @@
+[Unit]
+Description=Orbit Claude worker (Claude Code answers Orbit's questions)
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=simple
+# An unprivileged user that has Claude Code installed and its login (see docs/DEPLOY.md §10).
+User=orbit-review
+ExecStart=/usr/bin/python3 /opt/orbit/scripts/claude_worker.py
+Environment=ORBIT_REVIEW_ENV=/etc/orbit-review.env
+Restart=always
+RestartSec=10
+# Up to two questions at a time (the second slot is for captures and drafts, WORKER_INTERACTIVE_SLOT=0
+# turns it off). The VM is small: keep Claude Code from starving Postgres and the app. Above
+# MemoryHigh the worker is slowed and pushed to swap; MemoryMax is the hard stop.
+MemoryHigh=600M
+MemoryMax=900M
+Nice=10
+# Claude Code only needs its own home directory and the network.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/orbit-review

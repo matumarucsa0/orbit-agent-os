@@ -1,0 +1,18 @@
+.env
+*.db
+__pycache__/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+backups/
+.DS_Store
+*.shortcut
+# Private list of your own strings for scripts/scan-personal.sh (copy the .example file).
+.pre-publish-patterns
+# Agent config in .claude/ is committed; only local overrides and session state are ignored.
+.claude/settings.local.json
+.claude/*.local.json
+.claude/worktrees/
+.claude/projects/
+.claude/todos/

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Context · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Context</h1>
+    <p class="muted small">Exactly what an agent would receive: people, money, meetings and promises together, masked and cut to the size budget. Nothing here is stored or sent anywhere.</p>
+  </div>
+
+  <form method="get" action="/context" class="card stack">
+    <label for="window">Window</label>
+    <select id="window" name="window">
+      {% for value, label in presets %}<option value="{{ value }}" {% if window == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      <option value="custom" {% if window == "custom" %}selected{% endif %}>Custom dates</option>
+    </select>
+    <div class="row">
+      <input type="date" name="start" value="{{ start }}" aria-label="Start date">
+      <input type="date" name="end" value="{{ end }}" aria-label="End date">
+    </div>
+    <p class="muted small">Dates count only with “Custom dates”.</p>
+    <label for="person">About</label>
+    <select id="person" name="person">
+      <option value="">Everything</option>
+      {% for p in everyone %}<option value="{{ p.id }}" {% if person == p.id|string %}selected{% endif %}>{{ p.display_name }}</option>{% endfor %}
+    </select>
+    <button type="submit">Show</button>
+  </form>
+
+  {% if snapshot %}
+  {% set budget = snapshot.budget %}
+  <section class="card stack">
+    <div class="row-between">
+      <strong>Size</strong>
+      <span class="{{ 'warn' if budget.used_chars > budget.limit_chars }}">{{ "{:,}".format(budget.used_chars) }} / {{ "{:,}".format(budget.limit_chars) }} characters</span>
+    </div>
+    <progress max="{{ budget.limit_chars }}" value="{{ [budget.used_chars, budget.limit_chars] | min }}"></progress>
+    {% if budget.trimmed %}
+    <p class="small">Cut to fit:
+      {% for name, count in budget.trimmed.items() %}{{ name }} (−{{ count }}){% if not loop.last %}, {% endif %}{% endfor %}.
+    </p>
+    {% else %}
+    <p class="muted small">Nothing was cut.</p>
+    {% endif %}
+    <p class="muted small">{{ snapshot.window.start }} to {{ snapshot.window.end }} ({{ snapshot.window.tz }}){% if snapshot.focus %}, about {{ snapshot.focus.person_name or "a person that no longer exists" }}{% endif %}</p>
+  </section>
+
+  {% for name, module, pretty in modules %}
+  <details class="card">
+    <summary><strong>{{ name | capitalize }}</strong>
+      <span class="muted small">
+        {% if name == "goals" %}{% set n = module.goals | length %}{{ n }} {{ "goal" if n == 1 else "goals" }}
+        {% elif name == "people" %}{% set n = module.people | length %}{{ n }} {{ "person" if n == 1 else "people" }}
+        {% elif name == "ledger" %}{% set d = module.debts | length %}{% set b = module.balances | length %}{{ d }} {{ "debt" if d == 1 else "debts" }}, {{ b }} {{ "balance" if b == 1 else "balances" }}
+        {% elif name == "school" %}{% set n = module.lessons | length %}{% set e = module.exams_and_deadlines | length %}{{ n }} {{ "lesson" if n == 1 else "lessons" }}, {{ e }} {{ "exam or deadline" if e == 1 else "exams and deadlines" }}
+        {% elif name == "meetings" %}{% set n = module.meetings | length %}{{ n }} {{ "meeting" if n == 1 else "meetings" }}
+        {% else %}{% set n = module.promises | length %}{{ n }} {{ "promise" if n == 1 else "promises" }}{% endif %}
+        {% if module.truncated %}· not everything{% endif %}
+      </span>
+    </summary>
+    <pre class="small">{{ pretty }}</pre>
+  </details>
+  {% endfor %}
+
+  <details class="card">
+    <summary><strong>As sent</strong> <span class="muted small">the whole snapshot, one line</span></summary>
+    <pre class="small wrap">{{ raw }}</pre>
+  </details>
+  {% endif %}
+</section>
+{% endblock %}

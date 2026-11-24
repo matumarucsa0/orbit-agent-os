@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Merge · Orbit{% endblock %}
+{% macro summary(p) %}
+<div class="card stack merge-card">
+  <strong>{{ p.display_name }}</strong>
+  <div class="muted small">
+    {{ [full_name(p.first_name, p.last_name, p.display_name), p.city, format_birthday(p.birthday_month, p.birthday_day, p.birthday_year)] | select | join(" · ") or "No details" }}
+  </div>
+  <div class="small">{{ p.handles | length }} handles · {{ p.aliases | length }} aliases · {{ p.notes | length }} notes · {{ p.interactions | length }} interactions</div>
+  {% if p.handles %}<div class="small muted">{% for h in p.handles %}{{ h.value }}{% if not loop.last %}, {% endif %}{% endfor %}</div>{% endif %}
+</div>
+{% endmacro %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/people/{{ person.id }}">← {{ person.display_name }}</a></p>
+    <h1>Merge</h1>
+  </div>
+
+  {% if other %}
+  <form method="post" action="/people/merge" class="stack">
+    <p>Pick who to keep. The other's handles, aliases, tags, notes and interactions move over, their name becomes an alias, and empty fields are filled in. Then they're deleted.</p>
+    <label class="choice top">
+      <input type="radio" name="keep_id" value="{{ person.id }}" checked
+             onchange="this.form.merge_id.value='{{ other.id }}'">
+      Keep {{ summary(person) }}
+    </label>
+    <label class="choice top">
+      <input type="radio" name="keep_id" value="{{ other.id }}"
+             onchange="this.form.merge_id.value='{{ person.id }}'">
+      Keep {{ summary(other) }}
+    </label>
+    <input type="hidden" name="merge_id" value="{{ other.id }}">
+    <button type="submit" class="primary">Merge</button>
+  </form>
+  {% else %}
+  <form method="get" action="/people/{{ person.id }}/merge" class="row" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="Find the duplicate…" required aria-label="Find person to merge">
+    <button type="submit">Search</button>
+  </form>
+  {% if results %}
+  <ul class="list">
+    {% for r in results %}
+    <li><a class="list-row" href="/people/{{ person.id }}/merge?with={{ r.id }}"><span class="list-title">{{ r.display_name }}</span></a></li>
+    {% endfor %}
+  </ul>
+  {% elif q %}
+  <p class="muted">Nobody matches “{{ q }}”.</p>
+  {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

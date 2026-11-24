@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "permissions": {
+    "allow": [
+      "Bash(make:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv run alembic check:*)",
+      "Bash(uv run alembic current:*)",
+      "Bash(uv run alembic heads:*)",
+      "Bash(uv run alembic history:*)",
+      "Bash(uv run alembic upgrade head:*)",
+      "Bash(uv run alembic revision --autogenerate:*)",
+      "Bash(uv run python -m evals.run --mode recorded:*)",
+      "Bash(uv run python -m evals.run --mode fake:*)",
+      "Bash(uv run python -m evals.calibrate)",
+      "Bash(uv run python scripts/gen_codemap.py:*)",
+      "Bash(uv run python scripts/check_docs.py:*)",
+      "Bash(uv run python scripts/select_tests.py:*)",
+      "Bash(uv run python -m orbit.cli prompts-snapshot)",
+      "Bash(uv run python -m orbit.cli seed-demo)",
+      "Bash(uv run python -m orbit.cli usage:*)",
+      "Bash(scripts/scan-personal.sh:*)",
+      "Bash(scripts/demo_smoke.sh)",
+      "Bash(shellcheck:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git blame:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git branch --list:*)",
+      "Bash(ls:*)",
+      "Bash(wc:*)",
+      "Bash(rg:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./.env.prod)",
+      "Read(./.env.production)",
+      "Read(./.env.staging)",
+      "Read(./.pre-publish-patterns)",
+      "Read(**/*.db)",
+      "Read(**/*.sqlite)",
+      "Read(**/*.sqlite3)",
+      "Read(**/*.dump)",
+      "Read(**/*.age)",
+      "Read(**/*.shortcut)",
+      "Read(./backups/**)",
+      "Read(./data/school/files/**)",
+      "Read(~/.local/state/orbit/**)",
+      "Edit(./.env)",
+      "Edit(./.env.local)",
+      "Edit(./.env.prod)",
+      "Edit(./.env.production)",
+      "Edit(./.pre-publish-patterns)",
+      "Edit(**/*.db)",
+      "Bash(cat .env)",
+      "Bash(cat ./.env)",
+      "Bash(cat .env.local)",
+      "Bash(cat .pre-publish-patterns)",
+      "Bash(sqlite3:*)",
+      "Bash(psql:*)",
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(git checkout -- .)",
+      "Bash(docker volume rm:*)",
+      "Bash(docker volume prune:*)",
+      "Bash(docker system prune:*)",
+      "Bash(docker compose down -v:*)",
+      "Bash(docker compose down --volumes:*)",
+      "Bash(docker-compose down -v:*)",
+      "Bash(*DROP TABLE*)",
+      "Bash(*DROP DATABASE*)",
+      "Bash(*drop_all*)",
+      "Bash(uv run alembic downgrade:*)",
+      "Bash(uv run python -m orbit.cli seed-demo --force:*)",
+      "Bash(uv run python -m orbit.cli copy-db:*)",
+      "Bash(uv run python -m orbit.cli test-push:*)",
+      "Bash(uv run python -m orbit.cli smoke-test:*)",
+      "Bash(uv run python -m orbit.cli export:*)",
+      "Bash(*--mode live*)",
+      "Bash(*--judge live*)",
+      "Bash(*claude_worker.py*)",
+      "Bash(scripts/restore.sh:*)",
+      "Bash(scripts/backup-drill.sh:*)"
+    ]
+  },
+  "env": {
+    "ORBIT_CLAUDE_MODE": "fake",
+    "SCHEDULER_ENABLED": "false",
+    "ORBIT_OTEL_EXPORTER": "none",
+    "DATABASE_URL": "sqlite:///./agent-scratch.db",
+    "OWNER_NAME": "Alex",
+    "NTFY_URL": "http://127.0.0.1:9",
+    "CALDAV_URL": "http://127.0.0.1:9",
+    "CARDDAV_URL": "http://127.0.0.1:9"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-edits.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/format-python.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/stop-gate.sh",
+            "timeout": 180
+          }
+        ]
+      }
+    ]
+  }
+}

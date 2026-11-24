@@ -1,0 +1,6 @@
+<div class="row split-row">
+  <label class="choice grow"><input type="checkbox" name="person" value="{{ person.id }}" checked> <span>{{ person.display_name }}</span></label>
+  <input type="hidden" name="listed" value="{{ person.id }}">
+  <input name="amount-{{ person.id }}" inputmode="decimal" class="amount" placeholder="Amount"
+         aria-label="{{ person.display_name }}’s amount" value="{{ amount_input(share.amount_minor, currency) }}">
+</div>

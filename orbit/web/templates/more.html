@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}More · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <h1>More</h1>
+  <ul class="list">
+    {% for link in more_links(request) %}
+    <li><a href="{{ link.href }}" class="list-row"><span class="list-title">{{ link.label }}</span></a></li>
+    {% endfor %}
+    <li>
+      <form method="post" action="/logout">
+        <button type="submit" class="list-row list-button"><span class="list-title">Log out</span></button>
+      </form>
+    </li>
+  </ul>
+</section>
+{% endblock %}

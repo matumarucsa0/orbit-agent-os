@@ -1,0 +1,41 @@
+# Local use, on http://localhost:8000. Production (HTTPS, Postgres, backups): docker-compose.prod.yml
+#   SQLite (default):  docker compose up -d --build
+#   Postgres:          set POSTGRES_PASSWORD and ORBIT_DOCKER_DATABASE_URL in .env, then
+#                      docker compose --profile postgres up -d --build
+
+services:
+  app:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: ${ORBIT_DOCKER_DATABASE_URL:-sqlite:////data/orbit.db}
+      SCHOOL_FILES_DIR: /data/school/files
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - orbit-data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+        required: false
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    profiles: [postgres]
+    environment:
+      POSTGRES_DB: orbit
+      POSTGRES_USER: orbit
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+    volumes:
+      - orbit-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orbit -d orbit"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  orbit-data:
+  orbit-pg:

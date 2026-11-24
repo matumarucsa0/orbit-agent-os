@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Transactions · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <p class="small"><a href="/import">← Import</a></p>
+  <div>
+    <h1>Transactions</h1>
+    <p class="muted small">Every imported bank row, newest first. Split or match an older payment from here.</p>
+  </div>
+
+  <form method="get" action="/transactions" class="search" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="Merchant, name, message or amount…"
+           autocomplete="off" aria-label="Search transactions"
+           hx-get="/transactions" hx-trigger="input changed delay:250ms, search"
+           hx-target="#results" hx-include="[name='show']" hx-push-url="true">
+    <input type="hidden" name="show" value="{{ show }}">
+  </form>
+
+  <div class="chips" aria-label="Show">
+    {% for key, text in (("all", "All"), ("shared", "Shared?"), ("received", "Received"), ("unclassified", "Unclassified")) %}
+    <a class="chip {% if show == key %}chip-active{% endif %}" href="/transactions?q={{ q | urlencode }}&show={{ key }}" {% if show == key %}aria-current="true"{% endif %}>{{ text }} <span class="count">{{ counts[key] }}</span></a>
+    {% endfor %}
+  </div>
+
+  <div id="results">{% include "bank/_tx_results.html" %}</div>
+</section>
+{% endblock %}

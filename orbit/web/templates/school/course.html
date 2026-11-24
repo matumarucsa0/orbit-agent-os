@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% import "school/_macros.html" as sm with context %}
+{% block title %}{{ course.name }} · School · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/school/courses">← Courses</a></p>
+    <h1>{{ course.name }}</h1>
+    <p class="muted small">{{ course.code }}{% if course.name_en %} · {{ course.name_en }}{% endif %}</p>
+  </div>
+
+  <section class="card stack-sm">
+    <p class="small">
+      {% if course.credits is not none %}<strong>{{ course.credits }} credit{{ "s" if course.credits != 1 }}</strong>{% else %}Credits unknown{% endif %}
+      {%- if course.completion %} · {{ course.completion }}{% endif %}
+      {%- if course.hours_lecture is not none %} · {{ course.hours_lecture }}/{{ course.hours_seminar }} hours a week{% endif %}
+      {%- if course.semester %} · {{ course.semester.value }}{% endif %}
+      {%- if course.language %} · {{ course.language }}{% endif %}
+    </p>
+    {% if course.guarantor %}<p class="small muted">Guarantor: {{ course.guarantor }}</p>{% endif %}
+    {% if course.department %}<p class="small muted">{{ course.department }}</p>{% endif %}
+    {% for s in scores %}
+    <p class="small">{{ score_labels[s.source] }}: <strong>{{ "%g" | format(s.gained) }}</strong> of {{ "%g" | format(s.total) }} points{% if s.pass_threshold %}, {{ "%g" | format(s.pass_threshold) }} needed{% endif %}{% if s.passes is true %} ✓{% elif s.passes is false %} (not yet){% endif %}</p>
+    {% endfor %}
+    <p class="small">
+      <a href="{{ sis_url }}" rel="noreferrer">SIS course page</a>
+      {%- if course.web_url %} · <a href="{{ course.web_url }}" rel="noreferrer">Course website</a>{% endif %}
+    </p>
+    {% if not course.detail_fetched_at %}<p class="small muted">Details come from the public SIS page on the next sync.</p>{% endif %}
+  </section>
+
+  {% for o in owl if o.description %}
+  <details class="card">
+    <summary><strong>Course rules</strong> <span class="muted small">from Owl</span></summary>
+    <p class="small note-text">{{ o.description }}</p>
+  </details>
+  {% endfor %}
+
+  <section class="stack">
+    <h2>Exams and deadlines</h2>
+    {% if events %}
+    <ul class="list">{% for e in events %}<li>{{ sm.event_row(e) }}</li>{% endfor %}</ul>
+    {% else %}<p class="muted small">None known.</p>{% endif %}
+    <p class="small"><a href="/school/upcoming#add">Add one</a></p>
+  </section>
+
+  <section class="stack">
+    <h2>Next lessons</h2>
+    {% if lessons %}
+    <ul class="list">{% for l in lessons %}<li>{{ sm.lesson_row(l, show_day=true) }}</li>{% endfor %}</ul>
+    {% else %}<p class="muted small">No lessons in the next 60 days.</p>{% endif %}
+  </section>
+</section>
+{% endblock %}

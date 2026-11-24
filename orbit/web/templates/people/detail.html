@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% block title %}{{ person.display_name }} · Orbit{% endblock %}
+{% block content %}
+{% set p = person %}
+{% import "ledger/_macros.html" as lm with context %}
+{% import "_share.html" as share %}
+{% import "_keep.html" as keep %}
+{% set here = "/people/" ~ p.id %}
+<section class="stack-lg">
+  <div class="stack">
+    <p class="small"><a href="/people">← People</a></p>
+    <div class="person-head">
+      {% if p.photo_url %}<img class="avatar" src="{{ p.photo_url }}" alt="" loading="lazy" referrerpolicy="no-referrer">{% endif %}
+      <div class="grow">
+        <h1>{{ p.display_name }}{% if p.archived %} <span class="muted small">(archived)</span>{% endif %}</h1>
+        {% set bday = format_birthday(p.birthday_month, p.birthday_day, p.birthday_year) %}
+        {% set place = [p.city, p.country] | select | join(", ") %}
+        {% set sub = [full_name(p.first_name, p.last_name, p.display_name), place, bday and "🎂 " ~ bday] | select | join(" · ") %}
+        {% if sub %}<p class="muted" style="margin: 0">{{ sub }}</p>{% endif %}
+      </div>
+    </div>
+    {% if p.how_met %}<p class="small" style="margin: 0">🤝 <span class="muted">How we met:</span> {{ p.how_met }}</p>{% endif %}
+
+    {% set links = [] %}
+    {% for h in p.handles %}{% for l in contact_links(h) %}{% set _ = links.append((h, l)) %}{% endfor %}{% endfor %}
+    {% if links %}
+    <div class="contact-links" aria-label="Contact">
+      {% for h, l in links %}
+      <a class="button" href="{{ l.url }}" {% if l.url.startswith("http") %}target="_blank" rel="noopener"{% endif %}>
+        {{ {"Call": "📞", "Text": "💬", "Email": "✉️", "WhatsApp": "🟢", "Instagram": "📷", "Telegram": "✈️", "LinkedIn": "💼"}.get(l.label, "") }} {{ l.label }}{% if h.label %} <span class="muted small">{{ h.label }}</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <p class="small" style="margin: 0">
+      {% if last %}Last talked: {{ last.occurred_on | date }} ({{ last.kind.value }}){% else %}<span class="muted">No interactions yet</span>{% endif %}
+      {%- set k = keep_in_touch %}
+      {% if k %}<br><span class="muted">👋 Every {{ k.cadence_days }} days ·</span>
+        {% if k.due_on <= today %}<span class="overdue">time to catch up{% if k.due_on < today %} ({{ k.overdue_days(today) }} days over){% endif %}</span>{% else %}<span class="muted">next by {{ k.due_on | date }}{% if p.snoozed_until and p.snoozed_until == k.due_on %} (snoozed){% endif %}</span>{% endif %}
+      {% endif %}
+    </p>
+    {% if k and k.due_on <= today %}
+    <form method="post" action="/people/{{ p.id }}/snooze" style="margin: 0">
+      <input type="hidden" name="days" value="7">
+      <input type="hidden" name="next" value="{{ here }}">
+      <button type="submit" class="link small">💤 Snooze a week</button>
+    </form>
+    {% endif %}
+    {{ keep.quick_log(p.id, here, with_snooze=false) }}
+
+    {% if draft_occasions %}
+    <p class="row wrap actions" style="margin: 0">
+      {% for occasion in draft_occasions %}
+      <a class="button small" href="/people/{{ p.id }}/draft?occasion={{ occasion }}">✍️ {{ "Birthday" if occasion == "birthday" else "Name-day" }} message</a>
+      {% endfor %}
+    </p>
+    {% endif %}
+    {% for m in meetings %}
+    <p class="small" style="margin: 0">📅 <a href="/meetings/{{ m.id }}">{{ m.title }}</a> <span class="muted">· {{ m.start_utc | local_dt }}</span></p>
+    {% endfor %}
+  </div>
+
+  <nav class="chips section-nav" aria-label="Sections">
+    <a class="chip" href="#ledger">💶 Ledger</a>
+    <a class="chip" href="#promises">✅ Promises{% if open_promises %} <span class="count">{{ open_promises | length }}</span>{% endif %}</a>
+    <a class="chip" href="#timeline">📝 Timeline</a>
+    <a class="chip" href="#handles">☎️ Handles</a>
+    <a class="chip" href="#tags">🏷️ Tags</a>
+    <a class="chip" href="#details">✏️ Edit</a>
+  </nav>
+
+  <section class="card stack" id="ledger">
+    <h2>Ledger</h2>
+    {% if balances %}
+    <div class="balances">
+      {% for b in balances %}
+      <p class="balance {{ 'plus' if b.amount_minor > 0 else 'minus' }}">
+        {% if b.amount_minor > 0 %}Owes you <strong>{{ money(b.amount_minor, b.currency) }}</strong>{% else %}You owe <strong>{{ money(-b.amount_minor, b.currency) }}</strong>{% endif %}
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% for r in payment_requests %}
+    <details>
+      <summary>💬 Ask to pay {{ money(r.total_minor, r.currency) }}</summary>
+      {{ share.share_box("pay-" ~ r.currency, r.text, 8) }}
+    </details>
+    {% endfor %}
+    {% if open_debts %}
+    <ul class="list compact">
+      {% for d in open_debts %}
+      <li class="stack-sm" id="debt-{{ d.id }}">
+        <div>{{ lm.debt_title(d) }}</div>
+        <div class="muted small">{{ lm.debt_meta(d) }}</div>
+        {{ lm.open_debt_actions(d, here ~ "#ledger") }}
+        {% if d.id in ask_back %}
+        <details>
+          <summary class="small">💬 Ask for it back</summary>
+          {{ share.share_box("ask-" ~ d.id, ask_back[d.id], 3) }}
+        </details>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% elif not balances %}
+    <p class="muted small">Nothing open between you.</p>
+    {% endif %}
+    <details {% if not open_debts %}open{% endif %}>
+      <summary>Add money, an item or a favor</summary>
+      <form method="post" action="/people/{{ p.id }}/debts" class="stack debt-form">
+        <div class="row">
+          <select name="direction" aria-label="Direction">
+            <option value="they_owe_me">They owe me</option>
+            <option value="i_owe_them">I owe them</option>
+          </select>
+          <select name="type" aria-label="Kind">
+            <option value="money">Money</option>
+            <option value="item">Item</option>
+            <option value="favor">Favor</option>
+          </select>
+        </div>
+        <div class="row money-only">
+          <input name="amount" inputmode="decimal" placeholder="Amount, e.g. 12.50" aria-label="Amount">
+          <input name="currency" value="{{ default_currency }}" maxlength="3" autocapitalize="characters" class="currency" aria-label="Currency">
+        </div>
+        <input name="description" placeholder="What for? pizza · charger · helped me move" aria-label="Description">
+        <details>
+          <summary class="small">Due date / reminder</summary>
+          <div class="row">
+            <input type="date" name="due" aria-label="Due date">
+            <input type="number" name="reminder_days" min="1" max="3650" inputmode="numeric" class="item-only" placeholder="Remind after N days" aria-label="Remind after days">
+          </div>
+        </details>
+        <button type="submit" class="primary">Add</button>
+      </form>
+    </details>
+    {% if settled_debts %}
+    <details>
+      <summary class="small">Settled ({{ settled_debts | length }})</summary>
+      <ul class="list compact">
+        {% for d in settled_debts %}
+        <li class="stack-sm settled">
+          <div>{{ lm.debt_title(d) }}</div>
+          <div class="muted small">
+            settled {{ d.settled_at | local_date }}
+            {%- if d.remainder %} · paid {{ money(d.amount_minor - d.remainder.amount_minor, d.currency) }}, the rest moved to {{ d.remainder.reference_code }}{% endif %}
+            {%- if d.settled_by_transaction_id %} · by bank payment{% endif %}
+            {%- if d.reference_code %} · {{ d.reference_code }}{% endif %}
+          </div>
+          <form method="post" action="/debts/{{ d.id }}/unsettle">
+            <input type="hidden" name="next" value="{{ here }}#ledger">
+            <button type="submit" class="link small">Undo</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+  </section>
+
+  {% if person_goals %}
+  <section class="card stack" id="goals">
+    <h2>Goals</h2>
+    <ul class="list compact">
+      {% for g in person_goals %}<li><a href="/goals/{{ g.id }}">🎯 {{ g.rank }}. {{ g.title }}</a></li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="card stack" id="promises">
+    <h2>Promises</h2>
+    {% if open_promises %}
+    <ul class="list compact">
+      {% for pr in open_promises %}{{ lm.promise_row(pr, today, here ~ "#promises") }}{% endfor %}
+    </ul>
+    {% endif %}
+    <details {% if not open_promises %}open{% endif %}>
+      <summary>Add a promise</summary>
+      <form method="post" action="/people/{{ p.id }}/promises" class="stack">
+        <select name="direction" aria-label="Who promised">
+          <option value="i_promised">I promised</option>
+          <option value="they_promised">They promised</option>
+        </select>
+        <input name="text" required placeholder="e.g. send the trip photos" aria-label="Promise">
+        <label class="small" for="promise-due">Due <span class="muted">(default: in a week)</span></label>
+        <input id="promise-due" type="date" name="due">
+        {% if active_goals %}
+        <select name="goal" aria-label="Goal it serves">
+          <option value="">Serves no goal</option>
+          {% for g in active_goals %}<option value="{{ g.id }}">🎯 {{ g.title }}</option>{% endfor %}
+        </select>
+        {% endif %}
+        <button type="submit" class="primary">Add</button>
+      </form>
+    </details>
+    {% if closed_promises %}
+    <details>
+      <summary class="small">Closed ({{ closed_promises | length }})</summary>
+      <ul class="list compact">
+        {% for pr in closed_promises %}{{ lm.promise_row(pr, today, here ~ "#promises") }}{% endfor %}
+      </ul>
+    </details>
+    {% endif %}
+  </section>
+
+  <section class="card stack" id="timeline">
+    <h2>Timeline</h2>
+    <form method="post" action="/people/{{ p.id }}/notes" class="stack">
+      <textarea name="text" rows="3" required placeholder="Add a note…" aria-label="New note"></textarea>
+      <button type="submit">Add note</button>
+    </form>
+    <details>
+      <summary>Log an interaction</summary>
+      <form method="post" action="/people/{{ p.id }}/interactions" class="stack">
+        <div class="row">
+          <input type="date" name="occurred_on" value="{{ today.isoformat() }}" required aria-label="Date">
+          <select name="kind" aria-label="Kind">
+            {% for k in interaction_kinds %}<option value="{{ k.value }}">{{ k.value }}</option>{% endfor %}
+          </select>
+        </div>
+        <input name="summary" placeholder="Summary (optional)" aria-label="Summary">
+        <button type="submit">Log</button>
+      </form>
+    </details>
+    {% if timeline %}
+    <ul class="timeline">
+      {% for e in timeline %}
+      {% if e.type == "note" %}
+      {% set n = e.item %}
+      <li id="note-{{ n.id }}">
+        <div class="muted small">📝 {{ n.created_at | local_dt }}</div>
+        <div class="note-text">{{ n.text }}</div>
+        <div class="row wrap actions">
+          <details class="inline">
+            <summary>Edit</summary>
+            <form method="post" action="/people/{{ p.id }}/notes/{{ n.id }}/edit" class="stack edit-form">
+              <textarea name="text" rows="4" required aria-label="Note">{{ n.text }}</textarea>
+              <button type="submit" class="small primary">Save</button>
+            </form>
+          </details>
+          <form method="post" action="/people/{{ p.id }}/notes/{{ n.id }}/delete" onsubmit="return confirm('Delete this note?')">
+            <button type="submit" class="link small">Delete</button>
+          </form>
+        </div>
+      </li>
+      {% else %}
+      {% set i = e.item %}
+      <li id="interaction-{{ i.id }}">
+        <div class="muted small">{{ {"meet": "🤝", "call": "📞", "message": "💬"}.get(i.kind.value, "•") }} {{ i.occurred_on | date }} · {{ i.kind.value }}
+          {%- set others = i.people | rejectattr("id", "equalto", p.id) | list %}
+          {% if others %} · with {% for o in others %}<a href="/people/{{ o.id }}">{{ o.display_name }}</a>{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
+        </div>
+        {% if i.summary %}<div class="note-text">{{ i.summary }}</div>{% endif %}
+        <div class="row wrap actions">
+          <details class="inline">
+            <summary>Edit</summary>
+            <form method="post" action="/people/{{ p.id }}/interactions/{{ i.id }}/edit" class="stack edit-form">
+              <div class="row">
+                <input type="date" name="occurred_on" value="{{ i.occurred_on.isoformat() }}" required aria-label="Date">
+                <select name="kind" aria-label="Kind">
+                  {% for k in interaction_kinds %}<option value="{{ k.value }}" {% if k == i.kind %}selected{% endif %}>{{ k.value }}</option>{% endfor %}
+                </select>
+              </div>
+              <input name="summary" value="{{ i.summary or '' }}" placeholder="Summary (optional)" aria-label="Summary">
+              <button type="submit" class="small primary">Save</button>
+            </form>
+          </details>
+          <form method="post" action="/people/{{ p.id }}/interactions/{{ i.id }}/delete" onsubmit="return confirm('Remove this interaction?')">
+            <button type="submit" class="link small">Remove</button>
+          </form>
+        </div>
+      </li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+
+  <details class="card" id="handles" {% if not p.handles %}open{% endif %}>
+    <summary><strong>Handles</strong> <span class="muted small">{{ p.handles | length }}</span></summary>
+    <div class="stack">
+      {% if p.handles %}
+      <ul class="list compact">
+        {% for h in p.handles %}
+        <li class="row-between">
+          <span><span class="muted small">{{ h.type.value | replace("_", " ") }}{% if h.label %} · {{ h.label }}{% endif %}</span><br>{{ h.value }}</span>
+          <form method="post" action="/people/{{ p.id }}/handles/{{ h.id }}/delete">
+            <button type="submit" class="link" aria-label="Remove {{ h.value }}">Remove</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      <form method="post" action="/people/{{ p.id }}/handles" class="stack">
+        <div class="row">
+          <select name="type" aria-label="Handle type">
+            {% for t in handle_types %}<option value="{{ t.value }}">{{ t.value | replace("_", " ") }}</option>{% endfor %}
+          </select>
+          <input name="value" required placeholder="Value" aria-label="Handle value">
+        </div>
+        <div class="row">
+          <input name="label" placeholder="Label (optional)" aria-label="Label">
+          <button type="submit">Add</button>
+        </div>
+      </form>
+    </div>
+  </details>
+
+  <details class="card" id="tags" {% if not p.aliases and not p.tags %}open{% endif %}>
+    <summary><strong>Aliases &amp; tags</strong>
+      <span class="muted small">{% for a in p.aliases %}{{ a.value }}{% if not loop.last or p.tags %}, {% endif %}{% endfor %}{% for t in p.tags %}#{{ t.name }}{% if not loop.last %}, {% endif %}{% endfor %}</span></summary>
+    <div class="stack">
+      <div class="chips">
+        {% for a in p.aliases %}
+        <form method="post" action="/people/{{ p.id }}/aliases/{{ a.id }}/delete" class="chip">
+          {{ a.value }} <button type="submit" class="chip-x" aria-label="Remove alias {{ a.value }}">×</button>
+        </form>
+        {% endfor %}
+        {% for t in p.tags %}
+        <form method="post" action="/people/{{ p.id }}/tags/{{ t.id }}/delete" class="chip chip-tag">
+          #{{ t.name }} <button type="submit" class="chip-x" aria-label="Remove tag {{ t.name }}">×</button>
+        </form>
+        {% endfor %}
+      </div>
+      <form method="post" action="/people/{{ p.id }}/aliases" class="row">
+        <input name="value" required placeholder="Alias, e.g. Paťo" aria-label="New alias">
+        <button type="submit">Add alias</button>
+      </form>
+      <form method="post" action="/people/{{ p.id }}/tags" class="row">
+        <input name="name" required placeholder="Tag, e.g. gym" list="all-tags" aria-label="New tag">
+        <datalist id="all-tags">{% for t in all_tags %}<option value="{{ t.name }}">{% endfor %}</datalist>
+        <button type="submit">Add tag</button>
+      </form>
+    </div>
+  </details>
+
+  <details class="card" id="nameday">
+    <summary><strong>Name day</strong> <span class="muted small">{{ namedays | join(", ") if namedays else "not set" }}</span></summary>
+    <div class="stack">
+      {% if namedays %}
+      <p>🎉 {{ namedays | join(", ") }} <span class="muted">· {{ nameday_source }} ({{ p.nameday_country }})</span></p>
+      {% elif not p.nameday_country %}
+      <p class="muted">No name-day country set. Search below to pick a Slovak or Czech name.</p>
+      {% else %}
+      <p class="muted">“{{ nameday_source }}” isn't in the {{ p.nameday_country }} calendar. If it's a nickname, link the official name.</p>
+      {% endif %}
+      {% if p.nameday_name %}
+      <form method="post" action="/people/{{ p.id }}/nameday/clear" class="row">
+        <span class="small">Linked to <strong>{{ p.nameday_name }}</strong>.</span>
+        <button type="submit" class="link small">Use the first name instead</button>
+      </form>
+      {% endif %}
+      <input type="search" name="q" placeholder="Search the calendar, e.g. Marián" autocomplete="off"
+             aria-label="Search name-day calendar"
+             hx-get="/people/{{ p.id }}/nameday-search" hx-trigger="input changed delay:250ms, search"
+             hx-target="#nameday-results">
+      <div id="nameday-results"></div>
+    </div>
+  </details>
+
+  <details class="card" id="details">
+    <summary><strong>Edit details</strong></summary>
+    <form method="post" action="/people/{{ p.id }}/edit" class="stack">
+      <label for="f-display">Display name</label>
+      <input id="f-display" name="display_name" value="{{ p.display_name }}" required>
+      <div class="row">
+        <div class="stack grow"><label for="f-first">First name</label><input id="f-first" name="first_name" value="{{ p.first_name or '' }}"></div>
+        <div class="stack grow"><label for="f-last">Last name</label><input id="f-last" name="last_name" value="{{ p.last_name or '' }}"></div>
+      </div>
+      <label>Birthday <span class="muted">(day / month / optional year)</span></label>
+      <div class="row">
+        <input name="birthday_day" type="number" min="1" max="31" inputmode="numeric" placeholder="Day" value="{{ p.birthday_day or '' }}" aria-label="Birthday day">
+        <input name="birthday_month" type="number" min="1" max="12" inputmode="numeric" placeholder="Month" value="{{ p.birthday_month or '' }}" aria-label="Birthday month">
+        <input name="birthday_year" type="number" min="1900" max="2100" inputmode="numeric" placeholder="Year" value="{{ p.birthday_year or '' }}" aria-label="Birthday year">
+      </div>
+      <div class="row">
+        <div class="stack grow">
+          <label for="f-nameday">Name day</label>
+          <select id="f-nameday" name="nameday_country">
+            <option value="" {% if not p.nameday_country %}selected{% endif %}>None</option>
+            <option value="SK" {% if p.nameday_country == "SK" %}selected{% endif %}>Slovak</option>
+            <option value="CZ" {% if p.nameday_country == "CZ" %}selected{% endif %}>Czech</option>
+          </select>
+        </div>
+        <div class="stack grow">
+          <label for="f-country">Country</label>
+          <input id="f-country" name="country" value="{{ p.country or '' }}" maxlength="2" placeholder="SK" autocapitalize="characters">
+        </div>
+      </div>
+      <label for="f-city">City</label>
+      <input id="f-city" name="city" value="{{ p.city or '' }}">
+      <label for="f-cadence">Keep in touch every … days <span class="muted">(empty: from tags{% set tagged = p.tags | selectattr("cadence_days") | map(attribute="cadence_days") | list %}{% if tagged %}, now {{ tagged | min }}{% endif %})</span></label>
+      <input id="f-cadence" name="cadence_days" type="number" min="1" max="3650" inputmode="numeric" value="{{ p.cadence_days or '' }}">
+      <label for="f-how">How we met</label>
+      <textarea id="f-how" name="how_met" rows="2">{{ p.how_met or '' }}</textarea>
+      <label for="f-photo">Photo URL</label>
+      <input id="f-photo" name="photo_url" type="url" value="{{ p.photo_url or '' }}">
+      <button type="submit" class="primary">Save</button>
+    </form>
+  </details>
+
+  <section class="row wrap">
+    <a class="button" href="/people/{{ p.id }}/merge">Merge with…</a>
+    <form method="post" action="/people/{{ p.id }}/archive">
+      <button type="submit">{% if p.archived %}Unarchive{% else %}Archive{% endif %}</button>
+    </form>
+    <form method="post" action="/people/{{ p.id }}/delete" onsubmit="return confirm('Delete this person with all their notes? This cannot be undone.')">
+      <button type="submit" class="danger">Delete</button>
+    </form>
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,135 @@
+{# Rows for debts and promises, shared by the Ledger page and person pages.
+   Reversible actions (Paid, Done, Drop) happen at once and offer Undo; deletes ask first. #}
+
+{% macro debt_title(d) -%}
+{%- set owes_me = d.direction.value == "they_owe_me" -%}
+{%- if d.type.value == "money" -%}
+  {{ "Owes you" if owes_me else "You owe" }} <strong>{{ money(d.amount_minor, d.currency) }}</strong>{% if d.description %} · {{ d.description }}{% endif %}
+{%- elif d.type.value == "item" -%}
+  {{ "📦 Has your" if owes_me else "📦 You have their" }} <strong>{{ d.description }}</strong>
+{%- else -%}
+  {{ "🤝 Owes you a favor:" if owes_me else "🤝 You owe a favor:" }} {{ d.description }}
+{%- endif -%}
+{%- endmacro %}
+
+{% macro debt_meta(d) -%}
+{{ [
+  d.reference_code,
+  ("since " if d.type.value == "item" else "") ~ (d.created_at | local_date),
+  d.due and "due " ~ (d.due | date),
+  d.parent and "rest of " ~ (d.parent.reference_code or "an earlier debt"),
+] | select | join(" · ") }}
+{%- endmacro %}
+
+{% macro settle_label(d) -%}
+{{ {"money": "Paid", "item": "Returned", "favor": "Done"}[d.type.value] }}
+{%- endmacro %}
+
+{% macro settle_button(d, next) %}
+<form method="post" action="/debts/{{ d.id }}/settle">
+  <input type="hidden" name="next" value="{{ next }}">
+  <button type="submit" class="small">{{ settle_label(d) }}</button>
+</form>
+{% endmacro %}
+
+{% macro debt_edit(d, next) %}
+<details class="inline">
+  <summary>Edit</summary>
+  <form method="post" action="/debts/{{ d.id }}/edit" class="stack edit-form">
+    <input type="hidden" name="next" value="{{ next }}">
+    {% if d.type.value == "money" %}
+    <div class="row">
+      <input name="amount" inputmode="decimal" required value="{{ amount_input(d.amount_minor, d.currency) }}" aria-label="Amount">
+      <input name="currency" value="{{ d.currency }}" maxlength="3" autocapitalize="characters" class="currency" aria-label="Currency">
+    </div>
+    <input name="description" value="{{ d.description or '' }}" placeholder="What for?" aria-label="Description">
+    {% else %}
+    <input name="description" value="{{ d.description or '' }}" required aria-label="Description">
+    {% endif %}
+    <label class="small">Due <input type="date" name="due" value="{{ d.due.isoformat() if d.due else '' }}"></label>
+    <button type="submit" class="small primary">Save</button>
+  </form>
+</details>
+{% endmacro %}
+
+{% macro open_debt_actions(d, next) %}
+<div class="row wrap actions">
+  {{ settle_button(d, next) }}
+  {% if d.type.value == "money" %}
+  <details class="inline">
+    <summary>Part…</summary>
+    <form method="post" action="/debts/{{ d.id }}/settle" class="row edit-form">
+      <input type="hidden" name="next" value="{{ next }}">
+      <input name="amount" inputmode="decimal" required placeholder="Amount paid" aria-label="Amount paid ({{ d.currency }})">
+      <button type="submit" class="small">Settle part</button>
+    </form>
+  </details>
+  {% endif %}
+  {{ debt_edit(d, next) }}
+  {% if not d.parent %}
+  <form method="post" action="/debts/{{ d.id }}/delete"
+        onsubmit="return confirm('Delete this entry? Use it only for mistakes.')">
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="link small">Delete</button>
+  </form>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro promise_row(pr, today, next, with_name=false) %}
+{%- set mine = pr.direction.value == "i_promised" -%}
+{%- set overdue = pr.status.value == "open" and pr.due and pr.due < today -%}
+<li class="stack-sm" id="promise-{{ pr.id }}">
+  <div>
+    {% if with_name %}<a href="/people/{{ pr.person.id }}#promises"><strong>{{ pr.person.display_name }}</strong></a> · {% endif %}
+    {{ "You promised:" if mine else "They promised:" }} {{ pr.text }}
+    {% if pr.goal %}<a class="small muted" href="/goals/{{ pr.goal.id }}">🎯 {{ pr.goal.title }}</a>{% endif %}
+  </div>
+  <div class="muted small">
+    {% if pr.status.value == "open" %}
+      {% if pr.due %}<span class="{{ 'overdue' if overdue }}">due {{ pr.due | date }}{% if overdue %} · overdue{% endif %}</span>{% else %}no due date{% endif %}
+    {% else %}
+      {{ pr.status.value }} {{ pr.closed_at | local_date }}
+    {% endif %}
+  </div>
+  <div class="row wrap actions">
+    {% if pr.status.value == "open" %}
+    <form method="post" action="/promises/{{ pr.id }}/status" class="row actions">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" name="status" value="done" class="small">Done</button>
+      <button type="submit" name="status" value="dropped" class="small">Drop</button>
+    </form>
+    <details class="inline">
+      <summary>Edit</summary>
+      <form method="post" action="/promises/{{ pr.id }}/edit" class="stack edit-form">
+        <input type="hidden" name="next" value="{{ next }}">
+        <select name="direction" aria-label="Who promised">
+          <option value="i_promised" {% if mine %}selected{% endif %}>I promised</option>
+          <option value="they_promised" {% if not mine %}selected{% endif %}>They promised</option>
+        </select>
+        <input name="text" value="{{ pr.text }}" required aria-label="Promise">
+        <label class="small">Due <input type="date" name="due" value="{{ pr.due.isoformat() if pr.due else '' }}"></label>
+        {% if active_goals is defined and (active_goals or pr.goal_id) %}
+        <input type="hidden" name="goal_set" value="1">
+        <select name="goal" aria-label="Goal it serves">
+          <option value="">No goal</option>
+          {% for g in active_goals %}<option value="{{ g.id }}" {% if pr.goal_id == g.id %}selected{% endif %}>🎯 {{ g.title }}</option>{% endfor %}
+          {% if pr.goal and pr.goal.status.value != "active" %}<option value="{{ pr.goal_id }}" selected>🎯 {{ pr.goal.title }} ({{ pr.goal.status.value }})</option>{% endif %}
+        </select>
+        {% endif %}
+        <button type="submit" class="small primary">Save</button>
+      </form>
+    </details>
+    {% else %}
+    <form method="post" action="/promises/{{ pr.id }}/status">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" name="status" value="open" class="link small">Reopen</button>
+    </form>
+    <form method="post" action="/promises/{{ pr.id }}/delete" onsubmit="return confirm('Delete this promise?')">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="link small">Delete</button>
+    </form>
+    {% endif %}
+  </div>
+</li>
+{% endmacro %}

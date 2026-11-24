@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% import "ledger/_macros.html" as lm with context %}
+{% block title %}Ledger · Orbit{% endblock %}
+{% block content %}
+{% macro heading(title, sec) -%}
+{{ title }} <span class="muted small">{{ sec.total }}</span>
+{%- endmacro %}
+{% macro more(sec) %}
+{% if sec.hidden %}<p class="small"><a href="/ledger?all={{ sec.key }}#{{ sec.key }}">Show all {{ sec.total }}</a></p>{% endif %}
+{% endmacro %}
+{% macro money_rows(sec) %}
+<ul class="list">
+  {% for b in sec.rows %}
+  <li>
+    <a class="list-row row-between" href="/people/{{ b.person.id }}#ledger">
+      <span class="list-title">{{ b.person.display_name }}</span>
+      <strong class="{{ 'plus' if b.amount_minor > 0 else 'minus' }}">{{ money(b.amount_minor | abs, b.currency) }}</strong>
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{{ more(sec) }}
+{% endmacro %}
+{% macro thing_rows(sec, empty) %}
+{% if sec.rows %}
+<ul class="list compact">
+  {% for d in sec.rows %}
+  <li class="row-between">
+    <span>
+      <a href="/people/{{ d.person.id }}#ledger"><strong>{{ d.person.display_name }}</strong></a> · {{ d.description }}
+      <br><span class="muted small">{{ ("since " if d.type.value == "item" else "") ~ (d.created_at | local_date) }}{% if d.due %} · due {{ d.due | date }}{% endif %}</span>
+    </span>
+    {{ lm.settle_button(d, "/ledger") }}
+  </li>
+  {% endfor %}
+</ul>
+{{ more(sec) }}
+{% else %}
+<p class="muted small">{{ empty }}</p>
+{% endif %}
+{% endmacro %}
+
+<section class="stack-lg">
+  <div>
+    <h1>Ledger</h1>
+    {% if totals %}
+    <div class="totals">
+      {% for t in totals %}
+      <div class="total card">
+        <div class="muted small">{{ t.currency }}</div>
+        {% if t.owed_to_me %}<div>Owed to you <strong class="plus">{{ money(t.owed_to_me, t.currency) }}</strong></div>{% endif %}
+        {% if t.i_owe %}<div>You owe <strong class="minus">{{ money(t.i_owe, t.currency) }}</strong></div>{% endif %}
+        {% if t.owed_to_me and t.i_owe %}<div class="small {{ 'plus' if t.net > 0 else ('minus' if t.net < 0 else 'muted') }}">Net {{ "+" if t.net > 0 }}{{ money(t.net, t.currency) }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No open money. Add debts from a person's page.</p>
+    {% endif %}
+  </div>
+
+  {% if sections.owed_to_me.total %}
+  <section class="stack" id="owed_to_me">
+    <h2>{{ heading("Who owes me", sections.owed_to_me) }}</h2>
+    {{ money_rows(sections.owed_to_me) }}
+  </section>
+  {% endif %}
+
+  {% if sections.i_owe.total %}
+  <section class="stack" id="i_owe">
+    <h2>{{ heading("Whom I owe", sections.i_owe) }}</h2>
+    {{ money_rows(sections.i_owe) }}
+  </section>
+  {% endif %}
+
+  <section class="card stack">
+    <h2>📦 Items</h2>
+    <h3 class="small muted" id="lent">{{ heading("Lent out", sections.lent) }}</h3>
+    {{ thing_rows(sections.lent, "Nothing lent out.") }}
+    <h3 class="small muted" id="borrowed">{{ heading("Borrowed", sections.borrowed) }}</h3>
+    {{ thing_rows(sections.borrowed, "Nothing borrowed.") }}
+  </section>
+
+  <section class="card stack">
+    <h2>🤝 Favors</h2>
+    <h3 class="small muted" id="favors_owed_to_me">{{ heading("Owed to me", sections.favors_owed_to_me) }}</h3>
+    {{ thing_rows(sections.favors_owed_to_me, "No favors owed to you.") }}
+    <h3 class="small muted" id="favors_i_owe">{{ heading("I owe", sections.favors_i_owe) }}</h3>
+    {{ thing_rows(sections.favors_i_owe, "You don't owe any favors.") }}
+  </section>
+
+  <section class="card stack" id="promises">
+    <h2>{{ heading("✅ Open promises", sections.promises) }}</h2>
+    {% if sections.promises.rows %}
+    <ul class="list compact">
+      {% for pr in sections.promises.rows %}{{ lm.promise_row(pr, today, "/ledger", with_name=true) }}{% endfor %}
+    </ul>
+    {{ more(sections.promises) }}
+    {% else %}
+    <p class="muted small">No open promises.</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

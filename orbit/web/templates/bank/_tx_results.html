@@ -1,0 +1,7 @@
+{% if transactions %}
+{% set show_bank = true %}
+{% include "bank/_tx_list.html" %}
+{% if has_more %}<p><a href="/transactions?q={{ q | urlencode }}&show={{ show }}&offset={{ next_offset }}">Show more</a></p>{% endif %}
+{% else %}
+<p class="muted">{% if q or show != "all" %}Nothing matches; see <a href="/transactions">all transactions</a>.{% else %}No transactions yet: import a statement first.{% endif %}</p>
+{% endif %}

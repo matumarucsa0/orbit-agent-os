@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Health · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Health</h1>
+    <p class="muted small">Sleep, heart rate, steps and weight from your Garmin watch through Apple Health, last 30 days. A daily Shortcut posts them; "-" means no data, not zero.{% if last_received %} Last post {{ last_received | local_dt }}.{% endif %}</p>
+  </div>
+  {% if rows %}
+  <div class="card stack small">
+    <span><strong>7 days:</strong> sleep {{ week.sleep_minutes | sleep }} ({{ week.sleep_nights }} nights{% if week.short_nights %}, {{ week.short_nights }} under 6 h{% endif %}){% if week.resting_hr %} · resting HR {{ week.resting_hr }}{% endif %}{% if week.steps %} · {{ week.steps }} steps{% endif %}</span>
+    <span><strong>30 days:</strong> sleep {{ month.sleep_minutes | sleep }} ({{ month.sleep_nights }} nights{% if month.short_nights %}, {{ month.short_nights }} under 6 h{% endif %}){% if month.resting_hr %} · resting HR {{ month.resting_hr }}{% endif %}{% if month.steps %} · {{ month.steps }} steps{% endif %}{% if month.weight_kg %} · {{ month.weight_kg }} kg{% endif %}</span>
+  </div>
+  <ul class="list">
+    {% for r in rows %}
+    <li class="list-row">
+      <span class="list-title">{{ r.day | date }}</span>
+      {% if r.sleep_deep_minutes is not none %}<span class="list-sub muted small">night {{ r.sleep_start | local_dt if r.sleep_start else "-" }} to {{ r.sleep_end | local_time if r.sleep_end else "-" }} · deep {{ r.sleep_deep_minutes | sleep }}, core {{ r.sleep_core_minutes | sleep }}, REM {{ r.sleep_rem_minutes | sleep }}, awake {{ r.sleep_awake_minutes | sleep }}</span>{% endif %}
+      <span class="list-sub muted small">sleep {{ r.sleep_minutes | sleep }} · resting HR {{ r.resting_hr if r.resting_hr is not none else "-" }} · HR {{ r.min_hr if r.min_hr is not none else "-" }} to {{ r.max_hr if r.max_hr is not none else "-" }} · {{ r.steps if r.steps is not none else "-" }} steps · {{ ("%.1f" | format(r.weight_grams / 1000) ~ " kg") if r.weight_grams else "- kg" }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No data yet. Build the <strong>Orbit Health</strong> Shortcut (<code>docs/SHORTCUTS.md</code>) and run it once.</p>
+  {% endif %}
+</section>
+{% endblock %}

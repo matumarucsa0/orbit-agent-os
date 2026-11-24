@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "orbit": {
+      "command": "uv",
+      "args": [
+        "run",
+        "python",
+        "-m",
+        "orbit.mcp_server"
+      ],
+      "env": {
+        "ORBIT_URL": "${ORBIT_URL:-http://localhost:8000}",
+        "ORBIT_MCP_TOKEN": "${ORBIT_MCP_TOKEN}",
+        "ORBIT_MCP_AUDIT_LOG": "${ORBIT_MCP_AUDIT_LOG:-~/.local/state/orbit/mcp-audit.jsonl}"
+      }
+    }
+  }
+}

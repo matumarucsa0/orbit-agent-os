@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% import "goals/_macros.html" as gm with context %}
+{% block title %}{{ goal.title }} · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/goals">← Goals</a></p>
+    <h1>{{ goal.title }}</h1>
+    <p class="muted small">
+      {% if goal.status.value == "active" %}Number {{ goal.rank }}{% else %}{{ goal.status.value | capitalize }}{% endif %}
+      · {{ gm.meta(goal, today) }}
+      {% if goal.status.value == "active" %}· reviewed {{ "today" if days == 0 else days ~ " days ago" }}{% endif %}
+    </p>
+  </div>
+
+  <form method="post" action="/goals/{{ goal.id }}/edit" class="card stack">
+    <label for="title">Title</label>
+    <input id="title" name="title" value="{{ goal.title }}" required maxlength="200">
+    <label for="why">Why <span class="muted small">(the agents read this to weigh tradeoffs)</span></label>
+    <textarea id="why" name="why" rows="3">{{ goal.why or "" }}</textarea>
+    <label for="target">Target <span class="muted small">(what “done” looks like)</span></label>
+    <input id="target" name="target" value="{{ goal.target or '' }}" maxlength="1000">
+    <div class="row">
+      <select name="horizon" aria-label="Horizon">
+        <option value="">No horizon</option>
+        {% for h in horizons %}<option value="{{ h.value }}" {% if goal.horizon == h %}selected{% endif %}>{{ h.value | capitalize }}</option>{% endfor %}
+      </select>
+      <input type="date" name="target_date" value="{{ goal.target_date.isoformat() if goal.target_date else '' }}" aria-label="Target date">
+    </div>
+    <button type="submit" class="primary">Save</button>
+  </form>
+
+  <section class="card stack" id="people">
+    <h2>People</h2>
+    {% if goal.people %}
+    <ul class="list">
+      {% for p in goal.people %}
+      <li class="row-between">
+        <a href="/people/{{ p.id }}">{{ p.display_name }}</a>
+        <form method="post" action="/goals/{{ goal.id }}/people/{{ p.id }}/remove"><button type="submit" class="link small">Remove</button></form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="muted small">Nobody linked yet.</p>{% endif %}
+    {% if people_options %}
+    <form method="post" action="/goals/{{ goal.id }}/people" class="row">
+      <select name="person_id" aria-label="Add a person">
+        {% for p in people_options %}<option value="{{ p.id }}">{{ p.display_name }}</option>{% endfor %}
+      </select>
+      <button type="submit" class="small">Add</button>
+    </form>
+    {% endif %}
+  </section>
+
+  <section class="card stack" id="promises">
+    <h2>Promises that serve it</h2>
+    {% if open %}
+    <ul class="list">
+      {% for pr in open %}
+      <li class="row-between">
+        <span>{{ pr.person.display_name }}: {{ pr.text }}{% if pr.due %} <span class="muted small">(due {{ pr.due | date }})</span>{% endif %}</span>
+        <form method="post" action="/goals/{{ goal.id }}/promises/{{ pr.id }}/remove"><button type="submit" class="link small">Detach</button></form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}<p class="muted small">No open promises linked.</p>{% endif %}
+    {% if closed %}
+    <details><summary class="small">Done or dropped ({{ closed | length }})</summary>
+      <ul class="list small">{% for pr in closed %}<li>{{ pr.person.display_name }}: {{ pr.text }} <span class="muted">{{ pr.status.value }}</span></li>{% endfor %}</ul>
+    </details>
+    {% endif %}
+    {% if promise_options %}
+    <form method="post" action="/goals/{{ goal.id }}/promises" class="row">
+      <select name="promise_id" aria-label="Attach a promise">
+        {% for pr in promise_options %}<option value="{{ pr.id }}">{{ pr.person.display_name }}: {{ pr.text[:60] }}</option>{% endfor %}
+      </select>
+      <button type="submit" class="small">Attach</button>
+    </form>
+    {% endif %}
+  </section>
+
+  <section class="card stack">
+    <h2>Status</h2>
+    <form method="post" action="/goals/{{ goal.id }}/status" class="row wrap actions">
+      {% for s in statuses %}<button type="submit" name="status" value="{{ s.value }}" class="small">{{ {"active": "Make active", "paused": "Pause", "done": "Done", "dropped": "Drop"}[s.value] }}</button>{% endfor %}
+    </form>
+    {% if goal.status.value == "active" %}
+    <form method="post" action="/goals/{{ goal.id }}/review"><button type="submit" class="small">Still right (mark reviewed)</button></form>
+    {{ gm.move_buttons(goal) }}
+    {% endif %}
+    <form method="post" action="/goals/{{ goal.id }}/delete" onsubmit="return confirm('Delete this goal? Its promises and people stay.')">
+      <button type="submit" class="link small">Delete this goal</button>
+    </form>
+  </section>
+</section>
+{% endblock %}

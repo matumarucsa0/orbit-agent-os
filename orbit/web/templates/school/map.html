@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+{% import "school/_macros.html" as m %}
+{% block title %}School map · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg map-page">
+  <div>
+    <h1>School</h1>
+    {{ m.nav("map") }}
+    <p class="muted small">Every source behind your classes, left to right: where data comes from, how Orbit and Claude read it, which course it lands in, and what it feeds. Add a teacher's page, a PDF, a repository or a note to a course and Claude reads it for deadlines and rules; nothing is saved until you confirm it in the Inbox.</p>
+  </div>
+
+  <div class="row wrap actions map-toolbar">
+    <button type="button" class="small" id="map-fit">Fit</button>
+    <button type="button" class="small" id="map-reset">Reset</button>
+    <span class="map-zoom"><button type="button" class="small" id="map-out" aria-label="Zoom out">−</button><button type="button" class="small" id="map-in" aria-label="Zoom in">+</button></span>
+    <a class="chip {% if view != 'list' %}chip-active{% endif %}" href="/school/map?view=map">Map</a>
+    <a class="chip {% if view == 'list' %}chip-active{% endif %}" href="/school/map?view=list">List</a>
+  </div>
+
+  <div class="map-layout {{ 'view-list' if view == 'list' else 'view-map' if view == 'map' else '' }}">
+    <div id="map-stage" class="map-stage" data-url="/school/map.json" data-select="{{ select }}" tabindex="0" aria-label="School data flow map">
+      <div id="map-world" class="map-world">
+        <svg id="map-edges" class="map-edges" aria-hidden="true"></svg>
+      </div>
+      <noscript><p class="card small">The map needs JavaScript. The list shows the same things.</p></noscript>
+    </div>
+    <aside id="map-panel" class="card map-panel" hx-get="/school/map/panel" hx-trigger="load" hx-swap="innerHTML" aria-live="polite"></aside>
+
+    <div class="map-list stack">
+      {% for course, rows in groups %}
+      {% if course or rows %}
+      <section class="card stack-sm">
+        <h2>{% if course %}<a href="/school/courses/{{ course.code }}">{{ course.code }} {{ course.name }}</a>{% else %}Unsorted{% endif %}</h2>
+        {% if rows %}
+        <ul class="list small">
+          {% for r in rows %}
+          {% set st = state_labels[state(r)] %}
+          <li>{{ kind_icons[r.kind] }} {% if r.url %}<a href="{{ r.url }}" rel="noreferrer">{{ r.label }}</a>{% else %}{{ r.label }}{% endif %} <span class="muted">· {{ st[0] }} {{ st[1] }}</span>
+            {% if not r.kept %}
+            <form method="post" action="/school/map/resources/{{ r.id }}/keep" class="inline"><button class="link small">Keep</button></form>
+            <form method="post" action="/school/map/resources/{{ r.id }}/dismiss" class="inline"><button class="link small">Dismiss</button></form>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}<p class="small muted">No resources yet.</p>{% endif %}
+        <form method="post" action="/school/map/resources" enctype="multipart/form-data" class="row">
+          <input type="hidden" name="course_code" value="{{ course.code if course else '' }}">
+          <input name="url" type="url" placeholder="Add a link" aria-label="Link" maxlength="1000">
+          <button class="small">Add</button>
+        </form>
+      </section>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  "use strict";
+  var stage = document.getElementById("map-stage");
+  var world = document.getElementById("map-world");
+  var svg = document.getElementById("map-edges");
+  if (!stage || !window.fetch) return;
+  var SVG = "http://www.w3.org/2000/svg";
+  var view = { x: 0, y: 0, k: 1 };
+  var data = null, nodes = {}, els = {}, edgeEls = [], selected = null;
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined) n.textContent = text;
+    return n;
+  }
+  function apply() {
+    world.style.transform = "translate(" + view.x + "px," + view.y + "px) scale(" + view.k + ")";
+  }
+  var touched = false;
+  function zoomAt(px, py, k) {
+    k = Math.max(0.25, Math.min(2, k));
+    view.x = px - (px - view.x) * (k / view.k);
+    view.y = py - (py - view.y) * (k / view.k);
+    view.k = k;
+    apply();
+  }
+  function fit() {
+    if (!data) return;
+    stage.style.height = "";  // back to the CSS maximum, then shrink to the map when it is short
+    var W = stage.clientWidth, H = stage.clientHeight;
+    var k = Math.min(W / data.width, H / data.height, 1.25);
+    // On a phone the whole map would be unreadable: keep text legible and let the user pan.
+    var floor = W < 700 ? 0.6 : 0.4;
+    view.k = Math.max(k, floor);
+    var need = Math.ceil(data.height * view.k) + 24;
+    if (need < H) { H = Math.max(need, 280); stage.style.height = H + "px"; }
+    view.x = Math.max(0, (W - data.width * view.k) / 2);
+    view.y = Math.max(0, (H - data.height * view.k) / 2);
+    touched = false;
+    apply();
+  }
+  function reset() { fit(); }
+
+  function pathFor(e) {
+    var a = nodes[e.from], b = nodes[e.to];
+    if (a.col === b.col) {
+      // Inside one column (the processing steps): leave and enter by the top or bottom edge.
+      var down = b.y >= a.y;
+      var sx = a.x + a.w / 2, sy = down ? a.y + a.h : a.y;
+      var ex = b.x + b.w / 2, ey = down ? b.y : b.y + b.h;
+      var dy = Math.max(30, Math.abs(ey - sy) / 2) * (down ? 1 : -1);
+      return "M" + sx + " " + sy + " C" + sx + " " + (sy + dy) + "," + ex + " " + (ey - dy) + "," + ex + " " + ey;
+    }
+    var x1 = a.x + a.w, y1 = a.y + a.h / 2, x2 = b.x, y2 = b.y + b.h / 2;
+    var dx = Math.max(40, (x2 - x1) / 2);
+    return "M" + x1 + " " + y1 + " C" + (x1 + dx) + " " + y1 + "," + (x2 - dx) + " " + y2 + "," + x2 + " " + y2;
+  }
+  function redrawEdges(id) {
+    edgeEls.forEach(function (item) {
+      var e = item.edge;
+      if (id && e.from !== id && e.to !== id) return;
+      item.path.setAttribute("d", pathFor(e));
+      var a = nodes[e.from], b = nodes[e.to];
+      item.label.setAttribute("x", a.col === b.col ? a.x + a.w / 2 + 6 : (a.x + a.w + b.x) / 2);
+      item.label.setAttribute("y", (a.y + a.h / 2 + b.y + b.h / 2) / 2 - 4);
+    });
+  }
+
+  function build(d) {
+    data = d;
+    world.style.width = d.width + "px";
+    world.style.height = d.height + "px";
+    svg.setAttribute("width", d.width);
+    svg.setAttribute("height", d.height);
+    d.edges.forEach(function (e, i) {
+      var path = document.createElementNS(SVG, "path");
+      var pid = "edge-" + i;
+      path.setAttribute("id", pid);
+      path.setAttribute("class", "edge edge-" + e.style + (e.color !== null ? " course-" + e.color : ""));
+      path.setAttribute("stroke-width", e.width);
+      var title = document.createElementNS(SVG, "title");
+      title.textContent = e.label || "";
+      path.appendChild(title);
+      svg.appendChild(path);
+      var label = document.createElementNS(SVG, "text");
+      label.setAttribute("class", "edge-label");
+      label.setAttribute("text-anchor", "middle");
+      label.textContent = e.label;
+      svg.appendChild(label);
+      var item = { edge: e, path: path, label: label, dots: [] };
+      if (e.flowing && !reduce) {
+        var dot = document.createElementNS(SVG, "circle");
+        dot.setAttribute("r", 3);
+        dot.setAttribute("class", "edge-dot");
+        var motion = document.createElementNS(SVG, "animateMotion");
+        motion.setAttribute("dur", (4 + (i % 5)) + "s");
+        motion.setAttribute("repeatCount", "indefinite");
+        var mpath = document.createElementNS(SVG, "mpath");
+        mpath.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#" + pid);
+        mpath.setAttribute("href", "#" + pid);
+        motion.appendChild(mpath);
+        dot.appendChild(motion);
+        svg.appendChild(dot);
+        item.dots.push(dot);
+      }
+      edgeEls.push(item);
+    });
+    d.nodes.forEach(function (n) {
+      nodes[n.id] = n;
+      var card = el("div", "map-node node-" + n.kind + " state-" + n.state + (n.color !== null ? " course-" + n.color : ""));
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.dataset.id = n.id;
+      card.style.cssText = "left:" + n.x + "px;top:" + n.y + "px;width:" + n.w + "px;height:" + n.h + "px";
+      card.appendChild(el("div", "node-title", n.icon + " " + n.label));
+      if (n.sub) card.appendChild(el("div", "node-sub", n.sub));
+      card.appendChild(el("div", "node-state", n.state_icon + " " + n.state_label));
+      if (n.progress !== null) {
+        var bar = el("div", "node-progress");
+        var fill = el("span");
+        fill.style.width = Math.min(100, Math.round(n.progress * 100)) + "%";
+        bar.appendChild(fill);
+        card.appendChild(bar);
+      }
+      world.appendChild(card);
+      els[n.id] = card;
+    });
+    redrawEdges(null);
+    fit();
+    var start = stage.dataset.select;
+    if (start && nodes[start]) choose(start);
+  }
+
+  // Tracing: the lineage of a card; for a course or a resource only its own course's edges.
+  function trace(id) {
+    var course = nodes[id].course;
+    var keep = {}, keepEdges = {};
+    function ok(e) { return e.course === null || course === null || e.course === course; }
+    function walk(dir) {
+      var queue = [id];
+      keep[id] = true;
+      while (queue.length) {
+        var cur = queue.shift();
+        data.edges.forEach(function (e, i) {
+          var next = dir === "up" ? (e.to === cur ? e.from : null) : (e.from === cur ? e.to : null);
+          if (next === null || !ok(e)) return;
+          keepEdges[i] = true;
+          if (!keep[next]) { keep[next] = true; queue.push(next); }
+        });
+      }
+    }
+    walk("up"); walk("down");
+    Object.keys(els).forEach(function (k) { els[k].classList.toggle("dim", !keep[k]); });
+    edgeEls.forEach(function (item, i) {
+      var on = !!keepEdges[i];
+      item.path.classList.toggle("dim", !on);
+      item.label.classList.toggle("shown", on);
+      item.dots.forEach(function (d) { d.classList.toggle("dim", !on); });
+    });
+  }
+  function clearTrace() {
+    selected = null;
+    Object.keys(els).forEach(function (k) { els[k].classList.remove("dim", "selected"); });
+    edgeEls.forEach(function (item) {
+      item.path.classList.remove("dim");
+      item.label.classList.remove("shown");
+      item.dots.forEach(function (d) { d.classList.remove("dim"); });
+    });
+    if (window.htmx) htmx.ajax("GET", "/school/map/panel", { target: "#map-panel", swap: "innerHTML" });
+  }
+  function choose(id) {
+    if (selected && els[selected]) els[selected].classList.remove("selected");
+    selected = id;
+    els[id].classList.add("selected");
+    trace(id);
+    var panel = document.getElementById("map-panel");
+    if (panel && getComputedStyle(panel).position !== "sticky" && panel.getBoundingClientRect().top > window.innerHeight - 80) {
+      panel.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "nearest" });
+    }
+    if (window.htmx) {
+      htmx.ajax("GET", "/school/map/panel/" + encodeURIComponent(id), { target: "#map-panel", swap: "innerHTML" });
+    }
+  }
+
+  // Pointers: drag a card, pan the background, pinch with two fingers.
+  var pointers = {}, drag = null, pan = null, pinch = null;
+  stage.addEventListener("pointerdown", function (ev) {
+    pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+    var ids = Object.keys(pointers);
+    if (ids.length === 2) {
+      var a = pointers[ids[0]], b = pointers[ids[1]];
+      pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), k: view.k };
+      drag = pan = null;
+      return;
+    }
+    var card = ev.target.closest(".map-node");
+    if (card) {
+      drag = { id: card.dataset.id, sx: ev.clientX, sy: ev.clientY, ox: nodes[card.dataset.id].x, oy: nodes[card.dataset.id].y, moved: false };
+    } else {
+      pan = { sx: ev.clientX, sy: ev.clientY, ox: view.x, oy: view.y, moved: false };
+    }
+    stage.setPointerCapture(ev.pointerId);
+  });
+  stage.addEventListener("pointermove", function (ev) {
+    if (!pointers[ev.pointerId]) return;
+    pointers[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+    if (pinch) {
+      var ids = Object.keys(pointers);
+      if (ids.length === 2) {
+        var a = pointers[ids[0]], b = pointers[ids[1]];
+        var box = stage.getBoundingClientRect();
+        touched = true;
+        zoomAt((a.x + b.x) / 2 - box.left, (a.y + b.y) / 2 - box.top, pinch.k * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d);
+      }
+      return;
+    }
+    if (drag) {
+      var dx = ev.clientX - drag.sx, dy = ev.clientY - drag.sy;
+      if (!drag.moved && Math.hypot(dx, dy) < 4) return;
+      drag.moved = true;
+      var n = nodes[drag.id];
+      n.x = Math.max(0, drag.ox + dx / view.k);
+      n.y = Math.max(0, drag.oy + dy / view.k);
+      els[drag.id].style.left = n.x + "px";
+      els[drag.id].style.top = n.y + "px";
+      redrawEdges(drag.id);
+    } else if (pan) {
+      pan.moved = pan.moved || Math.hypot(ev.clientX - pan.sx, ev.clientY - pan.sy) >= 4;
+      touched = true;
+      view.x = pan.ox + ev.clientX - pan.sx;
+      view.y = pan.oy + ev.clientY - pan.sy;
+      apply();
+    }
+  });
+  function release(ev) {
+    delete pointers[ev.pointerId];
+    if (Object.keys(pointers).length < 2) pinch = null;
+    if (drag && !drag.moved) choose(drag.id);
+    else if (pan && !pan.moved && selected) clearTrace();
+    drag = pan = null;
+  }
+  stage.addEventListener("pointerup", release);
+  stage.addEventListener("pointercancel", release);
+
+  // Plain wheel scrolls the page; Ctrl or ⌘ and the wheel zooms around the pointer.
+  stage.addEventListener("wheel", function (ev) {
+    if (!(ev.ctrlKey || ev.metaKey)) return;
+    ev.preventDefault();
+    var box = stage.getBoundingClientRect();
+    var px = ev.clientX - box.left, py = ev.clientY - box.top;
+    touched = true;
+    zoomAt(px, py, view.k * (ev.deltaY < 0 ? 1.1 : 0.9));
+  }, { passive: false });
+
+  stage.addEventListener("keydown", function (ev) {
+    var card = ev.target.closest && ev.target.closest(".map-node");
+    if (card && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); choose(card.dataset.id); }
+    if (ev.key === "Escape") clearTrace();
+  });
+  document.getElementById("map-fit").addEventListener("click", fit);
+  document.getElementById("map-in").addEventListener("click", function () { touched = true; zoomAt(stage.clientWidth / 2, stage.clientHeight / 2, view.k * 1.25); });
+  document.getElementById("map-out").addEventListener("click", function () { touched = true; zoomAt(stage.clientWidth / 2, stage.clientHeight / 2, view.k / 1.25); });
+  var resizeTimer = null;
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { if (!touched) fit(); }, 120);
+  }
+  window.addEventListener("resize", onResize);
+  if (window.ResizeObserver) new ResizeObserver(onResize).observe(stage);
+  document.getElementById("map-reset").addEventListener("click", function () { reset(); clearTrace(); });
+
+  fetch(stage.dataset.url, { credentials: "same-origin" })
+    .then(function (r) { return r.json(); })
+    .then(build)
+    .catch(function () { stage.appendChild(el("p", "card small", "The map could not be loaded.")); });
+})();
+</script>
+{% endblock %}

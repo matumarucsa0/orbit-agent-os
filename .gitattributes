@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.png binary
+*.ico binary
+tests/fixtures/bank/*.csv -text
+# Real feed bytes (iCalendar uses CRLF); keep them exactly as saved.
+tests/fixtures/**/*.ics -text
+*.shortcut binary

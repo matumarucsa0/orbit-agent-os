@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Import · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Import</h1>
+    <p class="muted small">Upload a bank statement CSV. Rows already imported are skipped; payments that look shared land in the Inbox.</p>
+  </div>
+
+  <form method="post" action="/import" enctype="multipart/form-data" class="card stack">
+    <label for="statement">Statement (.csv)</label>
+    <input id="statement" type="file" name="file" accept=".csv,text/csv" required>
+    <label for="bank">Bank</label>
+    <select id="bank" name="bank">
+      <option value="auto">Detect from the file</option>
+      {% for b in banks %}<option value="{{ b.value }}">{{ {"revolut": "Revolut", "tatra": "Tatra banka"}[b.value] }}</option>{% endfor %}
+    </select>
+    <button type="submit" class="primary">Import</button>
+  </form>
+
+  {% if imports %}
+  <section class="stack">
+    <div class="row-between">
+      <h2>Recent imports</h2>
+      <a class="small" href="/transactions">All transactions →</a>
+    </div>
+    <ul class="list">
+      {% for i in imports %}
+      <li>
+        <a href="/import/{{ i.id }}" class="list-row">
+          <span class="list-title">{{ i.filename or i.bank.value }}</span>
+          <span class="list-sub muted">{{ i.imported_at | local_dt }} · {{ i.bank.value }} · {{ i.rows_new }} new{% if i.rows_duplicate %}, {{ i.rows_duplicate }} already imported{% endif %}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="card stack">
+    <h2>Export</h2>
+    <p class="muted small">Everything in Orbit as one JSON file: people, notes, ledger, bank rows, meetings, Inbox. It holds personal data (IBANs, notes): keep it private.</p>
+    <a class="button" href="/export.json" download>Download all data (JSON)</a>
+  </section>
+</section>
+{% endblock %}

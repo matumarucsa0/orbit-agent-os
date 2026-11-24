@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% import "ledger/_macros.html" as lm with context %}
+{% block title %}{{ meeting.title }} · Meetings · Orbit{% endblock %}
+{% block content %}
+{% set m = meeting %}
+{% set here = "/meetings/" ~ m.id %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/meetings">← Meetings</a></p>
+    <h1>{{ m.title }}</h1>
+    <p class="muted">{{ m.start_utc | local_dt }}–{{ m.end_utc | local_time }}{% if m.location %} · {{ m.location }}{% endif %} · {{ m.calendar_name }}</p>
+    {% if m.cancelled %}<p class="warn">Cancelled (or no longer in the calendar).</p>
+    {% elif m.calendar_name == "orbit" %}
+    <form method="post" action="/meetings/{{ m.id }}/cancel"><button type="submit" class="danger">Cancel appointment</button></form>
+    {% endif %}
+  </div>
+
+  <section class="card stack" id="people">
+    <h2>With</h2>
+    {% if m.links %}
+    <div class="chips">
+      {% for person in m.people %}
+      <form method="post" action="/meetings/{{ m.id }}/people/{{ person.id }}/delete" class="chip">
+        <a href="/people/{{ person.id }}">{{ person.display_name }}</a>
+        <span class="muted small">{{ sources[person.id] }}</span>
+        <button type="submit" class="chip-x" aria-label="Unlink {{ person.display_name }}">×</button>
+      </form>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted small">Not linked to anyone, so there's no brief or push for it. Add who it's with:</p>
+    {% endif %}
+    <input type="search" name="q" placeholder="Link someone…" autocomplete="off" aria-label="Search people"
+           hx-get="/meetings/{{ m.id }}/people-search" hx-trigger="input changed delay:250ms, search"
+           hx-target="#meeting-people-results">
+    <div id="meeting-people-results"></div>
+  </section>
+
+  {% if m.brief_summary %}
+  <p class="card">💬 {{ m.brief_summary }}</p>
+  {% endif %}
+
+  {% for item in brief.people %}
+  {% set p = item.person %}
+  <section class="card stack">
+    <h2><a href="/people/{{ p.id }}">{{ p.display_name }}</a></h2>
+    <p class="small">
+      {% if item.last %}Last {{ item.last.kind.value }}: {{ item.last.occurred_on | date }}{% if item.last.summary %} · {{ item.last.summary }}{% endif %}
+      {% else %}<span class="muted">Nothing logged yet.</span>{% endif %}
+    </p>
+    {% if item.balances or item.things %}
+    <ul class="bullets">
+      {% for b in item.balances %}
+      <li class="{{ 'plus' if b.amount_minor > 0 else 'minus' }}">{% if b.amount_minor > 0 %}Owes you <strong>{{ money(b.amount_minor, b.currency) }}</strong>{% else %}You owe <strong>{{ money(-b.amount_minor, b.currency) }}</strong>{% endif %}</li>
+      {% endfor %}
+      {% for d in item.things %}<li>{{ thing_line(d) | capitalize }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    {% if item.promises %}
+    <ul class="list compact">
+      {% for pr in item.promises %}{{ lm.promise_row(pr, today, here) }}{% endfor %}
+    </ul>
+    {% endif %}
+    {% for u in item.dates %}<p class="small">{{ date_line(u, brief.day) }}</p>{% endfor %}
+    {% if item.notes %}
+    <ul class="timeline">
+      {% for n in item.notes %}
+      <li><div class="muted small">📝 {{ n.created_at | local_dt }}</div><div class="note-text">{{ n.text }}</div></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </section>
+  {% endfor %}
+
+  {% if m.links %}
+  <section class="card stack">
+    <h2>{{ "How was it?" if ended else "Note something" }}</h2>
+    <form method="post" action="/inbox/capture" class="stack">
+      <input type="hidden" name="meeting_id" value="{{ m.id }}">
+      <textarea name="text" rows="3" required placeholder="e.g. Paťo má novú prácu, sľúbil som mu poslať rozvrh" aria-label="What happened"></textarea>
+      <button type="submit" data-busy="Sending to Claude…">Send to Inbox</button>
+    </form>
+    <p class="muted small">It lands in the Inbox with this meeting's interaction; nothing is saved until you confirm it.</p>
+  </section>
+  {% endif %}
+
+  {% if meeting_interaction or meeting_notes or meeting_promises %}
+  <section class="card stack">
+    <h2>From this meeting</h2>
+    <ul class="bullets">
+      {% if meeting_interaction %}<li>🤝 {{ meeting_interaction.occurred_on | date }}{% if meeting_interaction.summary %} · {{ meeting_interaction.summary }}{% endif %}</li>{% endif %}
+      {% for n in meeting_notes %}<li>📝 <a href="/people/{{ n.person_id }}">{{ n.person.display_name }}</a>: {{ n.text }}</li>{% endfor %}
+      {% for pr in meeting_promises %}<li>✅ <a href="/people/{{ pr.person_id }}#promises">{{ pr.person.display_name }}</a>: {{ pr.text }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

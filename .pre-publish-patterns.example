@@ -1,0 +1,17 @@
+# Copy to .pre-publish-patterns (git-ignored) and replace the placeholders with your own strings.
+# One extended regular expression per line; matched case-insensitively against every tracked and
+# untracked file by scripts/scan-personal.sh. Never commit the real file.
+#
+# Your names and nicknames (first, last, with and without diacritics)
+Firstname Lastname
+lastname
+# Employer, school, gym or club names
+Example Employer Ltd
+# Street, city district or other address fragments
+Example Street 12
+# Hostnames, domains and device names you use
+my-home-server
+example-private-domain\.net
+# Personal e-mail domains, phone number fragments, account number fragments
+@personal-mail\.example
+\+000 000 000 000

@@ -1,0 +1,90 @@
+[project]
+name = "orbit"
+version = "0.1.0"
+description = "Self-hosted personal operating system with human-approved Claude workflows"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.20.0",
+    "anthropic>=1.8.0",
+    "apscheduler>=3.11,<4",
+    "argon2-cffi>=25.1.0",
+    "caldav>=3.3.1",
+    "fastapi[standard]>=0.141.1",
+    "httpx>=0.28.1",
+    "icalendar>=7.3.0",
+    "itsdangerous>=2.2.0",
+    "opentelemetry-api>=1.45.1",
+    "opentelemetry-sdk>=1.45.1",
+    "phonenumbers>=9.0.39",
+    "psycopg[binary]>=3.3.6",
+    "pydantic-settings>=2.15.0",
+    "pypdf>=6.19.0",
+    "recurring-ical-events>=3.8.2",
+    "sqlalchemy>=2.0",
+    "tzdata>=2026.4",
+]
+
+[project.optional-dependencies]
+otlp = [
+    "opentelemetry-exporter-otlp-proto-http>=1.45.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["orbit"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["migrations/versions"]
+force-exclude = true  # also when pre-commit passes file names explicitly
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_carddav.py" = ["E501"]  # verbatim server XML
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency-injection idiom (Depends/Form defaults in signatures).
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Form", "fastapi.Query", "fastapi.File"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["orbit", "evals"]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = ["orbit.domain.*", "orbit.services.*"]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["apscheduler.*", "recurring_ical_events.*", "opentelemetry.exporter.*"]  # no type hints shipped
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "endpoint: boots the app (client/api/web/app fixture); added automatically in tests/conftest.py",
+    "slow: files listed in SLOW_FILES in tests/conftest.py (several seconds each)",
+]
+
+[dependency-groups]
+dev = [
+    "mcp>=1.2",
+    "mypy>=2.3.1",
+    "pre-commit>=4.6.2",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.16.8",
+]

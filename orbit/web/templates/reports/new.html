@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}New report · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/reports">← Reports</a></p>
+    <h1>New report</h1>
+    <p class="muted small">Up to {{ max_days }} days long, ending at most {{ max_ahead }} days from today. Goals, open promises and debts are shown as they are now, not as they were then.</p>
+  </div>
+
+  <div class="row wrap">
+    {% for key, label in presets %}<a class="chip" href="/reports/new?preset={{ key }}">{{ label }}</a>{% endfor %}
+  </div>
+
+  <form method="post" action="/reports" class="card stack">
+    <div class="row">
+      <div class="stack-sm">
+        <label for="start">From</label>
+        <input id="start" type="date" name="start" value="{{ start.isoformat() }}" required>
+      </div>
+      <div class="stack-sm">
+        <label for="end">To</label>
+        <input id="end" type="date" name="end" value="{{ end.isoformat() }}" required>
+      </div>
+    </div>
+    <label for="focus">Focus <span class="muted small">(optional: what to look at)</span></label>
+    <input id="focus" name="focus" maxlength="500" placeholder="How did the exam preparation go?">
+    <div class="row wrap">
+      <select name="goal_id" aria-label="Goal">
+        <option value="">Any goal</option>
+        {% for g in goals %}<option value="{{ g.id }}">{{ g.title }}</option>{% endfor %}
+      </select>
+      <select name="person_id" aria-label="Person">
+        <option value="">Anyone</option>
+        {% for p in people %}<option value="{{ p.id }}">{{ p.display_name }}</option>{% endfor %}
+      </select>
+      <select name="course_id" aria-label="Course">
+        <option value="">Any course</option>
+        {% for c in courses %}<option value="{{ c.id }}">{{ c.code }} {{ c.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <p class="muted small">A person narrows the people and meetings Claude reads to that person. A goal or course tells it what to concentrate on.</p>
+    <button type="submit" class="primary">Make report</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Reports · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <div>
+      <h1>Reports</h1>
+      <p class="muted small">A review over a date range you choose, made when you ask. It reads the same goals, people, money, meetings, promises and school data as the weekly review, and changes nothing.</p>
+    </div>
+    <a class="button small nowrap" href="/reports/new">New report</a>
+  </div>
+
+  {% if reports %}
+  <ul class="list">
+    {% for r in reports %}
+    <li>
+      <a class="list-row" href="/reports/{{ r.id }}">
+        <span class="list-title">{{ title(r) }}{% if r.focus_text %} · {{ r.focus_text[:60] }}{% endif %}</span>
+        <span class="list-sub muted">{{ r.status.value }}{% if r.status.value == "ready" and not r.claude_used %} · without Claude{% endif %} · made {{ r.created_at | local_dt }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No reports yet. <a href="/reports/new">Make one</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

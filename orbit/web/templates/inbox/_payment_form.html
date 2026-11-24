@@ -1,0 +1,84 @@
+{# "Choose…" for a pending `payment_match` proposal (included by inbox/detail.html). #}
+{% set tx = card.transaction %}
+{% set pm = card.payment %}
+<div>
+  <h1>{{ card.label }}</h1>
+  {% if tx %}{{ im.tx_line(tx) }}{% else %}<p class="warn">This bank transaction no longer exists.</p>{% endif %}
+  {% if tx and tx.iban_masked and tx.counterparty %}<p class="muted small">From account {{ tx.iban_masked }}</p>{% endif %}
+</div>
+
+<form method="post" action="{{ form_base }}/confirm" class="stack-lg payment-form">
+  <input type="hidden" name="full" value="1">
+
+  <section class="card stack">
+    <h2>Who sent it?</h2>
+    <select name="person" aria-label="Who sent it">
+      <option value="">— pick a person —</option>
+      {% if owing %}
+      <optgroup label="Owe you money">
+        {% for person in owing %}
+        <option value="{{ person.id }}" {% if person.id == pm.person_id %}selected{% endif %}>{{ person.display_name }}</option>
+        {% endfor %}
+      </optgroup>
+      {% endif %}
+      <optgroup label="Everyone">
+        {% for person in others %}
+        <option value="{{ person.id }}" {% if person.id == pm.person_id %}selected{% endif %}>{{ person.display_name }}</option>
+        {% endfor %}
+      </optgroup>
+    </select>
+    {% if card.payer_note %}<p class="muted small">{{ card.payer_note[:1] | upper }}{{ card.payer_note[1:] }}.</p>{% endif %}
+    {% if remember_what %}
+    <label class="choice"><input type="checkbox" name="remember" value="1" {% if pm.remember_payer %}checked{% endif %}>
+      <span>Recognize {{ remember_what }} as them next time</span></label>
+    {% endif %}
+  </section>
+
+  {% if card.payer %}
+  <section class="card stack">
+    <h2>What does it pay?</h2>
+    {% for option in pm.options %}
+    <label class="choice"><input type="radio" name="option" value="{{ loop.index0 }}" {% if selected_option == loop.index0 %}checked{% endif %}>
+      <span>{{ option_labels[option.kind] }}: <span class="muted">{{ option_lines[loop.index0] }}</span></span></label>
+    {% endfor %}
+    <label class="choice"><input type="radio" name="option" value="custom" {% if selected_option == "custom" %}checked{% endif %}>
+      <span>{{ "Pick debts myself" if pm.options else "Pick debts" }}</span></label>
+    <div class="stack-sm custom-only">
+      {% for d in debts %}
+      <div class="row split-row">
+        <label class="choice grow"><input type="checkbox" name="debt" value="{{ d.id }}" {% if d.id in chosen %}checked{% endif %}>
+          <span>{{ d.description or "Money" }} {{ money(d.amount_minor, d.currency) }} <span class="muted small">· {{ d.reference_code }} · {{ d.created_at | local_date }}</span></span></label>
+        {% if tx and d.currency == tx.currency %}
+        <input name="amount-{{ d.id }}" inputmode="decimal" class="amount" placeholder="In full"
+               aria-label="Part of {{ d.reference_code }}" value="{{ amount_input(chosen.get(d.id), d.currency) }}">
+        {% else %}
+        <span class="muted small">in full</span>
+        {% endif %}
+      </div>
+      {% else %}
+      <p class="muted small">{{ card.payer.display_name }} owes you no money.</p>
+      {% endfor %}
+    </div>
+    <ul class="bullets">
+      {% for line in card.lines %}<li>{{ line }}</li>{% endfor %}
+    </ul>
+    {% if settles is not none and tx and settles != tx.amount_minor %}
+    <p class="muted small">Settles {{ money(settles, tx.currency) }} of the {{ money(tx.amount_minor, tx.currency) }} received.</p>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  <div class="row wrap actions sticky-actions">
+    {% if card.payer %}
+    <button type="submit" class="primary">{{ "Settle" if pm.settle else "Just remember them" if remember_what else "Confirm" }}</button>
+    <button type="submit" formaction="{{ form_base }}/save" formnovalidate>Save</button>
+    {% else %}
+    <button type="submit" formaction="{{ form_base }}/save" formnovalidate class="primary">Next</button>
+    {% endif %}
+    {% if cancel_url %}
+    <a class="button link" href="{{ cancel_url }}">Cancel</a>
+    {% else %}
+    <button type="submit" formaction="{{ form_base }}/reject" formnovalidate class="link">Not a debt</button>
+    {% endif %}
+  </div>
+</form>

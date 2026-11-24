@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import "goals/_macros.html" as gm with context %}
+{% block title %}Review goals · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Review your goals</h1>
+    <p class="muted small">Go down the list. Is each one still right, and in the right place? Each tap is saved at once. Nothing is sent anywhere.</p>
+  </div>
+
+  {% for g in active %}
+  {% set open = open_promises(g) %}
+  <section class="card stack" id="goal-{{ g.id }}">
+    <div class="row-between">
+      <h2><span class="muted">{{ g.rank }}.</span> <a href="/goals/{{ g.id }}">{{ g.title }}</a></h2>
+      <span class="muted small nowrap">reviewed {{ "today" if days[g.id] == 0 else days[g.id] ~ " days ago" }}</span>
+    </div>
+    <div>{{ gm.meta(g, today) }}</div>
+    {% if g.why %}<p class="small">{{ g.why }}</p>{% endif %}
+    {% if g.target %}<p class="muted small">Target: {{ g.target }}</p>{% endif %}
+    {% if g.people %}<p class="muted small">With: {{ g.people | map(attribute="display_name") | join(", ") }}</p>{% endif %}
+    {% if open %}
+    <ul class="list small">
+      {% for p in open %}<li>{{ p.person.display_name }}: {{ p.text }}{% if p.due %} <span class="muted">(due {{ p.due | date }})</span>{% endif %}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post" action="/goals/review/{{ g.id }}" class="row wrap actions">
+      <button type="submit" name="action" value="keep" class="small primary">Still right</button>
+      <button type="submit" name="action" value="up" class="small" {% if loop.first %}disabled{% endif %}>Move up</button>
+      <button type="submit" name="action" value="down" class="small" {% if loop.last %}disabled{% endif %}>Move down</button>
+      <button type="submit" name="action" value="pause" class="small">Pause</button>
+      <button type="submit" name="action" value="done" class="small">Done</button>
+    </form>
+  </section>
+  {% else %}
+  <p class="muted">No active goals to review. <a href="/goals">Add one</a>.</p>
+  {% endfor %}
+
+  {% if active %}
+  <section class="card stack">
+    <h2>Your order now</h2>
+    <ol class="small">{% for g in active %}<li>{{ g.title }}</li>{% endfor %}</ol>
+    <a class="button" href="/goals">Done</a>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

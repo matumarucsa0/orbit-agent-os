@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% import "inbox/_macros.html" as im with context %}
+{% block title %}Inbox · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Inbox</h1>
+    <p class="muted small">Nothing here changes your data until you confirm it.</p>
+  </div>
+
+  <details class="card" {% if not cards %}open{% endif %}>
+    <summary><strong>🎙️ Capture</strong></summary>
+    <form method="post" action="/inbox/capture" class="stack">
+      <textarea name="text" rows="3" required placeholder="Zaplatil som Paťovi pizzu 12 €, sľúbil som mu poslať rozvrh…" aria-label="What happened?"></textarea>
+      <button type="submit" class="primary" data-busy="Sending to Claude…">Send to Inbox</button>
+    </form>
+  </details>
+
+  {% if cards %}
+  {% for card in cards %}{{ im.card_view(card, default_currency) }}{% endfor %}
+  {% else %}
+  <p class="muted">All caught up.</p>
+  {% endif %}
+
+  {% if rejected %}
+  <details class="card">
+    <summary><strong>Recently rejected</strong> <span class="muted small">{{ rejected | length }} in the last {{ rejected_days }} days</span></summary>
+    <ul class="list">
+      {% for p in rejected %}
+      <li class="row-between">
+        <a href="/inbox/{{ p.id }}" class="list-row grow">
+          <span class="list-title">{{ kind_labels.get(p.kind, p.kind.value) }}</span>
+          <span class="list-sub muted small">{{ p.summary }} · rejected {{ p.resolved_at | local_dt }}</span>
+        </a>
+        <form method="post" action="/inbox/{{ p.id }}/reopen">
+          <button type="submit" class="small">Reopen</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</section>
+{% endblock %}

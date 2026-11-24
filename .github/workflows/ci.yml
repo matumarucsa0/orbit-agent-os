@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Which tests can this change affect? `main` always runs the full suite; a branch runs the tests
+  # that reach a changed file (scripts/select_tests.py). Anything unclear selects everything.
+  select:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.pick.outputs.tests }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: pick
+        run: |
+          if [ "$GITHUB_REF_NAME" = "main" ] || [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            picked=ALL
+          else
+            git fetch --no-tags origin main:refs/remotes/origin/main
+            picked=$(python3 scripts/select_tests.py origin/main | tr '\n' ' ')
+          fi
+          echo "Selected: $picked"
+          echo "tests=${picked% }" >> "$GITHUB_OUTPUT"
+
+  checks:
+    needs: select
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: ruff check
+        run: uv run ruff check .
+      - name: ruff format
+        run: uv run ruff format --check .
+      - name: mypy
+        run: uv run mypy
+      - name: pytest
+        env:
+          TESTS: ${{ needs.select.outputs.tests }}
+        run: |
+          if [ "$TESTS" = "NONE" ]; then echo "No test is affected."; exit 0; fi
+          if [ "$TESTS" = "ALL" ]; then uv run pytest; else uv run pytest $TESTS; fi
+
+  # Regression evals for the Claude-driven features: replays hand-written cassettes through the
+  # deterministic graders. No key, no network, no model: it guards the graders, the case files and
+  # the pipeline (docs/EVALS.md). The live run is a manual workflow (evals-live.yml).
+  evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: evals (recorded)
+        run: |
+          uv run python -m evals.run --mode recorded --min-pass-rate 1.0 \
+            --json "$RUNNER_TEMP/evals-recorded.json" | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: the committed baseline is current
+        run: diff -u evals/results/baseline-recorded.json "$RUNNER_TEMP/evals-recorded.json"
+      - name: grader and judge-calibration tests
+        run: uv run pytest tests/test_evals.py -q
+
+  # The files agents read and the scripts that guard them: no dead paths or links in the docs, the
+  # generated code map matches the code, the agent config is valid, no personal data or secrets.
+  agent-tooling:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: docs and agent config (make docs)
+        run: uv run python scripts/check_docs.py
+      - name: generated docs are current (make codemap-check)
+        run: uv run python scripts/gen_codemap.py --check
+      - name: personal data and secrets scan (generic patterns; make scan)
+        run: scripts/scan-personal.sh
+
+  # The same suite against Postgres, as in production.
+  postgres:
+    needs: select
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: orbit
+          POSTGRES_PASSWORD: orbit
+          POSTGRES_DB: orbit_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U orbit -d orbit_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: pytest (Postgres)
+        run: |
+          if [ "$TESTS" = "NONE" ]; then echo "No test is affected."; exit 0; fi
+          if [ "$TESTS" = "ALL" ]; then uv run pytest; else uv run pytest $TESTS; fi
+        env:
+          TESTS: ${{ needs.select.outputs.tests }}
+          ORBIT_TEST_DATABASE_URL: postgresql+psycopg://orbit:orbit@localhost:5432/orbit_test
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t orbit:ci .
+      - name: shellcheck
+        run: shellcheck -e SC1091 docker/entrypoint.sh docker/backup/*.sh scripts/*.sh .claude/hooks/*.sh
+      - name: backup + restore drill (production compose)
+        run: scripts/backup-drill.sh

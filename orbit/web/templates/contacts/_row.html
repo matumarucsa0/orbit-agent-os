@@ -1,0 +1,35 @@
+{# One change in the review: a tick box, or radios when there is more than one way to resolve it. #}
+{% macro row(view, show_person, group) %}
+{% set c = view.change %}
+<li class="sync-row">
+  <input type="hidden" name="seen" value="{{ c.id }}">
+  {% if view.choices | length == 1 %}
+  <label class="choice top">
+    <input type="checkbox" name="c{{ c.id }}" value="{{ view.choices[0] }}" data-group="{{ group }}" {% if view.default %}checked{% endif %}>
+    <span class="grow">
+      {% if show_person %}<strong>{{ c.person_name }}</strong><br>{% endif %}
+      <span class="muted">{{ view.label }}</span>
+      {% if view.old %}<span class="old">{{ view.old }}</span> → {% endif %}<span class="new">{{ view.new }}</span>
+      {% if c.kind.value == "auto" %}<span class="pill">fills empty</span>{% endif %}
+    </span>
+  </label>
+  {% else %}
+  <div class="stack-sm">
+    {% if show_person %}<strong>{{ c.person_name }}</strong>{% endif %}
+    <span class="muted">{{ view.label }}</span>
+    <label class="choice"><input type="radio" name="c{{ c.id }}" value="skip" checked> Skip</label>
+    {% if c.kind.value == "conflict" %}
+    <label class="choice"><input type="radio" name="c{{ c.id }}" value="apple"> Take Apple: <span class="new">{{ view.new }}</span></label>
+    {% if push_enabled %}
+    <label class="choice"><input type="radio" name="c{{ c.id }}" value="orbit"> Keep Orbit: <span class="new">{{ view.old }}</span></label>
+    {% else %}
+    <span class="muted small">Orbit has: {{ view.old }}</span>
+    {% endif %}
+    {% else %}
+    <label class="choice"><input type="radio" name="c{{ c.id }}" value="link"> Same person as {{ c.old_json }}: link them</label>
+    <label class="choice"><input type="radio" name="c{{ c.id }}" value="new"> Different person: add as new <span class="muted">({{ view.new }})</span></label>
+    {% endif %}
+  </div>
+  {% endif %}
+</li>
+{% endmacro %}

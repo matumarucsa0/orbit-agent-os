@@ -1,0 +1,253 @@
+{
+ "success": true,
+ "code": 200,
+ "payload": {
+  "supervisor": [],
+  "student": [
+   {
+    "id": "5eac5367-025a-5e51-924e-8706873b92ba",
+    "externalId": "",
+    "organizational": false,
+    "exam": false,
+    "archived": false,
+    "public": false,
+    "directlyArchived": false,
+    "localizedTexts": [
+     {
+      "id": "87787cb3-5376-5e88-8140-221c8509a83d",
+      "locale": "en",
+      "name": "Introduction to Algorithms (Thu, 9:00, N8)",
+      "description": "A group create from SIS scheduling event `26aNINF062x03` for course `NINF062`.",
+      "createdAt": 1790542479
+     },
+     {
+      "id": "29d644d1-c073-56c4-9f3c-0e9d38e02f8b",
+      "locale": "cs",
+      "name": "Algoritmizace (Čt, 9:00, N8)",
+      "description": "Skupina vytvořená z rozvrhového lístku SISu `26aNINF062x03` pro předmět `NINF062`.",
+      "createdAt": 1790542479
+     }
+    ],
+    "primaryAdminsIds": [
+     "00000000-0000-4000-8000-0000000000a1"
+    ],
+    "parentGroupId": "afd043d0-f1ec-5607-987e-8113766c74e3",
+    "parentGroupsIds": [
+     "cf12465f-7d3d-5add-976d-6b679fedfce3",
+     "e6d15eb0-6fba-5c62-867f-e04543b222d7",
+     "afd043d0-f1ec-5607-987e-8113766c74e3"
+    ],
+    "childGroups": [],
+    "privateData": {
+     "admins": [],
+     "supervisors": [],
+     "observers": [],
+     "students": [],
+     "instanceId": "fd2364fb-9e75-595c-b22f-eec3e89de2f1",
+     "hasValidLicence": true,
+     "assignments": [],
+     "shadowAssignments": [
+      "f263481d-a835-5fe4-86ba-a2a07cee2610"
+     ],
+     "publicStats": false,
+     "detaining": true,
+     "threshold": 0.7,
+     "pointsLimit": null,
+     "bindings": {
+      "sis": []
+     },
+     "examBegin": null,
+     "examEnd": null,
+     "examLockType": null,
+     "exams": []
+    }
+   },
+   {
+    "id": "4f881122-1667-5cff-abd4-8fe7c0ed4086",
+    "externalId": "",
+    "organizational": false,
+    "exam": false,
+    "archived": false,
+    "public": false,
+    "directlyArchived": false,
+    "localizedTexts": [
+     {
+      "id": "25ebf769-23ad-5c52-8e31-b4efb8ccacba",
+      "locale": "cs",
+      "name": "Programování 1 (Čt, 9:50, N8)",
+      "description": "Skupina vytvořená z rozvrhového lístku SISu `26aNINF030x03` pro předmět `NINF030`.",
+      "createdAt": 1790542530
+     },
+     {
+      "id": "11a1d85f-5c18-5ca4-8668-e297d369ff87",
+      "locale": "en",
+      "name": "Programming 1 (Thu, 9:50, N8)",
+      "description": "A group create from SIS scheduling event `26aNINF030x03` for course `NINF030`.",
+      "createdAt": 1790542530
+     }
+    ],
+    "primaryAdminsIds": [
+     "00000000-0000-4000-8000-0000000000a1"
+    ],
+    "parentGroupId": "66146a15-5740-5015-89d6-a578bb26a8a4",
+    "parentGroupsIds": [
+     "cf12465f-7d3d-5add-976d-6b679fedfce3",
+     "9c7064a1-0493-530e-a2c9-21dcbd77b6a5",
+     "66146a15-5740-5015-89d6-a578bb26a8a4"
+    ],
+    "childGroups": [],
+    "privateData": {
+     "admins": [],
+     "supervisors": [],
+     "observers": [],
+     "students": [],
+     "instanceId": "fd2364fb-9e75-595c-b22f-eec3e89de2f1",
+     "hasValidLicence": true,
+     "assignments": [
+      "7766c471-2a3e-51d0-a399-1fdb06ea5a2f"
+     ],
+     "shadowAssignments": [
+      "69b4fd5e-6f7a-5aa8-96e2-53b7655d7287"
+     ],
+     "publicStats": false,
+     "detaining": true,
+     "threshold": 0.7,
+     "pointsLimit": null,
+     "bindings": {
+      "sis": []
+     },
+     "examBegin": null,
+     "examEnd": null,
+     "examLockType": null,
+     "exams": []
+    }
+   },
+   {
+    "id": "d7a4af27-3020-553d-8f70-d038cc998f59",
+    "externalId": "",
+    "organizational": false,
+    "exam": false,
+    "archived": false,
+    "public": false,
+    "directlyArchived": false,
+    "localizedTexts": [
+     {
+      "id": "8cb7166b-0926-5ca8-8521-d109dc368f7b",
+      "locale": "en",
+      "name": "Introduction to Networking (Wed, 17:20, N1)",
+      "description": "A group create from SIS scheduling event `26aNINF141p1` for course `NINF141`.",
+      "createdAt": 1790761018
+     },
+     {
+      "id": "b3eb302d-fa1b-5349-888c-85cf8f54347d",
+      "locale": "cs",
+      "name": "Úvod do počítačových sítí (St, 17:20, N1)",
+      "description": "Skupina vytvořená z rozvrhového lístku SISu `26aNINF141p1` pro předmět `NINF141`.",
+      "createdAt": 1790761018
+     }
+    ],
+    "primaryAdminsIds": [
+     "00000000-0000-4000-8000-0000000000a1"
+    ],
+    "parentGroupId": "80b45993-15ac-560b-b6a2-23317e3aaec7",
+    "parentGroupsIds": [
+     "cf12465f-7d3d-5add-976d-6b679fedfce3",
+     "b42572b2-9495-58d2-a1fb-d256770060fa",
+     "80b45993-15ac-560b-b6a2-23317e3aaec7"
+    ],
+    "childGroups": [],
+    "privateData": {
+     "admins": [],
+     "supervisors": [],
+     "observers": [],
+     "students": [],
+     "instanceId": "fd2364fb-9e75-595c-b22f-eec3e89de2f1",
+     "hasValidLicence": true,
+     "assignments": [],
+     "shadowAssignments": [],
+     "publicStats": false,
+     "detaining": true,
+     "threshold": null,
+     "pointsLimit": 2,
+     "bindings": {
+      "sis": []
+     },
+     "examBegin": null,
+     "examEnd": null,
+     "examLockType": null,
+     "exams": []
+    }
+   }
+  ],
+  "stats": [
+   {
+    "userId": "00000000-0000-4000-8000-000000000001",
+    "groupId": "5eac5367-025a-5e51-924e-8706873b92ba",
+    "points": {
+     "total": 0,
+     "limit": 0.0,
+     "gained": 1
+    },
+    "hasLimit": true,
+    "passesLimit": true,
+    "assignments": [],
+    "shadowAssignments": [
+     {
+      "id": "f263481d-a835-5fe4-86ba-a2a07cee2610",
+      "points": {
+       "total": 0,
+       "gained": 1
+      }
+     }
+    ]
+   },
+   {
+    "userId": "00000000-0000-4000-8000-000000000001",
+    "groupId": "4f881122-1667-5cff-abd4-8fe7c0ed4086",
+    "points": {
+     "total": 0,
+     "limit": 0.0,
+     "gained": 2
+    },
+    "hasLimit": true,
+    "passesLimit": true,
+    "assignments": [
+     {
+      "id": "7766c471-2a3e-51d0-a399-1fdb06ea5a2f",
+      "status": "done",
+      "points": {
+       "total": 1,
+       "gained": 1,
+       "bonus": 0
+      },
+      "bestSolutionId": "aea52ba8-a58c-50c2-99b3-a46afab08d7c",
+      "accepted": false,
+      "reviewRequest": false
+     }
+    ],
+    "shadowAssignments": [
+     {
+      "id": "69b4fd5e-6f7a-5aa8-96e2-53b7655d7287",
+      "points": {
+       "total": 0,
+       "gained": 1
+      }
+     }
+    ]
+   },
+   {
+    "userId": "00000000-0000-4000-8000-000000000001",
+    "groupId": "d7a4af27-3020-553d-8f70-d038cc998f59",
+    "points": {
+     "total": 0,
+     "limit": 2,
+     "gained": 0
+    },
+    "hasLimit": true,
+    "passesLimit": false,
+    "assignments": [],
+    "shadowAssignments": []
+   }
+  ]
+ }
+}

@@ -1,0 +1,71 @@
+{# The split screen for a `split_transaction` proposal (included by inbox/detail.html). form_base is
+   where Save / Confirm post to: the Inbox item, or /transactions/…/split before one exists. #}
+{% set tx = card.transaction %}
+{% set s = card.split %}
+{% set currency = tx.currency if tx else default_currency %}
+<div>
+  <h1>{{ card.label }}</h1>
+  {% if tx %}{{ im.tx_line(tx) }}{% else %}<p class="warn">This bank transaction no longer exists.</p>{% endif %}
+  {% if p.confidence is not none %}<p class="muted small">Claude’s confidence {{ (p.confidence * 100) | round | int }} %</p>{% endif %}
+</div>
+
+<form method="post" action="{{ form_base }}/confirm" class="stack-lg split-form"
+      {% if tx %}hx-post="/split/{{ tx.id }}/preview" hx-trigger="change, input delay:400ms from:.amount, htmx:afterSettle from:#split-people"
+      hx-target="#split-preview" hx-swap="innerHTML"{% endif %}>
+  <input type="hidden" name="full" value="1">
+
+  <section class="card stack">
+    <h2>Who was in?</h2>
+    {% if split_meetings %}
+    <p class="muted small">From your calendar:
+      {% for m in split_meetings %}<a href="/meetings/{{ m.id }}">{{ m.title }}</a> ({{ m.start_utc | local_time }}–{{ m.end_utc | local_time }}){% if not loop.last %}, {% endif %}{% endfor %}.
+      Untick anyone who wasn't in.</p>
+    {% endif %}
+    <div id="split-people" class="stack-sm">
+      {% for person, share in split_rows %}{% include "inbox/_split_row.html" %}{% endfor %}
+    </div>
+    {% if recent %}
+    <div class="chips" aria-label="Recent people">
+      {% for person in recent %}
+      <button type="button" class="chip" hx-get="/split/row?person_id={{ person.id }}"
+              hx-target="#split-people" hx-swap="beforeend"
+              hx-on::after-request="if (event.detail.successful) this.remove()">+ {{ person.display_name }}</button>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {# form="…" points at no form: Enter here doesn't submit the split, and q isn't sent with it. #}
+    <input type="search" name="q" form="split-search" placeholder="Add someone…" autocomplete="off"
+           aria-label="Search people"
+           hx-get="/split/search" hx-trigger="input changed delay:250ms, search"
+           hx-target="#split-results" hx-include="#split-people [name='listed']">
+    <div id="split-results"></div>
+  </section>
+
+  <section class="card stack">
+    <h2>How?</h2>
+    <label class="choice"><input type="radio" name="mode" value="even" {% if s.mode == "even" %}checked{% endif %}> <span>Evenly</span></label>
+    <label class="choice even-only"><input type="checkbox" name="include_me" value="1" {% if s.include_me %}checked{% endif %}>
+      <span>Count me in <span class="muted small">(untick if I paid only for them)</span></span></label>
+    <label class="choice"><input type="radio" name="mode" value="custom" {% if s.mode == "custom" %}checked{% endif %}> <span>Custom amounts <span class="muted small">({{ currency }})</span></span></label>
+    <label for="split-description">What for?</label>
+    <input id="split-description" name="description" value="{{ s.description or (tx.counterparty if tx and tx.counterparty else '') }}" placeholder="e.g. dinner" maxlength="500">
+    <div id="split-preview" aria-live="polite">
+      {% if card.lines %}
+      <ul class="bullets">
+        {% for line in card.lines %}<li>{{ line }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    <p class="muted small pick-hint">Pick who was in; you'll see who owes what here.</p>
+  </section>
+
+  <div class="row wrap actions sticky-actions">
+    <button type="submit" class="primary needs-people">Confirm</button>
+    <button type="submit" formaction="{{ form_base }}/save" formnovalidate>Save</button>
+    {% if cancel_url %}
+    <a class="button link" href="{{ cancel_url }}">Cancel</a>
+    {% else %}
+    <button type="submit" formaction="{{ form_base }}/reject" formnovalidate class="link">Not shared</button>
+    {% endif %}
+  </div>
+</form>

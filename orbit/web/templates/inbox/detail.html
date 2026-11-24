@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% import "inbox/_macros.html" as im with context %}
+{% block title %}{{ card.label }} · Inbox · Orbit{% endblock %}
+{% block content %}
+{% set p = card.proposal %}
+{% set c = card.capture %}
+<section class="stack-lg">
+  {% if cancel_url %}<p class="small"><a href="{{ cancel_url }}">← Back</a></p>
+  {% else %}<p class="small"><a href="/inbox">← Inbox</a></p>{% endif %}
+
+  {% if card.split and p.status.value == "pending" %}
+  {% include "inbox/_split_form.html" %}
+  {% elif card.payment and p.status.value == "pending" %}
+  {% include "inbox/_payment_form.html" %}
+  {% elif not c or p.status.value != "pending" %}
+  {{ im.card_view(card, default_currency, full=true) }}
+  {% else %}
+  <div>
+    <h1>{{ card.label }}</h1>
+    <p class="quote">“{{ c.text }}”</p>
+    <p class="muted small">{{ p.created_at | local_dt }}{% if p.confidence is not none %} · Claude’s confidence {{ (p.confidence * 100) | round | int }} %{% endif %}</p>
+  </div>
+
+  <form method="post" action="/inbox/{{ p.id }}/confirm" class="stack-lg">
+    <input type="hidden" name="full" value="1">
+
+    {% if card.flags | select | list %}
+    <section class="card stack">
+      <h2>⚠ Check these</h2>
+      <ul class="bullets">
+        {% for line in card.lines %}{% if card.flags[loop.index0] %}
+        <li>{{ line }}{% for flag in card.flags[loop.index0] %}<br><span class="small warn">{{ flag }}</span>{% endfor %}</li>
+        {% endif %}{% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    {% if c.new_people %}
+    <section class="card stack">
+      <h2>👤 New people</h2>
+      {% for np in c.new_people %}{% set key = "new-" ~ loop.index0 %}
+      <fieldset class="stack new-person">
+        <input name="{{ key }}-name" value="{{ np.name }}" aria-label="Name" required>
+        {% if np.context %}<p class="muted small">{{ np.context }}</p>{% endif %}
+        <select name="{{ key }}-action" aria-label="What to do">
+          <option value="create" {% if np.action == "create" %}selected{% endif %}>Add as a new person</option>
+          <option value="link" {% if np.action == "link" %}selected{% endif %}>It's someone I already have…</option>
+          <option value="skip" {% if np.action == "skip" %}selected{% endif %}>Skip them and their items</option>
+        </select>
+        <div class="link-only">
+          {{ im.person_select(key ~ "-person_id", np.person_id | string if np.person_id else "", c, mentioned, others, "Existing person", with_new=false) }}
+        </div>
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if c.warnings %}
+    <section class="card stack">{% for w in c.warnings %}<p class="small warn">{{ w }}</p>{% endfor %}</section>
+    {% endif %}
+
+    {% if c.settles or c.promise_updates %}
+    <section class="card stack">
+      <h2>☑️ Settle what exists</h2>
+      {% for sd in c.settles %}{% set key = "settle-" ~ loop.index0 %}
+      <fieldset class="stack">
+        {{ im.include_box(key, sd, "Settle: " ~ sd.label) }}
+        {% if sd.currency %}
+        <label class="small">Part paid <span class="muted">(empty: all of it)</span>
+          <input name="{{ key }}-amount" inputmode="decimal" aria-label="Part paid" value="{{ amount_input(sd.amount_minor, sd.currency) }}">
+        </label>
+        {% endif %}
+      </fieldset>
+      {% endfor %}
+      {% for pu in c.promise_updates %}{% set key = "pupdate-" ~ loop.index0 %}
+      <fieldset class="stack">
+        {{ im.include_box(key, pu, pu.label) }}
+        <select name="{{ key }}-status" aria-label="Done or dropped">
+          <option value="done" {% if pu.status == "done" %}selected{% endif %}>Done</option>
+          <option value="dropped" {% if pu.status == "dropped" %}selected{% endif %}>Dropped</option>
+        </select>
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if c.debts %}
+    <section class="card stack">
+      <h2>💶 Money, items, favors</h2>
+      {% for d in c.debts %}{% set key = "debt-" ~ loop.index0 %}
+      <fieldset class="stack debt-form" {% if loop.last %}id="debt-new"{% endif %}>
+        {{ im.include_box(key, d, "Include") }}
+        {{ im.person_select(key ~ "-person", d.person or "", c, mentioned, others) }}
+        <div class="row">
+          <select name="{{ key }}-direction" aria-label="Direction">
+            <option value="they_owe_me" {% if d.direction.value == "they_owe_me" %}selected{% endif %}>They owe me</option>
+            <option value="i_owe_them" {% if d.direction.value == "i_owe_them" %}selected{% endif %}>I owe them</option>
+          </select>
+          <select name="{{ key }}-type" aria-label="Kind">
+            {% for t in ("money", "item", "favor") %}
+            <option value="{{ t }}" {% if d.type.value == t %}selected{% endif %}>{{ t | capitalize }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="row money-only">
+          <input name="{{ key }}-amount" inputmode="decimal" placeholder="Amount missing, e.g. 12.50" aria-label="Amount"
+                 value="{{ amount_input(d.amount_minor, d.currency or default_currency) }}"
+                 class="{{ 'needs' if d.amount_missing }}">
+          <input name="{{ key }}-currency" value="{{ d.currency or default_currency }}" maxlength="3" autocapitalize="characters" class="currency" aria-label="Currency">
+        </div>
+        <input name="{{ key }}-description" value="{{ d.description or '' }}" placeholder="What for / which item or favor" aria-label="Description">
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if c.promises %}
+    <section class="card stack">
+      <h2>✅ Promises</h2>
+      {% for pr in c.promises %}{% set key = "promise-" ~ loop.index0 %}
+      <fieldset class="stack" {% if loop.last %}id="promise-new"{% endif %}>
+        {{ im.include_box(key, pr, "Include") }}
+        {{ im.person_select(key ~ "-person", pr.person or "", c, mentioned, others) }}
+        <select name="{{ key }}-direction" aria-label="Who promised">
+          <option value="i_promised" {% if pr.direction.value == "i_promised" %}selected{% endif %}>I promised</option>
+          <option value="they_promised" {% if pr.direction.value == "they_promised" %}selected{% endif %}>They promised</option>
+        </select>
+        <input name="{{ key }}-text" value="{{ pr.text }}" aria-label="Promise">
+        <label class="small">Due <span class="muted">(empty: in 7 days)</span>
+          <input type="date" name="{{ key }}-due" value="{{ pr.due.isoformat() if pr.due else '' }}">
+        </label>
+        {% if active_goals or pr.goal %}
+        <label class="small">Serves <span class="muted">(a goal)</span>
+          <select name="{{ key }}-goal" aria-label="Goal it serves">
+            <option value="">No goal</option>
+            {% for g in active_goals %}<option value="{{ g.id }}" {% if pr.goal == g.id %}selected{% endif %}>{{ g.rank }}. {{ g.title }}</option>{% endfor %}
+            {% if pr.goal and pr.goal not in active_goals | map(attribute="id") | list %}<option value="{{ pr.goal }}" selected>Goal #{{ pr.goal }} (no longer active)</option>{% endif %}
+          </select>
+        </label>
+        {% endif %}
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if c.appointments %}
+    <section class="card stack">
+      <h2>🗓 Appointments</h2>
+      {% for ap in c.appointments %}{% set key = "appointment-" ~ loop.index0 %}
+      <fieldset class="stack" {% if loop.last %}id="appointment-new"{% endif %}>
+        {{ im.include_box(key, ap, "Include") }}
+        {{ im.person_select(key ~ "-person", ap.person or "", c, mentioned, others) }}
+        <input name="{{ key }}-title" value="{{ ap.title }}" aria-label="Title" placeholder="What, e.g. Haircut">
+        <label class="small">Starts
+          <input type="datetime-local" name="{{ key }}-start" value="{{ ap.start.strftime('%Y-%m-%dT%H:%M') }}">
+        </label>
+        <label class="small">Ends <span class="muted">(empty: 1 hour)</span>
+          <input type="datetime-local" name="{{ key }}-end" value="{{ ap.end.strftime('%Y-%m-%dT%H:%M') if ap.end else '' }}">
+        </label>
+        <input name="{{ key }}-location" value="{{ ap.location or '' }}" aria-label="Location" placeholder="Where (optional)">
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if c.notes %}
+    <section class="card stack">
+      <h2>📝 Notes</h2>
+      {% for n in c.notes %}{% set key = "note-" ~ loop.index0 %}
+      <fieldset class="stack" {% if loop.last %}id="note-new"{% endif %}>
+        {{ im.include_box(key, n, "Include") }}
+        {{ im.person_select(key ~ "-person", n.person or "", c, mentioned, others) }}
+        <textarea name="{{ key }}-text" rows="3" aria-label="Note">{{ n.text }}</textarea>
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if c.interactions %}
+    <section class="card stack">
+      <h2>🤝 Interactions</h2>
+      {% for it in c.interactions %}{% set key = "interaction-" ~ loop.index0 %}
+      <fieldset class="stack" {% if loop.last %}id="interaction-new"{% endif %}>
+        {{ im.include_box(key, it, "Include") }}
+        {{ im.person_select(key ~ "-people", it.people, c, mentioned, others, "People", multiple=true) }}
+        <div class="row">
+          <select name="{{ key }}-kind" aria-label="Kind">
+            {% for k in interaction_kinds %}
+            <option value="{{ k.value }}" {% if it.kind == k %}selected{% endif %}>{{ k.value | capitalize }}</option>
+            {% endfor %}
+          </select>
+          <input type="date" name="{{ key }}-occurred_on" value="{{ it.occurred_on.isoformat() if it.occurred_on else '' }}" aria-label="Date (empty: today)">
+        </div>
+        <input name="{{ key }}-summary" value="{{ it.summary or '' }}" placeholder="Summary" aria-label="Summary">
+      </fieldset>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    <section class="stack-sm">
+      <p class="muted small">Missed something? Add it by hand:</p>
+      <div class="row wrap actions">
+        {% for key, text in (("debt", "💶 Debt"), ("promise", "✅ Promise"), ("appointment", "🗓 Appointment"), ("note", "📝 Note"), ("interaction", "🤝 Interaction")) %}
+        <button type="submit" formaction="/inbox/{{ p.id }}/save" formnovalidate name="add" value="{{ key }}" class="small">＋ {{ text }}</button>
+        {% endfor %}
+      </div>
+    </section>
+
+    <div class="row wrap actions sticky-actions">
+      <button type="submit" class="primary">Confirm</button>
+      <button type="submit" formaction="/inbox/{{ p.id }}/save" formnovalidate>Save</button>
+      <button type="submit" formaction="/inbox/{{ p.id }}/reject" formnovalidate class="link">Reject</button>
+    </div>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

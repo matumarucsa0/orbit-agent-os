@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% import "_keep.html" as keep %}
+{% block title %}Keep in touch · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <p class="small"><a href="/people">← People</a></p>
+    <h1>Keep in touch</h1>
+    <p class="muted small">People you haven't talked to for longer than their cadence. ✓ logs that you talked today; 💤 hides them for a week.</p>
+  </div>
+
+  {% if due %}
+  <ul class="list">
+    {% for k in due %}
+    <li>{{ keep.catch_up_row(k, today, "/keep-in-touch") }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">Nobody to catch up with right now. 🎉</p>
+  {% endif %}
+
+  <section class="card stack" id="tags">
+    <h2>Cadence per tag</h2>
+    <p class="muted small">Keep in touch with everyone tagged … every N days. With several tags the shortest counts; a person's own cadence (Edit details) overrides them. Empty: none.</p>
+    {% if tags %}
+    <ul class="list compact">
+      {% for t, count in tags %}
+      <li>
+        <form method="post" action="/tags/{{ t.id }}/cadence" class="row">
+          <label class="grow" for="cadence-{{ t.id }}">#{{ t.name }} <span class="muted small">{{ count }} {{ "person" if count == 1 else "people" }}</span></label>
+          <input id="cadence-{{ t.id }}" name="days" type="number" min="1" max="3650" inputmode="numeric" value="{{ t.cadence_days or '' }}" placeholder="days" class="short">
+          <button type="submit" class="small">Save</button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted small">No tags yet: add them on people's pages.</p>
+    {% endif %}
+  </section>
+</section>
+{% endblock %}

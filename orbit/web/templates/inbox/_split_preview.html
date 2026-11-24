@@ -1,0 +1,6 @@
+{% if problem %}<p class="warn small">{{ problem }}</p>
+{% elif lines %}
+<ul class="bullets">
+  {% for line in lines %}<li>{{ line }}</li>{% endfor %}
+</ul>
+{% endif %}

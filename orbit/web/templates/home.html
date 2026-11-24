@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% import "meetings/_macros.html" as mm with context %}
+{% import "_attention.html" as attn with context %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Today</h1>
+    <p class="muted small">{{ weekday }} {{ today | date }}</p>
+  </div>
+
+  <form method="post" action="/inbox/capture" class="card stack">
+    <label for="capture">🎙️ What happened?</label>
+    <textarea id="capture" name="text" rows="2" required placeholder="Zaplatil som Paťovi pizzu 12 €, sľúbil som mu poslať rozvrh…"></textarea>
+    <div class="row wrap actions">
+      <button type="submit" class="primary" data-busy="Sending to Claude…">Send to Inbox</button>
+      <a class="button" href="/people?add=1#add">＋ Person</a>
+    </div>
+  </form>
+
+  <form method="get" action="/people" role="search">
+    <input type="search" name="q" placeholder="Find someone…" autocomplete="off" aria-label="Search people">
+  </form>
+
+  {% if meetings %}
+  <section class="stack">
+    <h2>📅 Meetings today</h2>
+    <ul class="list">
+      {% for m in meetings %}<li>{{ mm.meeting_row(m) }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if school %}
+  <a class="list-row" href="/school">
+    <span class="list-title">🎓 School</span>
+    <span class="list-sub">
+      {%- if school.next_lesson %}next: {{ school.next_lesson.start_utc | local_dt }} {{ school.next_lesson.title }}{% if school.next_lesson.room %} ({{ school.next_lesson.room }}){% endif %}{% endif %}
+      {%- if school.next_lesson and school.next_item %}<br>{% endif %}
+      {%- if school.next_item %}{{ "exam" if school.next_item.kind.value == "exam" else "due" }} {% if school_days == 0 %}today{% elif school_days == 1 %}tomorrow{% else %}in {{ school_days }} days{% endif %}: {{ school.next_item.title }}{% endif -%}
+    </span>
+  </a>
+  {% endif %}
+
+  {% if inbox_count %}
+  <a class="list-row row-between" href="/inbox">
+    <span class="list-title">📥 Inbox</span>
+    <span>{{ inbox_count }} waiting</span>
+  </a>
+  {% endif %}
+
+  {% if latest_review %}
+  <a class="list-row row-between" href="/reviews/{{ latest_review.id }}">
+    <span class="list-title">🗓 Weekly review</span>
+    <span class="muted small">week of {{ latest_review.plan_start | date }}</span>
+  </a>
+  {% endif %}
+
+  {% if promises or items or catch_ups %}
+  <section class="stack">
+    <h2>Needs attention</h2>
+    {{ attn.rows(promises, items, catch_ups, today, "/") }}
+    {% if attention_more %}<p class="small"><a href="/attention">…and {{ attention_more }} more</a></p>{% endif %}
+  </section>
+  {% endif %}
+
+  {% if top_goals %}
+  <section class="stack">
+    <div class="row-between"><h2>Goals</h2><a class="small" href="/goals">All goals</a></div>
+    <ol class="list">
+      {% for g in top_goals %}
+      <li><a class="list-row" href="/goals/{{ g.id }}"><span class="list-title">🎯 {{ g.rank }}. {{ g.title }}</span></a></li>
+      {% endfor %}
+    </ol>
+    {% if review_days is not none %}<p class="small"><a href="/goals/review">Review your goals</a> <span class="muted">· last reviewed {{ review_days }} days ago</span></p>{% endif %}
+  </section>
+  {% endif %}
+
+  {% if totals %}
+  <a class="list-row" href="/ledger">
+    <span class="list-title">💶 Money</span>
+    <span class="list-sub">
+      {%- for t in totals -%}
+      {% if t.owed_to_me %}owed to you <strong class="plus">{{ money(t.owed_to_me, t.currency) }}</strong>{% endif %}
+      {%- if t.owed_to_me and t.i_owe %} · {% endif %}
+      {%- if t.i_owe %}you owe <strong class="minus">{{ money(t.i_owe, t.currency) }}</strong>{% endif %}
+      {%- if not loop.last %}<br>{% endif %}
+      {%- endfor -%}
+    </span>
+  </a>
+  {% endif %}
+
+  <section class="stack">
+    <h2>Birthdays &amp; name days</h2>
+    {% if groups %}
+    {% for label, entries in groups %}
+    <div class="stack-sm">
+      <h3 class="muted small">{{ label }}</h3>
+      <ul class="list">
+        {% for u in entries %}
+        <li class="row-link">
+          <a class="list-row" href="/people/{{ u.person.id }}">
+            <span class="list-title">{{ "🎂" if u.kind == "birthday" else "🎉" }} {{ u.person.display_name }}</span>
+            <span class="list-sub muted">
+              {%- if u.kind == "birthday" -%}
+                Birthday{% if u.detail %} · {{ u.detail }}{% endif %}
+              {%- else -%}
+                Name day ({{ u.detail }})
+              {%- endif -%}
+            </span>
+          </a>
+          <span class="side">
+            <a class="button icon-button" href="/people/{{ u.person.id }}/draft?occasion={{ u.kind }}" aria-label="Write {{ u.person.display_name }} a {{ 'birthday' if u.kind == 'birthday' else 'name-day' }} message" title="Write a message">✍️</a>
+          </span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="muted">No birthdays or name days in the next 7 days.</p>
+    {% endif %}
+  </section>
+
+  <details class="card">
+    <summary><strong>Subscribe in Apple Calendar</strong></summary>
+    <div class="stack">
+      <p class="small">iPhone: Settings → Calendar → Accounts → Add Account → Other → Add Subscribed Calendar, and paste this URL. Keep it private: anyone with it can read your birthdays and name days.</p>
+      <div class="row">
+        <input id="feed-url" value="{{ feed_url }}" readonly aria-label="Calendar feed URL">
+        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('feed-url').value); this.textContent='Copied'">Copy</button>
+      </div>
+    </div>
+  </details>
+</section>
+{% endblock %}

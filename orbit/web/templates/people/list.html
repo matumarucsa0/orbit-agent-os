@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}People · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div class="row-between">
+    <h1>People</h1>
+    <div class="row wrap">
+      <a class="pill" href="/keep-in-touch">👋 Keep in touch</a>
+      {% if duplicate_count %}
+      <a class="pill" href="/people/duplicates">{{ duplicate_count }} possible duplicate{{ "s" if duplicate_count != 1 }}</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <form method="get" action="/people" class="search" role="search">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search names, handles, tags, notes…"
+           autocomplete="off" aria-label="Search people"
+           hx-get="/people" hx-trigger="input changed delay:250ms, search"
+           hx-target="#results" hx-include="[name='tag']" hx-push-url="true">
+    <input type="hidden" name="tag" value="{{ tag }}">
+  </form>
+
+  {% if tags %}
+  <div class="chips" aria-label="Filter by tag">
+    <a class="chip {% if not tag %}chip-active{% endif %}" href="/people{% if q %}?q={{ q | urlencode }}{% endif %}">All</a>
+    {% for t, count in tags %}{% if count %}
+    <a class="chip {% if tag and tag == t.name %}chip-active{% endif %}"
+       href="/people?tag={{ t.name | urlencode }}{% if q %}&q={{ q | urlencode }}{% endif %}">{{ t.name }} <span class="muted">{{ count }}</span></a>
+    {% endif %}{% endfor %}
+  </div>
+  {% endif %}
+
+  <div id="results">
+    {% include "people/_results.html" %}
+  </div>
+
+  <details class="card" id="add" {% if request.query_params.get("add") %}open{% endif %}>
+    <summary><strong>Add person</strong></summary>
+    <form method="post" action="/people" class="stack">
+      <label for="new-name">Name <span class="muted">(or just @instagram)</span></label>
+      <input id="new-name" name="name" required placeholder="Patrik Veselý or @pato" {% if request.query_params.get("add") %}autofocus{% endif %}>
+      <label for="new-handle-type">Handle <span class="muted">(optional)</span></label>
+      <div class="row">
+        <select id="new-handle-type" name="handle_type" aria-label="Handle type">
+          {% for t in handle_types %}<option value="{{ t.value }}">{{ t.value | replace("_", " ") }}</option>{% endfor %}
+        </select>
+        <input name="handle_value" placeholder="+44 7700 …, name@…, pato" aria-label="Handle value">
+      </div>
+      <button type="submit" class="primary">Add</button>
+    </form>
+  </details>
+
+  <details class="card">
+    <summary><strong>Sync contacts</strong></summary>
+    <div class="stack">
+      <form method="post" action="/contacts/sync">
+        <button type="submit" class="primary">Sync from iCloud</button>
+      </form>
+      <p class="muted small">Shows what differs between iCloud Contacts and Orbit. Nothing changes until you tick what to take and press Apply.</p>
+      <form method="post" action="/contacts/sync/vcf" enctype="multipart/form-data" class="stack">
+        <label for="vcf">Or review a .vcf export</label>
+        <input id="vcf" type="file" name="file" accept=".vcf,text/vcard" required>
+        <button type="submit">Upload</button>
+      </form>
+      <div class="row wrap">
+        <a class="pill" href="/contacts/sync">Last review</a>
+        <form method="post" action="/contacts/sync/forget">
+          <button type="submit" class="link">Forget skipped changes</button>
+        </form>
+      </div>
+    </div>
+  </details>
+</section>
+{% endblock %}

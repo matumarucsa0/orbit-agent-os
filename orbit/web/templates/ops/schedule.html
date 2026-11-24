@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Schedule · Orbit{% endblock %}
+{% block content %}
+<section class="stack-lg">
+  <div>
+    <h1>Schedule</h1>
+    <p class="muted small">When things run, and what to run right now. A saved value counts from the next run, with no restart. <strong>Reset</strong> goes back to the value from <code>.env</code>. Times are local ({{ request.app.state.settings.timezone }}).</p>
+    {% if not scheduler_on %}
+    <p class="card small">The scheduler is off in this process (<code>SCHEDULER_ENABLED</code>), so jobs run only when you press Run now.</p>
+    {% endif %}
+  </div>
+
+  <section class="stack" id="jobs">
+    <h2>Jobs</h2>
+    <ul class="list">
+      {% for j in jobs %}
+      <li>
+        <div class="list-row">
+          <span class="list-title">{{ j.spec.label }} <span class="muted small">· {{ j.every }}{% if not j.enabled %} · off{% endif %}</span></span>
+          <span class="list-sub muted small">{{ j.spec.what }}</span>
+          <span class="list-sub small">
+            {% if j.unavailable %}<span class="muted">Not running: {{ j.unavailable }}</span>
+            {% elif j.last %}Last run {{ j.last.last_finished_at | local_dt }}{% if j.last.manual %} (by hand){% endif %}: {% if j.last.ok %}{{ j.last.message }}{% else %}<strong>failed</strong>, {{ j.last.message }}{% endif %}
+            {% else %}<span class="muted">Not run yet.</span>{% endif %}
+            {% if j.next_run %}<span class="muted"> · next {{ j.next_run | local_time }}</span>{% endif %}
+          </span>
+          {% if j.spec.run_now and not j.unavailable %}
+          <form method="post" action="/settings/schedule/jobs/{{ j.spec.id }}/run"><button type="submit" class="small">Run now</button></form>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {% for group, rows in groups %}
+  <form method="post" action="/settings/schedule" class="card stack" id="{{ slug(group) }}">
+    <input type="hidden" name="group" value="{{ group }}">
+    <h2>{{ group }}</h2>
+    {% for r in rows %}
+    {% set d = r.definition %}
+    <div class="stack-sm">
+      <label for="f-{{ d.key }}">{{ d.label }}{% if d.unit %} <span class="muted small">({{ d.unit }})</span>{% endif %}</label>
+      {% if d.kind.value == "bool" %}
+      <label class="choice"><input type="hidden" name="{{ d.key }}" value="off"><input id="f-{{ d.key }}" type="checkbox" name="{{ d.key }}" value="on" {% if r.value %}checked{% endif %}> On</label>
+      {% elif d.kind.value == "int" %}
+      <input id="f-{{ d.key }}" type="number" name="{{ d.key }}" value="{{ r.value }}" min="{{ d.low }}" max="{{ d.high }}" inputmode="numeric" required>
+      {% elif d.kind.value == "time" %}
+      <input id="f-{{ d.key }}" type="time" name="{{ d.key }}" value="{{ r.value }}" required>
+      {% elif d.kind.value == "weekday" %}
+      <select id="f-{{ d.key }}" name="{{ d.key }}">
+        {% for n, name in d.choices %}<option value="{{ n }}" {% if r.value == n %}selected{% endif %}>{{ name }}</option>{% endfor %}
+      </select>
+      {% else %}
+      <input id="f-{{ d.key }}" name="{{ d.key }}" value="{{ r.value_text }}" required maxlength="40" {% if d.kind.value == "days" %}placeholder="7, 1"{% else %}placeholder="22:00-08:00"{% endif %}>
+      {% endif %}
+      <div class="row-between small muted">
+        <span>{% if r.overridden %}Edited. From <code>.env</code>: {{ r.default_text }}{% else %}From <code>.env</code> or the default{% endif %}{% if d.help %} · {{ d.help }}{% endif %}</span>
+        {% if r.overridden %}<button type="submit" class="link small" formaction="/settings/schedule/{{ d.key }}/reset" formnovalidate>Reset</button>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="primary">Save {{ group | lower }}</button>
+  </form>
+  {% endfor %}
+
+  <section class="card stack">
+    <h2>Outside the app</h2>
+    <p class="muted small">These run in their own process, so Orbit cannot change them. Edit the file shown.</p>
+    <ul class="list small">
+      {% for e in external %}
+      <li><strong>{{ e.label }}</strong>: {{ e.value }}<br><span class="muted">{{ e.where }}</span></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {% if changes %}
+  <section class="stack">
+    <h2>Recent changes</h2>
+    <ul class="list small">
+      {% for c, d in changes %}
+      <li>{{ c.created_at | local_dt }}: {{ d.label }}, {{ display(d, c.old_json) if c.old_json is not none else "from .env" }} to {{ display(d, c.new_json) if c.new_json is not none else "from .env" }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

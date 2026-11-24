@@ -1,0 +1,98 @@
+{
+ "success": true,
+ "code": 200,
+ "payload": [
+  {
+   "id": "7766c471-2a3e-51d0-a399-1fdb06ea5a2f",
+   "version": 2,
+   "isPublic": true,
+   "createdAt": 1790624605,
+   "updatedAt": 1790624605,
+   "localizedTexts": [
+    {
+     "id": "07a2f30d-a43b-57d3-ab98-548e72fdc30e",
+     "locale": "cs",
+     "name": "5P  0.1 Hello World",
+     "text": "Napište program, který vypíše slovo 'Program'.",
+     "link": "",
+     "createdAt": 1541675371,
+     "studentHint": ""
+    }
+   ],
+   "localizedTextsLinks": [],
+   "exerciseId": "0b76552d-0f4b-5954-a5f3-974093930b40",
+   "groupId": "4f881122-1667-5cff-abd4-8fe7c0ed4086",
+   "firstDeadline": 1792969199,
+   "secondDeadline": 0,
+   "allowSecondDeadline": false,
+   "maxPointsBeforeFirstDeadline": 1,
+   "maxPointsBeforeSecondDeadline": 0,
+   "maxPointsDeadlineInterpolation": false,
+   "visibleFrom": null,
+   "submissionsCountLimit": 50,
+   "runtimeEnvironmentIds": [
+    "cs-dotnet-core",
+    "freepascal-linux",
+    "python3"
+   ],
+   "disabledRuntimeEnvironmentIds": [
+    "cs-dotnet-core",
+    "freepascal-linux"
+   ],
+   "canViewLimitRatios": true,
+   "canViewMeasuredValues": false,
+   "canViewJudgeStdout": false,
+   "canViewJudgeStderr": false,
+   "mergeJudgeLogs": true,
+   "isExam": false,
+   "isBonus": true,
+   "pointsPercentualThreshold": 0.0,
+   "exerciseSynchronizationInfo": {
+    "isSynchronizationPossible": true,
+    "updatedAt": {
+     "assignment": 1790624605,
+     "exercise": 1660639449
+    },
+    "exerciseConfig": {
+     "upToDate": true
+    },
+    "configurationType": {
+     "upToDate": true
+    },
+    "scoreConfig": {
+     "upToDate": true
+    },
+    "exerciseEnvironmentConfigs": {
+     "upToDate": true
+    },
+    "hardwareGroups": {
+     "upToDate": true
+    },
+    "localizedTexts": {
+     "upToDate": true
+    },
+    "limits": {
+     "upToDate": true
+    },
+    "exerciseTests": {
+     "upToDate": true
+    },
+    "files": {
+     "upToDate": true
+    },
+    "fileLinks": {
+     "upToDate": true
+    },
+    "runtimeEnvironments": {
+     "upToDate": true
+    },
+    "mergeJudgeLogs": {
+     "upToDate": true
+    }
+   },
+   "solutionFilesLimit": 5,
+   "solutionSizeLimit": 1048576,
+   "plagiarismCheckedAt": null
+  }
+ ]
+}
