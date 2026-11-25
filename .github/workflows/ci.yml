@@ -15,7 +15,7 @@ jobs:
     outputs:
       tests: ${{ steps.pick.outputs.tests }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - id: pick
@@ -33,7 +33,7 @@ jobs:
     needs: select
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
@@ -57,7 +57,7 @@ jobs:
   evals:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
@@ -76,7 +76,7 @@ jobs:
   agent-tooling:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
@@ -105,7 +105,7 @@ jobs:
           --health-cmd "pg_isready -U orbit -d orbit_test"
           --health-interval 5s --health-timeout 3s --health-retries 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
@@ -121,7 +121,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: docker build -t orbit:ci .
       - name: shellcheck
         run: shellcheck -e SC1091 docker/entrypoint.sh docker/backup/*.sh scripts/*.sh .claude/hooks/*.sh
